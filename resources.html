@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ordinals Resources — PixelQuote</title>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&family=Silkscreen:wght@400;700&display=swap" rel="stylesheet">
+<style>
+[data-theme="dark"]{--bg:#0a0a0f;--deep:#0f0f1a;--card:#13131f;--card2:#1a1a2e;--border:#2a2a3e;--text:#e8e8f0;--muted:#6b6b8a;--orange:#f7931a;--orange2:#f7c948;--os:#a05010;--o2s:#a07c00;--green:#6bf7c5;--purple:#a78bfa;--red:#ff6b6b;--blue:#38bdf8;--scan:rgba(0,0,0,0.08);--nav:rgba(10,10,15,0.96);}
+[data-theme="light"]{--bg:#fef9f0;--deep:#fff4e0;--card:#ffffff;--card2:#fff8ed;--border:#f0d090;--text:#1a1208;--muted:#7a6030;--orange:#c96a00;--orange2:#b8860b;--os:#7a4000;--o2s:#7a5800;--green:#006644;--purple:#6633cc;--red:#cc3333;--blue:#0369a1;--scan:rgba(247,147,26,0.03);--nav:rgba(254,249,240,0.96);}
+*{margin:0;padding:0;box-sizing:border-box;}html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'VT323',monospace;font-size:18px;overflow-x:hidden;transition:background .3s,color .3s;}
+body::after{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,var(--scan) 2px,var(--scan) 4px);pointer-events:none;z-index:9998;}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:500;background:var(--nav);border-bottom:4px solid var(--border);backdrop-filter:blur(12px);padding:0 40px;height:68px;display:flex;align-items:center;justify-content:space-between;}
+.nav-logo{display:flex;align-items:center;gap:12px;text-decoration:none;}
+.nav-logo img{width:44px;height:44px;image-rendering:pixelated;border:2px solid var(--orange);}
+.nav-logo-text{font-family:'Press Start 2P',monospace;font-size:9px;color:var(--orange);text-shadow:2px 2px 0 var(--os);line-height:1.8;}
+.nav-logo-text span{color:var(--orange2);}
+.nav-links{display:flex;gap:24px;list-style:none;}
+.nav-links a{color:var(--muted);text-decoration:none;font-family:'Silkscreen',monospace;font-size:12px;letter-spacing:1px;transition:color .15s;}
+.nav-links a:hover,.nav-links a.active{color:var(--orange);}
+.nav-right{display:flex;gap:10px;align-items:center;}
+.theme-toggle{background:var(--card);border:3px solid var(--border);padding:8px 12px;cursor:pointer;font-family:'Silkscreen',monospace;font-size:12px;color:var(--muted);transition:all .15s;}
+.theme-toggle:hover{border-color:var(--orange);color:var(--orange);}
+.nav-btn{font-family:'Press Start 2P',monospace;font-size:7px;color:#000;background:var(--orange);border:none;padding:10px 14px;cursor:pointer;box-shadow:3px 3px 0 0 var(--os);transition:all .1s;text-decoration:none;display:inline-block;white-space:nowrap;}
+.nav-btn:hover{transform:translate(-2px,-2px);box-shadow:5px 5px 0 0 var(--os);}
+
+/* PAGE HEADER */
+.page-header{padding:100px 40px 60px;background:var(--deep);border-bottom:4px solid var(--border);position:relative;overflow:hidden;}
+.page-header::before{content:'';position:absolute;inset:0;background-image:linear-gradient(var(--border) 1px,transparent 1px),linear-gradient(90deg,var(--border) 1px,transparent 1px);background-size:40px 40px;opacity:.15;}
+.ph-inner{max-width:1200px;margin:0 auto;position:relative;z-index:1;}
+.ph-tag{font-family:'Silkscreen',monospace;font-size:11px;color:var(--orange2);letter-spacing:4px;margin-bottom:12px;}
+.ph-title{font-family:'Press Start 2P',monospace;font-size:clamp(16px,2.5vw,28px);color:var(--text);line-height:1.7;margin-bottom:16px;}
+.ph-sub{font-size:20px;color:var(--muted);max-width:700px;line-height:1.5;}
+
+/* STICKY NAV TABS */
+.section-tabs{position:sticky;top:68px;z-index:100;background:var(--deep);border-bottom:4px solid var(--border);padding:0 40px;overflow-x:auto;}
+.tabs-inner{max-width:1200px;margin:0 auto;display:flex;gap:0;white-space:nowrap;}
+.stab{font-family:'Silkscreen',monospace;font-size:11px;color:var(--muted);background:none;border:none;border-bottom:3px solid transparent;padding:16px 18px;cursor:pointer;margin-bottom:-4px;transition:all .15s;text-decoration:none;display:inline-block;letter-spacing:1px;}
+.stab:hover{color:var(--text);}
+.stab.active{color:var(--orange);border-bottom-color:var(--orange);}
+
+/* MAIN */
+.main-wrap{max-width:1200px;margin:0 auto;padding:48px 40px;}
+
+/* SECTION BLOCKS */
+.res-section{margin-bottom:64px;}
+.res-section-header{display:flex;align-items:center;gap:16px;margin-bottom:28px;padding-bottom:16px;border-bottom:3px solid var(--border);}
+.res-section-icon{font-size:28px;}
+.res-section-title{font-family:'Press Start 2P',monospace;font-size:13px;color:var(--orange);line-height:1.6;}
+.res-section-desc{font-size:17px;color:var(--muted);margin-top:4px;}
+
+/* ECOSYSTEM CARDS — bigger featured cards */
+.ecosystem-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px;}
+.eco-card{background:var(--card);border:3px solid var(--border);padding:24px;transition:all .15s;text-decoration:none;display:block;position:relative;overflow:hidden;}
+.eco-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--accent-color,var(--orange));}
+.eco-card:hover{transform:translate(-3px,-3px);box-shadow:6px 6px 0 0 var(--accent-color,var(--os));}
+.eco-icon{font-size:32px;margin-bottom:12px;display:block;}
+.eco-name{font-family:'Press Start 2P',monospace;font-size:10px;color:var(--accent-color,var(--orange));margin-bottom:8px;display:block;}
+.eco-type{font-family:'Silkscreen',monospace;font-size:10px;color:var(--muted);margin-bottom:10px;display:block;letter-spacing:1px;}
+.eco-desc{font-size:16px;color:var(--muted);line-height:1.5;}
+.eco-tag{display:inline-block;font-family:'Silkscreen',monospace;font-size:10px;padding:3px 8px;margin-top:12px;border:2px solid var(--accent-color,var(--orange));color:var(--accent-color,var(--orange));}
+
+/* RESOURCE CARDS — compact list style */
+.resource-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;}
+.res-card{background:var(--card);border:3px solid var(--border);padding:16px;transition:all .15s;text-decoration:none;display:flex;align-items:flex-start;gap:12px;}
+.res-card:hover{border-color:var(--orange);transform:translate(-2px,-2px);box-shadow:4px 4px 0 0 var(--os);}
+.res-card-icon{font-size:22px;flex-shrink:0;margin-top:2px;}
+.res-card-info{flex:1;}
+.res-card-name{font-family:'Silkscreen',monospace;font-size:12px;color:var(--orange);display:block;margin-bottom:4px;}
+.res-card-url{font-size:14px;color:var(--muted);display:block;margin-bottom:4px;}
+.res-card-desc{font-size:15px;color:var(--muted);line-height:1.4;}
+.res-arrow{font-family:'Press Start 2P',monospace;font-size:8px;color:var(--border);margin-top:4px;flex-shrink:0;}
+.res-card:hover .res-arrow{color:var(--orange);}
+
+/* ARTICLE CARDS */
+.article-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;}
+.art-card{background:var(--card);border:3px solid var(--border);padding:20px;transition:all .15s;text-decoration:none;display:block;}
+.art-card:hover{border-color:var(--orange);transform:translate(-2px,-2px);box-shadow:4px 4px 0 0 var(--os);}
+.art-tag{font-family:'Silkscreen',monospace;font-size:10px;padding:3px 10px;margin-bottom:10px;display:inline-block;}
+.art-title{font-family:'Silkscreen',monospace;font-size:13px;color:var(--text);margin-bottom:8px;line-height:1.5;}
+.art-source{font-size:15px;color:var(--muted);}
+
+/* PROTOCOL COMPARISON TABLE */
+.proto-table{width:100%;border-collapse:collapse;margin-top:8px;}
+.proto-table th{font-family:'Silkscreen',monospace;font-size:11px;color:var(--orange2);padding:12px 16px;text-align:left;border-bottom:2px solid var(--border);letter-spacing:1px;background:var(--deep);}
+.proto-table td{padding:12px 16px;border-bottom:1px solid var(--border);font-size:16px;color:var(--muted);}
+.proto-table tr:hover td{background:var(--card2);}
+.proto-table td:first-child{font-family:'Silkscreen',monospace;font-size:12px;color:var(--orange);}
+.badge{display:inline-block;font-family:'Silkscreen',monospace;font-size:10px;padding:2px 8px;border:2px solid currentColor;}
+.badge.nft{color:var(--purple);}
+.badge.fungible{color:var(--green);}
+.badge.meta{color:var(--blue);}
+.badge.land{color:var(--orange2);}
+
+/* SEARCH BAR */
+.search-wrap{margin-bottom:32px;}
+.search-input{width:100%;background:var(--card);border:3px solid var(--border);padding:14px 20px;color:var(--text);font-family:'VT323',monospace;font-size:20px;outline:none;transition:border-color .15s;}
+.search-input::placeholder{color:var(--muted);}
+.search-input:focus{border-color:var(--orange);}
+
+/* FOOTER */
+footer{background:var(--deep);border-top:4px solid var(--border);padding:40px;text-align:center;}
+.footer-btm{font-family:'Silkscreen',monospace;font-size:11px;color:var(--muted);}
+.footer-btc{font-family:'Press Start 2P',monospace;font-size:8px;color:var(--orange);display:block;margin-top:8px;}
+
+@media(max-width:900px){
+  nav{padding:0 16px;}.nav-links{display:none;}
+  .main-wrap,.page-header,.section-tabs{padding-left:16px;padding-right:16px;}
+  .ecosystem-grid,.resource-grid,.article-grid{grid-template-columns:1fr 1fr;}
+}
+@media(max-width:600px){
+  .ecosystem-grid,.resource-grid,.article-grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="index.html">
+    <img src="PXQT LOGO.jpg" alt="PixelQuote">
+    <div class="nav-logo-text">PIXEL<span>QUOTE</span><br>ORDINALS</div>
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html">HOME</a></li>
+    <li><a href="collection.html">COLLECTION</a></li>
+    <li><a href="dashboard.html">MY ORDINALS</a></li>
+    <li><a href="resources.html" class="active">RESOURCES</a></li>
+  </ul>
+  <div class="nav-right">
+    <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn">☀ LIGHT</button>
+    <a href="dashboard.html" class="nav-btn">CONNECT WALLET</a>
+  </div>
+</nav>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+  <div class="ph-inner">
+    <div class="ph-tag">₿ BITCOIN ORDINALS</div>
+    <h1 class="ph-title">ORDINALS RESOURCES</h1>
+    <p class="ph-sub">A comprehensive directory of Bitcoin Ordinals ecosystem tools, protocols, marketplaces, wallets, explorers, analytics and learning resources — all in one place.</p>
+  </div>
+</div>
+
+<!-- STICKY SECTION TABS -->
+<div class="section-tabs">
+  <div class="tabs-inner">
+    <a href="#protocols" class="stab active">₿ PROTOCOLS</a>
+    <a href="#marketplaces" class="stab">🏪 MARKETPLACES</a>
+    <a href="#wallets" class="stab">👛 WALLETS</a>
+    <a href="#explorers" class="stab">🔍 EXPLORERS</a>
+    <a href="#tools" class="stab">🛠 TOOLS</a>
+    <a href="#analytics" class="stab">📊 ANALYTICS</a>
+    <a href="#infrastructure" class="stab">🏗 INFRASTRUCTURE</a>
+    <a href="#ecosystem" class="stab">🌐 ECOSYSTEM</a>
+    <a href="#learn" class="stab">📚 LEARN</a>
+  </div>
+</div>
+
+<div class="main-wrap">
+
+  <!-- SEARCH -->
+  <div class="search-wrap">
+    <input class="search-input" id="searchInput" placeholder="🔍  Search resources, protocols, tools..." oninput="doSearch()">
+  </div>
+
+  <!-- ── PROTOCOLS ── -->
+  <div class="res-section" id="protocols">
+    <div class="res-section-header">
+      <span class="res-section-icon">₿</span>
+      <div>
+        <div class="res-section-title">BITCOIN ORDINALS PROTOCOLS</div>
+        <div class="res-section-desc">The core protocols and token standards built on Bitcoin</div>
+      </div>
+    </div>
+
+    <!-- Protocol Comparison Table -->
+    <div style="overflow-x:auto;margin-bottom:28px;">
+      <table class="proto-table">
+        <thead>
+          <tr>
+            <th>PROTOCOL</th>
+            <th>TYPE</th>
+            <th>LAUNCHED</th>
+            <th>CREATOR</th>
+            <th>PURPOSE</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Ordinals</td><td><span class="badge nft">NFT / ARTIFACTS</span></td><td>Jan 2023</td><td>Casey Rodarmor</td><td>Inscribe data onto Bitcoin satoshis — the foundation of all Bitcoin NFTs</td></tr>
+          <tr><td>BRC-20</td><td><span class="badge fungible">FUNGIBLE TOKEN</span></td><td>Mar 2023</td><td>Domo (anon)</td><td>First fungible token standard on Bitcoin via JSON inscriptions. $ORDI was first BRC-20 token</td></tr>
+          <tr><td>Runes</td><td><span class="badge fungible">FUNGIBLE TOKEN</span></td><td>Apr 2024</td><td>Casey Rodarmor</td><td>More efficient fungible token standard using Bitcoin's UTXO model. Launched at Bitcoin halving</td></tr>
+          <tr><td>TAP Protocol</td><td><span class="badge meta">METAPROTOCOL</span></td><td>Oct 2023</td><td>BennyTheDev</td><td>Multi-asset OrdFi metaprotocol. Enables DeFi on Bitcoin — staking, lending, fractionalizing Ordinals</td></tr>
+          <tr><td>Bitmap</td><td><span class="badge land">METAVERSE LAND</span></td><td>Jun 2023</td><td>Blockamoto</td><td>Own an entire Bitcoin block as digital real estate. Each block = a plot in the Bitcoin metaverse</td></tr>
+          <tr><td>Atomicals / ARC-20</td><td><span class="badge fungible">FUNGIBLE TOKEN</span></td><td>Sep 2023</td><td>Anonymous</td><td>UTXO-based digital objects on Bitcoin. Colored satoshis — each ARC-20 token = 1 satoshi</td></tr>
+          <tr><td>Stamps / SRC-20</td><td><span class="badge nft">NFT / TOKEN</span></td><td>Mar 2023</td><td>Mike In Space</td><td>Embeds image data as Base64 in Bitcoin transactions. More permanent but more expensive than Ordinals</td></tr>
+          <tr><td>Pipe Protocol</td><td><span class="badge fungible">FUNGIBLE TOKEN</span></td><td>Sep 2023</td><td>BennyTheDev</td><td>UTXO-based token protocol inspired by Runes and BRC-20. First token: $PIPE</td></tr>
+          <tr><td>SNS / Sats Names</td><td><span class="badge meta">NAMING SERVICE</span></td><td>2023</td><td>Community</td><td>Bitcoin Name Service — register human-readable .sats domain names on Bitcoin</td></tr>
+          <tr><td>Recursive Inscriptions</td><td><span class="badge nft">COMPOSABILITY</span></td><td>2023</td><td>Community</td><td>Inscriptions that reference other inscriptions — enables on-chain composability and generative art</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="ecosystem-grid">
+      <a href="https://ordinals.com" target="_blank" class="eco-card" style="--accent-color:#f7931a;">
+        <span class="eco-icon">₿</span>
+        <span class="eco-name">ORDINALS PROTOCOL</span>
+        <span class="eco-type">OFFICIAL · ordinals.com</span>
+        <span class="eco-desc">The official Bitcoin Ordinals protocol website by Casey Rodarmor. Documentation, theory and the ord client.</span>
+        <span class="eco-tag">OFFICIAL</span>
+      </a>
+      <a href="https://github.com/ordinals/ord" target="_blank" class="eco-card" style="--accent-color:#f7931a;">
+        <span class="eco-icon">⚙️</span>
+        <span class="eco-name">ORD CLIENT</span>
+        <span class="eco-type">OPEN SOURCE · github.com/ordinals/ord</span>
+        <span class="eco-desc">The open-source ord indexer and command-line wallet. Run your own Bitcoin Ordinals node and explorer.</span>
+        <span class="eco-tag">INFRASTRUCTURE</span>
+      </a>
+      <a href="https://runesprotocol.org" target="_blank" class="eco-card" style="--accent-color:#6bf7c5;">
+        <span class="eco-icon">🔷</span>
+        <span class="eco-name">RUNES PROTOCOL</span>
+        <span class="eco-type">FUNGIBLE TOKENS · Bitcoin Halving 2024</span>
+        <span class="eco-desc">Bitcoin's most efficient fungible token standard. Launched at block 840,000 (April 2024 halving). UTXO-native design minimizes blockchain bloat.</span>
+        <span class="eco-tag">RUNES</span>
+      </a>
+      <a href="https://brc-20.io" target="_blank" class="eco-card" style="--accent-color:#a78bfa;">
+        <span class="eco-icon">🪙</span>
+        <span class="eco-name">BRC-20 STANDARD</span>
+        <span class="eco-type">FUNGIBLE TOKENS · Mar 2023</span>
+        <span class="eco-desc">First fungible token standard on Bitcoin. Created by Domo in March 2023. $ORDI surpassed $1B market cap within one month of launch.</span>
+        <span class="eco-tag">BRC-20</span>
+      </a>
+      <a href="https://trac.network" target="_blank" class="eco-card" style="--accent-color:#38bdf8;">
+        <span class="eco-icon">🔗</span>
+        <span class="eco-name">TAP PROTOCOL</span>
+        <span class="eco-type">ORDFI · trac.network</span>
+        <span class="eco-desc">Multi-asset OrdFi metaprotocol by BennyTheDev. Enables DeFi on Bitcoin — staking, lending, swaps. Part of Trac Ecosystem with Pipe Protocol. Raised $4.2M funding.</span>
+        <span class="eco-tag">ORDFI</span>
+      </a>
+      <a href="https://bitmap.land" target="_blank" class="eco-card" style="--accent-color:#f59e0b;">
+        <span class="eco-icon">🗺️</span>
+        <span class="eco-name">BITMAP</span>
+        <span class="eco-type">METAVERSE LAND · bitmap.land</span>
+        <span class="eco-desc">Own a Bitcoin block as metaverse real estate. 840,000+ blocks available. Community-backed protocol by Blockamoto. 30K+ holders — largest metaverse by holder count.</span>
+        <span class="eco-tag">METAVERSE</span>
+      </a>
+      <a href="https://atomicals.xyz" target="_blank" class="eco-card" style="--accent-color:#ec4899;">
+        <span class="eco-icon">⚛️</span>
+        <span class="eco-name">ATOMICALS / ARC-20</span>
+        <span class="eco-type">COLORED COINS · atomicals.xyz</span>
+        <span class="eco-desc">UTXO-based digital objects on Bitcoin. ARC-20 tokens use colored satoshis — 1 token = 1 satoshi. First token: $ATOM. Supports NFTs, Realm names, and fungible tokens.</span>
+        <span class="eco-tag">ARC-20</span>
+      </a>
+      <a href="https://stampchain.io" target="_blank" class="eco-card" style="--accent-color:#10b981;">
+        <span class="eco-icon">🏛️</span>
+        <span class="eco-name">BITCOIN STAMPS / SRC-20</span>
+        <span class="eco-type">ON-CHAIN NFT · stampchain.io</span>
+        <span class="eco-desc">Embeds image data as Base64 in Bitcoin transaction outputs. More permanent storage than Ordinals — prunable node resistant. SRC-20 is the fungible token standard built on Stamps.</span>
+        <span class="eco-tag">STAMPS</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- ── MARKETPLACES ── -->
+  <div class="res-section" id="marketplaces">
+    <div class="res-section-header">
+      <span class="res-section-icon">🏪</span>
+      <div>
+        <div class="res-section-title">ORDINALS MARKETPLACES</div>
+        <div class="res-section-desc">Buy, sell and trade Bitcoin Ordinals, Runes and BRC-20 tokens</div>
+      </div>
+    </div>
+    <div class="resource-grid">
+      <a href="https://ordinalswallet.com" target="_blank" class="res-card"><span class="res-card-icon">👛</span><div class="res-card-info"><span class="res-card-name">Ordinals Wallet</span><span class="res-card-url">ordinalswallet.com</span><span class="res-card-desc">Leading Bitcoin-native marketplace for Ordinals, Runes, TAP and BRC-20</span></div><span class="res-arrow">→</span></a>
+      <a href="https://www.satflow.com" target="_blank" class="res-card"><span class="res-card-icon">🌊</span><div class="res-card-info"><span class="res-card-name">Satflow</span><span class="res-card-url">satflow.com</span><span class="res-card-desc">Bitcoin Ordinals marketplace with advanced collection analytics and rarity tools</span></div><span class="res-arrow">→</span></a>
+      <a href="https://unisat.io/market" target="_blank" class="res-card"><span class="res-card-icon">🟠</span><div class="res-card-info"><span class="res-card-name">UniSat Market</span><span class="res-card-url">unisat.io/market</span><span class="res-card-desc">BRC-20 and Ordinals marketplace. First major wallet+marketplace combo on Bitcoin</span></div><span class="res-arrow">→</span></a>
+      <a href="https://web3.okx.com/nft/ordinals" target="_blank" class="res-card"><span class="res-card-icon">⚫</span><div class="res-card-info"><span class="res-card-name">OKX NFT</span><span class="res-card-url">web3.okx.com</span><span class="res-card-desc">OKX's Bitcoin NFT marketplace supporting Ordinals and Runes trading</span></div><span class="res-arrow">→</span></a>
+      <a href="https://gamma.io/ordinals" target="_blank" class="res-card"><span class="res-card-icon">🎮</span><div class="res-card-info"><span class="res-card-name">Gamma.io</span><span class="res-card-url">gamma.io</span><span class="res-card-desc">No-code Ordinals creator platform and marketplace. First major Ordinals launchpad (Feb 2023)</span></div><span class="res-arrow">→</span></a>
+      <a href="https://www.trio.xyz" target="_blank" class="res-card"><span class="res-card-icon">🔺</span><div class="res-card-info"><span class="res-card-name">Trio</span><span class="res-card-url">trio.xyz</span><span class="res-card-desc">Bitcoin Ordinals trading platform with clean UI and collection discovery</span></div><span class="res-arrow">→</span></a>
+      <a href="https://bestinslot.xyz" target="_blank" class="res-card"><span class="res-card-icon">🏆</span><div class="res-card-info"><span class="res-card-name">Best in Slot</span><span class="res-card-url">bestinslot.xyz</span><span class="res-card-desc">Ordinals, BRC-20, Runes and Bitmap marketplace with powerful API for developers</span></div><span class="res-arrow">→</span></a>
+      <a href="https://magisat.io" target="_blank" class="res-card"><span class="res-card-icon">🔮</span><div class="res-card-info"><span class="res-card-name">Magisat</span><span class="res-card-url">magisat.io</span><span class="res-card-desc">Bitcoin Ordinals marketplace focused on rare satoshis and inscription collections</span></div><span class="res-arrow">→</span></a>
+      <a href="https://ordinalsmarket.com" target="_blank" class="res-card"><span class="res-card-icon">📦</span><div class="res-card-info"><span class="res-card-name">Ordinals Market</span><span class="res-card-url">ordinalsmarket.com</span><span class="res-card-desc">Ethereum-infrastructure based Ordinals marketplace using vault system</span></div><span class="res-arrow">→</span></a>
+      <a href="https://ordzaar.com" target="_blank" class="res-card"><span class="res-card-icon">🏷️</span><div class="res-card-info"><span class="res-card-name">Ordzaar</span><span class="res-card-url">ordzaar.com</span><span class="res-card-desc">Community-driven Bitcoin Ordinals marketplace and launchpad platform</span></div><span class="res-arrow">→</span></a>
+      <a href="https://generative.xyz" target="_blank" class="res-card"><span class="res-card-icon">🎨</span><div class="res-card-info"><span class="res-card-name">Generative.xyz</span><span class="res-card-url">generative.xyz</span><span class="res-card-desc">Platform for generative and recursive Ordinals art collections on Bitcoin</span></div><span class="res-arrow">→</span></a>
+      <a href="https://emblem.finance" target="_blank" class="res-card"><span class="res-card-icon">💎</span><div class="res-card-info"><span class="res-card-name">Emblem Vault</span><span class="res-card-url">emblem.finance</span><span class="res-card-desc">Bridge Ordinals to Ethereum — trade Bitcoin NFTs on ETH marketplaces like OpenSea</span></div><span class="res-arrow">→</span></a>
+    </div>
+  </div>
+
+  <!-- ── WALLETS ── -->
+  <div class="res-section" id="wallets">
+    <div class="res-section-header">
+      <span class="res-section-icon">👛</span>
+      <div>
+        <div class="res-section-title">BITCOIN ORDINALS WALLETS</div>
+        <div class="res-section-desc">Taproot-compatible wallets for storing and managing Ordinals inscriptions</div>
+      </div>
+    </div>
+    <div class="resource-grid">
+      <a href="https://www.xverse.app" target="_blank" class="res-card"><span class="res-card-icon">🔷</span><div class="res-card-info"><span class="res-card-name">Xverse</span><span class="res-card-url">xverse.app</span><span class="res-card-desc">Most widely used Ordinals wallet. iOS, Android and Chrome extension. Supports Ordinals, BRC-20, Runes and Stacks</span></div><span class="res-arrow">→</span></a>
+      <a href="https://unisat.io" target="_blank" class="res-card"><span class="res-card-icon">🟠</span><div class="res-card-info"><span class="res-card-name">UniSat</span><span class="res-card-url">unisat.io</span><span class="res-card-desc">Browser-based wallet built for Ordinals and BRC-20. Includes inscription tool and marketplace access</span></div><span class="res-arrow">→</span></a>
+      <a href="https://leather.io" target="_blank" class="res-card"><span class="res-card-icon">🟤</span><div class="res-card-info"><span class="res-card-name">Leather (Hiro)</span><span class="res-card-url">leather.io</span><span class="res-card-desc">Open-source Bitcoin wallet by Hiro. Supports Ordinals, BRC-20, Stacks DeFi apps and DApps</span></div><span class="res-arrow">→</span></a>
+      <a href="https://web3.okx.com/web3" target="_blank" class="res-card"><span class="res-card-icon">⚫</span><div class="res-card-info"><span class="res-card-name">OKX Web3 Wallet</span><span class="res-card-url">web3.okx.com</span><span class="res-card-desc">Multi-chain wallet by OKX with full Bitcoin Ordinals, BRC-20 and Runes support</span></div><span class="res-arrow">→</span></a>
+      <a href="https://trac.network" target="_blank" class="res-card"><span class="res-card-icon">🔵</span><div class="res-card-info"><span class="res-card-name">TAP Wallet</span><span class="res-card-url">trac.network</span><span class="res-card-desc">Dedicated wallet for TAP Protocol tokens, Ordinals and Pipe Protocol assets on Bitcoin</span></div><span class="res-arrow">→</span></a>
+      <a href="https://sparrowwallet.com" target="_blank" class="res-card"><span class="res-card-icon">🐦</span><div class="res-card-info"><span class="res-card-name">Sparrow Wallet</span><span class="res-card-url">sparrowwallet.com</span><span class="res-card-desc">Advanced Bitcoin desktop wallet with coin control — essential for safely managing Ordinals without accidentally spending them</span></div><span class="res-arrow">→</span></a>
+      <a href="https://sats.gg" target="_blank" class="res-card"><span class="res-card-icon">⚡</span><div class="res-card-info"><span class="res-card-name">Sats Connect</span><span class="res-card-url">github.com/secretkeylabs/sats-connect</span><span class="res-card-desc">Official Xverse wallet connection library for building Bitcoin web apps. Used by PixelQuote and leading dApps</span></div><span class="res-arrow">→</span></a>
+    </div>
+  </div>
+
+  <!-- ── EXPLORERS ── -->
+  <div class="res-section" id="explorers">
+    <div class="res-section-header">
+      <span class="res-section-icon">🔍</span>
+      <div>
+        <div class="res-section-title">ORDINALS EXPLORERS</div>
+        <div class="res-section-desc">Browse, search and verify Bitcoin inscriptions on-chain</div>
+      </div>
+    </div>
+    <div class="resource-grid">
+      <a href="https://ordinals.com" target="_blank" class="res-card"><span class="res-card-icon">₿</span><div class="res-card-info"><span class="res-card-name">Ordinals.com</span><span class="res-card-url">ordinals.com</span><span class="res-card-desc">Official Bitcoin Ordinals explorer. Browse inscriptions, sat rarities and the ord theory</span></div><span class="res-arrow">→</span></a>
+      <a href="https://www.ord.io" target="_blank" class="res-card"><span class="res-card-icon">🔍</span><div class="res-card-info"><span class="res-card-name">Ord.io</span><span class="res-card-url">ord.io</span><span class="res-card-desc">Beautiful Ordinals explorer by Leonidas. Search, browse and vote on inscriptions. Best UI for discovery</span></div><span class="res-arrow">→</span></a>
+      <a href="https://ordiscan.com" target="_blank" class="res-card"><span class="res-card-icon">🔎</span><div class="res-card-info"><span class="res-card-name">Ordiscan</span><span class="res-card-url">ordiscan.com</span><span class="res-card-desc">Comprehensive Ordinals explorer with inscription metadata, collection tracking and API access</span></div><span class="res-arrow">→</span></a>
+      <a href="https://mempool.space" target="_blank" class="res-card"><span class="res-card-icon">📡</span><div class="res-card-info"><span class="res-card-name">Mempool.space</span><span class="res-card-url">mempool.space</span><span class="res-card-desc">Bitcoin block explorer and mempool visualizer. Track inscription transactions and fees in real time</span></div><span class="res-arrow">→</span></a>
+      <a href="https://ordinalhub.com" target="_blank" class="res-card"><span class="res-card-icon">🏠</span><div class="res-card-info"><span class="res-card-name">OrdinalHub</span><span class="res-card-url">ordinalhub.com</span><span class="res-card-desc">Community-built Ordinals hub with inscription lookup, collection stats and rarity checking</span></div><span class="res-arrow">→</span></a>
+      <a href="https://ordynals.com" target="_blank" class="res-card"><span class="res-card-icon">📋</span><div class="res-card-info"><span class="res-card-name">Ordynals</span><span class="res-card-url">ordynals.com</span><span class="res-card-desc">Ordinals explorer focused on collection browsing and rare satoshi identification</span></div><span class="res-arrow">→</span></a>
+    </div>
+  </div>
+
+  <!-- ── TOOLS ── -->
+  <div class="res-section" id="tools">
+    <div class="res-section-header">
+      <span class="res-section-icon">🛠️</span>
+      <div>
+        <div class="res-section-title">INSCRIPTION TOOLS</div>
+        <div class="res-section-desc">Tools for creating, inscribing and managing Bitcoin Ordinals</div>
+      </div>
+    </div>
+    <div class="resource-grid">
+      <a href="https://ordinalsbot.com" target="_blank" class="res-card"><span class="res-card-icon">🤖</span><div class="res-card-info"><span class="res-card-name">OrdinalsBot</span><span class="res-card-url">ordinalsbot.com</span><span class="res-card-desc">Leading inscription service. Raised $3M funding. Offers bulk inscriptions, BRC-20 minting and API for developers</span></div><span class="res-arrow">→</span></a>
+      <a href="https://gamma.io/inscribe" target="_blank" class="res-card"><span class="res-card-icon">🎮</span><div class="res-card-info"><span class="res-card-name">Gamma Inscribe</span><span class="res-card-url">gamma.io/inscribe</span><span class="res-card-desc">No-code Ordinals launchpad. Create individual inscriptions or full collections without writing code</span></div><span class="res-arrow">→</span></a>
+      <a href="https://unisat.io/inscribe" target="_blank" class="res-card"><span class="res-card-icon">✍️</span><div class="res-card-info"><span class="res-card-name">UniSat Inscribe</span><span class="res-card-url">unisat.io/inscribe</span><span class="res-card-desc">Browser-based inscription tool. Mint BRC-20 tokens, inscribe images, text and files directly</span></div><span class="res-arrow">→</span></a>
+      <a href="https://inscribenow.io" target="_blank" class="res-card"><span class="res-card-icon">⚡</span><div class="res-card-info"><span class="res-card-name">InscribeNow</span><span class="res-card-url">inscribenow.io</span><span class="res-card-desc">Fast and simple inscription tool. Drag-and-drop files to inscribe on Bitcoin in minutes</span></div><span class="res-arrow">→</span></a>
+      <a href="https://ordimint.com" target="_blank" class="res-card"><span class="res-card-icon">🪙</span><div class="res-card-info"><span class="res-card-name">Ordimint</span><span class="res-card-url">ordimint.com</span><span class="res-card-desc">Collection minting tool for creating and launching Ordinals collections at scale</span></div><span class="res-arrow">→</span></a>
+      <a href="https://satscribe.app" target="_blank" class="res-card"><span class="res-card-icon">📝</span><div class="res-card-info"><span class="res-card-name">SatScribe</span><span class="res-card-url">satscribe.app</span><span class="res-card-desc">Text and document inscription tool. Inscribe essays, stories and text content on Bitcoin permanently</span></div><span class="res-arrow">→</span></a>
+      <a href="https://nftpricefloor.com/top-nft-blockchains/bitcoin-nfts" target="_blank" class="res-card"><span class="res-card-icon">📉</span><div class="res-card-info"><span class="res-card-name">NFT Price Floor</span><span class="res-card-url">nftpricefloor.com</span><span class="res-card-desc">Track Bitcoin Ordinals floor prices, volume charts and collection rankings in real time</span></div><span class="res-arrow">→</span></a>
+      <a href="https://sating.io" target="_blank" class="res-card"><span class="res-card-icon">⭐</span><div class="res-card-info"><span class="res-card-name">Sating</span><span class="res-card-url">sating.io</span><span class="res-card-desc">Rare satoshi identification and hunting tool. Check if your sats hold rare ordinals like block 9 sats or palindromes</span></div><span class="res-arrow">→</span></a>
+    </div>
+  </div>
+
+  <!-- ── ANALYTICS ── -->
+  <div class="res-section" id="analytics">
+    <div class="res-section-header">
+      <span class="res-section-icon">📊</span>
+      <div>
+        <div class="res-section-title">ANALYTICS & DATA</div>
+        <div class="res-section-desc">On-chain data, dashboards and market analytics for Bitcoin Ordinals</div>
+      </div>
+    </div>
+    <div class="resource-grid">
+      <a href="https://dune.com/dataalways/ordinals" target="_blank" class="res-card"><span class="res-card-icon">📊</span><div class="res-card-info"><span class="res-card-name">Dune — Ordinals Dashboard</span><span class="res-card-url">dune.com</span><span class="res-card-desc">Comprehensive Ordinals on-chain analytics. Daily inscriptions, cumulative growth, file type breakdown</span></div><span class="res-arrow">→</span></a>
+      <a href="https://dune.com/domo/ordinals-marketplaces" target="_blank" class="res-card"><span class="res-card-icon">🏪</span><div class="res-card-info"><span class="res-card-name">Dune — Marketplace Stats</span><span class="res-card-url">dune.com/domo</span><span class="res-card-desc">Ordinals marketplace volume comparison by creator Domo (creator of BRC-20)</span></div><span class="res-arrow">→</span></a>
+      <a href="https://nftpricefloor.com/top-nft-blockchains/bitcoin-nfts" target="_blank" class="res-card"><span class="res-card-icon">📉</span><div class="res-card-info"><span class="res-card-name">NFT Price Floor — BTC</span><span class="res-card-url">nftpricefloor.com</span><span class="res-card-desc">Floor price tracking and historical charts for all major Bitcoin Ordinals collections</span></div><span class="res-arrow">→</span></a>
+      <a href="https://bestinslot.xyz/ordinals/stats" target="_blank" class="res-card"><span class="res-card-icon">🏆</span><div class="res-card-info"><span class="res-card-name">Best in Slot Stats</span><span class="res-card-url">bestinslot.xyz</span><span class="res-card-desc">Real-time Ordinals market stats, collection rankings, volume leaders and holder counts</span></div><span class="res-arrow">→</span></a>
+      <a href="https://coinmarketcap.com/ordinals" target="_blank" class="res-card"><span class="res-card-icon">💹</span><div class="res-card-info"><span class="res-card-name">CoinMarketCap Ordinals</span><span class="res-card-url">coinmarketcap.com</span><span class="res-card-desc">BRC-20 and Runes token prices, market caps and trading volumes tracked on CMC</span></div><span class="res-arrow">→</span></a>
+      <a href="https://www.coingecko.com/en/categories/brc-20" target="_blank" class="res-card"><span class="res-card-icon">🦎</span><div class="res-card-info"><span class="res-card-name">CoinGecko BRC-20</span><span class="res-card-url">coingecko.com</span><span class="res-card-desc">BRC-20 token price tracking, market data and category overview on CoinGecko</span></div><span class="res-arrow">→</span></a>
+    </div>
+  </div>
+
+  <!-- ── INFRASTRUCTURE / APIs ── -->
+  <div class="res-section" id="infrastructure">
+    <div class="res-section-header">
+      <span class="res-section-icon">🏗️</span>
+      <div>
+        <div class="res-section-title">INFRASTRUCTURE & APIs</div>
+        <div class="res-section-desc">APIs, indexers and developer infrastructure for building on Bitcoin Ordinals</div>
+      </div>
+    </div>
+    <div class="resource-grid">
+      <a href="https://docs.hiro.so/ordinals" target="_blank" class="res-card"><span class="res-card-icon">🔧</span><div class="res-card-info"><span class="res-card-name">Hiro Ordinals API</span><span class="res-card-url">docs.hiro.so</span><span class="res-card-desc">Production-grade REST API for querying Bitcoin Ordinals inscriptions, collections and sat data</span></div><span class="res-arrow">→</span></a>
+      <a href="https://docs.bestinslot.xyz" target="_blank" class="res-card"><span class="res-card-icon">📡</span><div class="res-card-info"><span class="res-card-name">Best in Slot API</span><span class="res-card-url">docs.bestinslot.xyz</span><span class="res-card-desc">Comprehensive API for Ordinals, BRC-20, Runes, Bitmap and Mempool data. Used by leading apps</span></div><span class="res-arrow">→</span></a>
+      <a href="https://github.com/secretkeylabs/sats-connect" target="_blank" class="res-card"><span class="res-card-icon">🔌</span><div class="res-card-info"><span class="res-card-name">Sats Connect</span><span class="res-card-url">github.com/secretkeylabs</span><span class="res-card-desc">Official wallet connection library by Xverse. Connect Bitcoin wallets to web apps — getAddress, signTx, sendBTC</span></div><span class="res-arrow">→</span></a>
+      <a href="https://ordinalsbot.com/api" target="_blank" class="res-card"><span class="res-card-icon">🤖</span><div class="res-card-info"><span class="res-card-name">OrdinalsBot API</span><span class="res-card-url">ordinalsbot.com/api</span><span class="res-card-desc">Inscription API for developers — inscribe files, create collections, bulk mint BRC-20 tokens programmatically</span></div><span class="res-arrow">→</span></a>
+      <a href="https://trac.network" target="_blank" class="res-card"><span class="res-card-icon">🔗</span><div class="res-card-info"><span class="res-card-name">Trac Core</span><span class="res-card-url">trac.network</span><span class="res-card-desc">Bitcoin oracle and metaprotocol indexer. Tracks TAP, Pipe and Ordinals data as a decentralized backend</span></div><span class="res-arrow">→</span></a>
+      <a href="https://mempool.space/docs/api/rest" target="_blank" class="res-card"><span class="res-card-icon">📡</span><div class="res-card-info"><span class="res-card-name">Mempool API</span><span class="res-card-url">mempool.space/docs</span><span class="res-card-desc">Free Bitcoin blockchain REST API. Track transactions, fees, blocks and UTXOs in real time</span></div><span class="res-arrow">→</span></a>
+      <a href="https://github.com/neu-fi/awesome-ordinals" target="_blank" class="res-card"><span class="res-card-icon">⭐</span><div class="res-card-info"><span class="res-card-name">Awesome Ordinals</span><span class="res-card-url">github.com/neu-fi</span><span class="res-card-desc">Curated GitHub list of all Ordinals tools, libraries, APIs and resources maintained by the community</span></div><span class="res-arrow">→</span></a>
+      <a href="https://github.com/ordinals/ord" target="_blank" class="res-card"><span class="res-card-icon">⚙️</span><div class="res-card-info"><span class="res-card-name">Ord GitHub</span><span class="res-card-url">github.com/ordinals/ord</span><span class="res-card-desc">Official ord client source code. Run your own Bitcoin Ordinals indexer and inscription node</span></div><span class="res-arrow">→</span></a>
+    </div>
+  </div>
+
+  <!-- ── ECOSYSTEM PROJECTS ── -->
+  <div class="res-section" id="ecosystem">
+    <div class="res-section-header">
+      <span class="res-section-icon">🌐</span>
+      <div>
+        <div class="res-section-title">PROMINENT ORDINALS PROJECTS</div>
+        <div class="res-section-desc">Iconic collections and projects that shaped the Bitcoin Ordinals ecosystem</div>
+      </div>
+    </div>
+    <div class="ecosystem-grid">
+      <a href="https://www.ord.io/collection/nodemonkes" target="_blank" class="eco-card" style="--accent-color:#a78bfa;">
+        <span class="eco-icon">🐒</span>
+        <span class="eco-name">NODEMONKES</span>
+        <span class="eco-type">SUB-100K COLLECTION</span>
+        <span class="eco-desc">One of the most valuable Bitcoin Ordinals collections. Hand-drawn monkey characters inscribed in the sub-100K range. Highly sought-after early inscriptions.</span>
+        <span class="eco-tag">SUB-100K</span>
+      </a>
+      <a href="https://taprootwizards.com" target="_blank" class="eco-card" style="--accent-color:#6bf7c5;">
+        <span class="eco-icon">🧙</span>
+        <span class="eco-name">TAPROOT WIZARDS</span>
+        <span class="eco-type">ICONIC PROJECT</span>
+        <span class="eco-desc">By Udi Wertheimer. Inscription #652 created the largest Bitcoin block and transaction in history (4MB). Building OP_CAT smart contracts on Bitcoin. Highest market cap collection.</span>
+        <span class="eco-tag">ICONIC</span>
+      </a>
+      <a href="https://www.ord.io/collection/bitcoin-puppets" target="_blank" class="eco-card" style="--accent-color:#f59e0b;">
+        <span class="eco-icon">🤹</span>
+        <span class="eco-name">BITCOIN PUPPETS</span>
+        <span class="eco-type">10,001 SUPPLY</span>
+        <span class="eco-desc">10,001 playful pixel characters inscribed January 2024. "No roadmap, no promises" ethos. Became one of the highest volume Bitcoin NFT collections with floor over $17K.</span>
+        <span class="eco-tag">TOP COLLECTION</span>
+      </a>
+      <a href="https://www.ord.io/collection/quantum-cats" target="_blank" class="eco-card" style="--accent-color:#ec4899;">
+        <span class="eco-icon">🐱</span>
+        <span class="eco-name">QUANTUM CATS</span>
+        <span class="eco-type">BY TAPROOT WIZARDS</span>
+        <span class="eco-desc">From the Taproot Wizards team. Minted Jan 2024 at 0.1 BTC. Highest market cap Ordinals collection with floor around 0.185 BTC. Pioneering OP_CAT advocacy.</span>
+        <span class="eco-tag">BLUE CHIP</span>
+      </a>
+      <a href="https://www.ord.io/collection/bitcoin-frogs" target="_blank" class="eco-card" style="--accent-color:#10b981;">
+        <span class="eco-icon">🐸</span>
+        <span class="eco-name">BITCOIN FROGS</span>
+        <span class="eco-type">10,000 SUPPLY</span>
+        <span class="eco-desc">10,000 frog characters inscribed on Bitcoin. Vibrant community, animated artistry and strong collector base. One of the top collections by trading volume.</span>
+        <span class="eco-tag">TOP COLLECTION</span>
+      </a>
+      <a href="https://www.ord.io/collection/pixel-quote" target="_blank" class="eco-card" style="--accent-color:#f7931a;">
+        <span class="eco-icon">🎬</span>
+        <span class="eco-name">PIXELQUOTE GENESIS</span>
+        <span class="eco-type">FIRST MP4 VIDEO · SUB-100K</span>
+        <span class="eco-desc">The First Bitcoin NFT collection combining animated MP4 videos and still images. Inscription #35,672 is the first MP4 video ever inscribed on Bitcoin. Historic sub-100K collection.</span>
+        <span class="eco-tag">HISTORIC FIRST</span>
+      </a>
+      <a href="https://bitmap.land" target="_blank" class="eco-card" style="--accent-color:#f59e0b;">
+        <span class="eco-icon">🗺️</span>
+        <span class="eco-name">BITMAP</span>
+        <span class="eco-type">BITCOIN METAVERSE</span>
+        <span class="eco-desc">Own a Bitcoin block as digital land. 840,000+ blocks. Community-backed by Blockamoto. 30K+ holders — largest metaverse project by holder count on Bitcoin.</span>
+        <span class="eco-tag">METAVERSE</span>
+      </a>
+      <a href="https://www.ord.io/collection/runestone" target="_blank" class="eco-card" style="--accent-color:#a78bfa;">
+        <span class="eco-icon">🪨</span>
+        <span class="eco-name">RUNESTONE</span>
+        <span class="eco-type">AIRDROP · 138+ BTC VOLUME</span>
+        <span class="eco-desc">Free airdrop to 112,383 wallets with 3+ Ordinals inscriptions. Became one of the highest volume collections with floor price of 0.013 BTC. Celebrated Runes protocol launch.</span>
+        <span class="eco-tag">AIRDROP</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- ── LEARN ── -->
+  <div class="res-section" id="learn">
+    <div class="res-section-header">
+      <span class="res-section-icon">📚</span>
+      <div>
+        <div class="res-section-title">LEARN & ARTICLES</div>
+        <div class="res-section-desc">Educational resources, guides and articles about Bitcoin Ordinals</div>
+      </div>
+    </div>
+    <div class="article-grid">
+      <a href="https://docs.ordinals.com" target="_blank" class="art-card">
+        <span class="art-tag" style="background:rgba(247,147,26,.1);color:var(--orange);border:2px solid var(--orange);">OFFICIAL DOCS</span>
+        <div class="art-title">Ordinals Theory — Official Documentation</div>
+        <div class="art-source">docs.ordinals.com · Casey Rodarmor</div>
+      </a>
+      <a href="https://github.com/ordinals/ord/blob/master/docs/src/introduction.md" target="_blank" class="art-card">
+        <span class="art-tag" style="background:rgba(107,247,197,.1);color:var(--green);border:2px solid var(--green);">GUIDE</span>
+        <div class="art-title">Ord Protocol — Complete Introduction & Theory</div>
+        <div class="art-source">github.com/ordinals/ord</div>
+      </a>
+      <a href="https://www.hiro.so/blog/what-are-bitcoin-ordinals" target="_blank" class="art-card">
+        <span class="art-tag" style="background:rgba(167,139,250,.1);color:var(--purple);border:2px solid var(--purple);">EXPLAINER</span>
+        <div class="art-title">What Are Bitcoin Ordinals? — Hiro Systems</div>
+        <div class="art-source">hiro.so · Hiro Team</div>
+      </a>
+      <a href="https://www.ledger.com/academy/topics/crypto/what-is-the-bitcoin-runes-protocol" target="_blank" class="art-card">
+        <span class="art-tag" style="background:rgba(107,247,197,.1);color:var(--green);border:2px solid var(--green);">RUNES</span>
+        <div class="art-title">What Is the Bitcoin Runes Protocol?</div>
+        <div class="art-source">ledger.com/academy</div>
+      </a>
+      <a href="https://sovryn.com/all-things-sovryn/tap-protocol-bitcoin" target="_blank" class="art-card">
+        <span class="art-tag" style="background:rgba(56,189,248,.1);color:var(--blue);border:2px solid var(--blue);">TAP PROTOCOL</span>
+        <div class="art-title">What Is TAP Protocol? — OrdFi on Bitcoin</div>
+        <div class="art-source">sovryn.com</div>
+      </a>
+      <a href="https://www.blog.bitfinity.network/understanding-the-world-of-bitmaps-a-comprehensive-guide" target="_blank" class="art-card">
+        <span class="art-tag" style="background:rgba(245,158,11,.1);color:var(--orange2);border:2px solid var(--orange2);">BITMAP</span>
+        <div class="art-title">Understanding the Bitmap Metaverse on Bitcoin</div>
+        <div class="art-source">bitfinity.network</div>
+      </a>
+      <a href="https://docs.xverse.app/sats-connect" target="_blank" class="art-card">
+        <span class="art-tag" style="background:rgba(247,147,26,.1);color:var(--orange);border:2px solid var(--orange);">DEV GUIDE</span>
+        <div class="art-title">Sats Connect — Build Bitcoin Apps with Xverse</div>
+        <div class="art-source">docs.xverse.app</div>
+      </a>
+      <a href="https://trustmachines.co/blog/unpacking-the-atomicals-protocol-on-bitcoin" target="_blank" class="art-card">
+        <span class="art-tag" style="background:rgba(236,72,153,.1);color:var(--red);border:2px solid var(--red);">ATOMICALS</span>
+        <div class="art-title">Unpacking the Atomicals Protocol on Bitcoin</div>
+        <div class="art-source">trustmachines.co</div>
+      </a>
+      <a href="https://nftplazas.com/bitcoin-ordinals-guide-2024" target="_blank" class="art-card">
+        <span class="art-tag" style="background:rgba(167,139,250,.1);color:var(--purple);border:2px solid var(--purple);">COMPLETE GUIDE</span>
+        <div class="art-title">A Complete Guide to Bitcoin Ordinals 2024</div>
+        <div class="art-source">nftplazas.com</div>
+      </a>
+      <a href="https://dune.com/dataalways/ordinals" target="_blank" class="art-card">
+        <span class="art-tag" style="background:rgba(56,189,248,.1);color:var(--blue);border:2px solid var(--blue);">ON-CHAIN DATA</span>
+        <div class="art-title">Bitcoin Ordinals Analysis Dashboard — Dune</div>
+        <div class="art-source">dune.com/dataalways</div>
+      </a>
+      <a href="https://crypto.com/en/research/bitcoin-ordinals-march-2024" target="_blank" class="art-card">
+        <span class="art-tag" style="background:rgba(107,247,197,.1);color:var(--green);border:2px solid var(--green);">RESEARCH</span>
+        <div class="art-title">Bitcoin Ordinals Development & Introduction to Runes</div>
+        <div class="art-source">crypto.com/research</div>
+      </a>
+      <a href="https://www.gemini.com/cryptopedia/what-are-bitcoin-ordinals" target="_blank" class="art-card">
+        <span class="art-tag" style="background:rgba(247,147,26,.1);color:var(--orange);border:2px solid var(--orange);">EXPLAINER</span>
+        <div class="art-title">What Are Bitcoin Ordinals? — Gemini Cryptopedia</div>
+        <div class="art-source">gemini.com/cryptopedia</div>
+      </a>
+    </div>
+  </div>
+
+</div><!-- end main-wrap -->
+
+<footer>
+  <div class="footer-btm">© 2023 PIXELQUOTE ORDINALS — ORDINALS RESOURCES DIRECTORY</div>
+  <div class="footer-btc">₿ BITCOIN ORDINALS · DIGITAL ARTIFACTS FOREVER</div>
+  <br>
+  <div style="display:flex;justify-content:center;gap:20px;flex-wrap:wrap;margin-top:16px;">
+    <a href="index.html" style="font-family:'Silkscreen',monospace;font-size:12px;color:var(--muted);text-decoration:none;">← HOME</a>
+    <a href="collection.html" style="font-family:'Silkscreen',monospace;font-size:12px;color:var(--muted);text-decoration:none;">COLLECTION</a>
+    <a href="dashboard.html" style="font-family:'Silkscreen',monospace;font-size:12px;color:var(--muted);text-decoration:none;">MY ORDINALS</a>
+    <a href="https://twitter.com/PixelQuoteNFT" target="_blank" style="font-family:'Silkscreen',monospace;font-size:12px;color:var(--orange);text-decoration:none;">𝕏 TWITTER</a>
+  </div>
+</footer>
+
+<script>
+// Search functionality
+function doSearch() {
+  const q = document.getElementById('searchInput').value.toLowerCase();
+  document.querySelectorAll('.eco-card, .res-card, .art-card').forEach(card => {
+    const text = card.textContent.toLowerCase();
+    card.style.display = !q || text.includes(q) ? '' : 'none';
+  });
+}
+
+// Sticky tab active state on scroll
+const sections = ['protocols','marketplaces','wallets','explorers','tools','analytics','infrastructure','ecosystem','learn'];
+window.addEventListener('scroll', () => {
+  let current = '';
+  sections.forEach(id => {
+    const el = document.getElementById(id);
+    if (el && window.scrollY >= el.offsetTop - 150) current = id;
+  });
+  document.querySelectorAll('.stab').forEach(tab => {
+    tab.classList.toggle('active', tab.getAttribute('href') === '#' + current);
+  });
+});
+
+// Theme toggle
+function toggleTheme() {
+  const h = document.documentElement, b = document.getElementById('themeBtn');
+  if (h.getAttribute('data-theme') === 'dark') { h.setAttribute('data-theme','light'); b.textContent='☾ DARK'; localStorage.setItem('pq-theme','light'); }
+  else { h.setAttribute('data-theme','dark'); b.textContent='☀ LIGHT'; localStorage.setItem('pq-theme','dark'); }
+}
+const sv = localStorage.getItem('pq-theme');
+if (sv) { document.documentElement.setAttribute('data-theme',sv); document.getElementById('themeBtn').textContent = sv==='light'?'☾ DARK':'☀ LIGHT'; }
+</script>
+</body>
+</html>
