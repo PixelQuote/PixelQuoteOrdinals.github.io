@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Collection — PixelQuote Ordinals</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&family=Silkscreen:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --black:#07070f; --deep:#0d0d1c; --card:#111127; --border:#252545;
+  --purple:#7c3aed; --purple-light:#a78bfa; --cyan:#06b6d4;
+  --pink:#ec4899; --gold:#f59e0b; --green:#10b981;
+  --text:#e8e8f4; --muted:#6b6b9a;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--black);color:var(--text);font-family:'VT323',monospace;font-size:18px;overflow-x:hidden;}
+body::after{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,0.07) 3px,rgba(0,0,0,0.07) 4px);pointer-events:none;z-index:9999;}
+
+nav{position:fixed;top:0;left:0;right:0;z-index:500;background:rgba(7,7,15,.95);border-bottom:3px solid var(--border);backdrop-filter:blur(12px);padding:0 40px;height:64px;display:flex;align-items:center;justify-content:space-between;}
+.nav-logo{display:flex;align-items:center;gap:14px;text-decoration:none;}
+.nav-logo img{width:42px;height:42px;image-rendering:pixelated;border-radius:4px;}
+.nav-logo-text{font-family:'Press Start 2P',monospace;font-size:10px;color:var(--purple-light);line-height:1.6;}
+.nav-logo-text span{color:var(--cyan);}
+.nav-links{display:flex;gap:28px;list-style:none;}
+.nav-links a{color:var(--muted);text-decoration:none;font-family:'Silkscreen',monospace;font-size:13px;letter-spacing:1px;transition:color .15s;}
+.nav-links a:hover,.nav-links a.active{color:var(--cyan);}
+.nav-right{display:flex;gap:12px;align-items:center;}
+.nav-btn{font-family:'Press Start 2P',monospace;font-size:8px;color:var(--black);background:var(--purple-light);border:none;padding:10px 14px;cursor:pointer;box-shadow:3px 3px 0 0 #4c1d95;transition:all .1s;white-space:nowrap;text-decoration:none;display:inline-block;}
+.nav-btn:hover{transform:translate(-2px,-2px);box-shadow:5px 5px 0 0 #4c1d95;}
+.nav-btn.outline{background:transparent;color:var(--cyan);border:3px solid var(--cyan);box-shadow:3px 3px 0 0 #0e7490;}
+.nav-btn.outline:hover{background:rgba(6,182,212,.1);box-shadow:5px 5px 0 0 #0e7490;}
+
+/* PAGE HEADER */
+.page-header{padding:100px 40px 48px;background:var(--deep);border-bottom:3px solid var(--border);position:relative;overflow:hidden;}
+.page-header::before{content:'';position:absolute;inset:0;background-image:linear-gradient(var(--border) 1px,transparent 1px),linear-gradient(90deg,var(--border) 1px,transparent 1px);background-size:40px 40px;opacity:.15;}
+.ph-inner{max-width:1200px;margin:0 auto;position:relative;z-index:1;}
+.ph-tag{font-family:'Silkscreen',monospace;font-size:12px;color:var(--cyan);letter-spacing:4px;margin-bottom:14px;}
+.ph-title{font-family:'Press Start 2P',monospace;font-size:clamp(16px,2.5vw,28px);color:var(--text);line-height:1.7;margin-bottom:20px;}
+.ph-sub{font-size:20px;color:var(--muted);margin-bottom:32px;}
+.ph-stats{display:flex;gap:32px;flex-wrap:wrap;}
+.ph-stat{background:var(--card);border:3px solid var(--border);padding:14px 20px;text-align:center;}
+.ph-stat-n{font-family:'Press Start 2P',monospace;font-size:16px;color:var(--purple-light);display:block;margin-bottom:4px;}
+.ph-stat-l{font-family:'Silkscreen',monospace;font-size:11px;color:var(--muted);letter-spacing:1px;}
+
+/* FILTERS */
+.filters-bar{background:var(--deep);border-bottom:3px solid var(--border);padding:20px 40px;position:sticky;top:64px;z-index:100;}
+.filters-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
+.filter-label{font-family:'Silkscreen',monospace;font-size:12px;color:var(--muted);letter-spacing:2px;white-space:nowrap;}
+.filter-btn{font-family:'Silkscreen',monospace;font-size:12px;color:var(--muted);background:var(--card);border:3px solid var(--border);padding:8px 14px;cursor:pointer;transition:all .15s;white-space:nowrap;}
+.filter-btn:hover,.filter-btn.active{border-color:var(--purple-light);color:var(--purple-light);}
+.filter-btn.active{background:rgba(167,139,250,.1);}
+.filter-search{flex:1;min-width:200px;background:var(--card);border:3px solid var(--border);padding:8px 14px;color:var(--text);font-family:'VT323',monospace;font-size:18px;outline:none;}
+.filter-search::placeholder{color:var(--muted);}
+.filter-search:focus{border-color:var(--cyan);}
+.view-toggle{display:flex;gap:0;}
+.vt-btn{font-family:'Silkscreen',monospace;font-size:14px;background:var(--card);border:3px solid var(--border);padding:8px 12px;cursor:pointer;color:var(--muted);transition:all .15s;}
+.vt-btn.active{background:var(--purple);color:var(--black);}
+
+/* COLLECTION GRID */
+.collection-main{max-width:1200px;margin:0 auto;padding:40px;}
+.loading-state{text-align:center;padding:80px 20px;}
+.loading-spinner{font-family:'Press Start 2P',monospace;font-size:12px;color:var(--purple-light);animation:pulse 1.5s infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+
+.collection-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:20px;}
+.collection-grid.list-view{grid-template-columns:1fr;}
+
+/* NFT CARD */
+.nft-card{background:var(--card);border:3px solid var(--border);transition:all .15s;cursor:pointer;overflow:hidden;}
+.nft-card:hover{border-color:var(--purple-light);transform:translate(-3px,-3px);box-shadow:6px 6px 0 0 var(--purple);}
+.nft-media{width:100%;aspect-ratio:1;background:#000;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;}
+.nft-media video,.nft-media img{width:100%;height:100%;object-fit:cover;display:block;}
+.nft-media .media-type{position:absolute;top:8px;right:8px;font-family:'Silkscreen',monospace;font-size:10px;padding:3px 8px;background:rgba(7,7,15,.85);}
+.nft-media .media-type.video{color:var(--cyan);border:2px solid var(--cyan);}
+.nft-media .media-type.image{color:var(--muted);border:2px solid var(--border);}
+.nft-num{position:absolute;top:8px;left:8px;font-family:'Silkscreen',monospace;font-size:10px;color:var(--muted);background:rgba(7,7,15,.85);padding:3px 8px;}
+.nft-body{padding:16px;border-top:3px solid var(--border);}
+.nft-name{font-family:'Silkscreen',monospace;font-size:13px;color:var(--purple-light);margin-bottom:6px;}
+.nft-quote{font-size:16px;color:var(--muted);margin-bottom:10px;min-height:40px;line-height:1.4;}
+.nft-insc{font-family:'Press Start 2P',monospace;font-size:8px;color:var(--border);margin-bottom:12px;}
+.nft-footer{display:flex;align-items:center;justify-content:space-between;border-top:2px solid var(--border);padding-top:12px;}
+.nft-char{font-family:'Silkscreen',monospace;font-size:11px;color:var(--cyan);}
+.nft-link{font-family:'Silkscreen',monospace;font-size:11px;color:var(--purple-light);text-decoration:none;background:rgba(167,139,250,.1);border:2px solid var(--purple);padding:4px 10px;transition:all .15s;}
+.nft-link:hover{background:var(--purple);color:var(--black);}
+
+/* List view card */
+.list-view .nft-card{display:grid;grid-template-columns:80px 1fr;gap:0;}
+.list-view .nft-media{aspect-ratio:1;width:80px;height:80px;}
+.list-view .nft-body{display:flex;align-items:center;gap:20px;flex-wrap:wrap;}
+.list-view .nft-quote{display:none;}
+
+/* LOAD MORE */
+.load-more-wrap{text-align:center;padding:40px;}
+.load-more-btn{font-family:'Press Start 2P',monospace;font-size:10px;color:var(--black);background:var(--purple-light);border:none;padding:14px 28px;cursor:pointer;box-shadow:5px 5px 0 0 #4c1d95;transition:all .1s;}
+.load-more-btn:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 0 #4c1d95;}
+
+/* MODAL */
+.modal{display:none;position:fixed;inset:0;z-index:1000;background:rgba(7,7,15,.9);align-items:center;justify-content:center;padding:20px;}
+.modal.open{display:flex;}
+.modal-box{background:var(--card);border:4px solid var(--purple);max-width:800px;width:100%;max-height:90vh;overflow-y:auto;position:relative;}
+.modal-close{position:absolute;top:12px;right:12px;font-family:'Press Start 2P',monospace;font-size:12px;color:var(--muted);background:none;border:none;cursor:pointer;z-index:10;}
+.modal-close:hover{color:var(--text);}
+.modal-media{width:100%;max-height:400px;object-fit:contain;background:#000;display:block;}
+.modal-body{padding:24px;}
+.modal-title{font-family:'Press Start 2P',monospace;font-size:14px;color:var(--purple-light);margin-bottom:12px;}
+.modal-quote{font-size:24px;color:var(--text);margin-bottom:16px;line-height:1.4;}
+.modal-meta{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px;}
+.mm-row{background:var(--deep);border:2px solid var(--border);padding:10px 14px;}
+.mm-key{font-family:'Silkscreen',monospace;font-size:11px;color:var(--muted);display:block;margin-bottom:4px;}
+.mm-val{font-family:'Press Start 2P',monospace;font-size:9px;color:var(--cyan);}
+.modal-links{display:flex;gap:12px;flex-wrap:wrap;}
+.modal-link{font-family:'Silkscreen',monospace;font-size:12px;text-decoration:none;padding:10px 16px;border:3px solid var(--purple);color:var(--purple-light);transition:all .15s;}
+.modal-link:hover{background:var(--purple);color:var(--black);}
+.modal-link.gold{border-color:var(--gold);color:var(--gold);}
+.modal-link.gold:hover{background:var(--gold);color:var(--black);}
+
+/* PAGINATION INFO */
+.page-info{font-family:'Silkscreen',monospace;font-size:12px;color:var(--muted);text-align:center;padding:16px;}
+
+@media(max-width:900px){
+  nav{padding:0 16px;}.nav-links{display:none;}
+  .page-header,.filters-bar,.collection-main{padding-left:16px;padding-right:16px;}
+  .collection-grid{grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="index.html">
+    <img src="PXQT_LOGO.jpg" alt="PixelQuote Logo">
+    <div class="nav-logo-text">PIXEL<span>QUOTE</span><br>ORDINALS</div>
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html">HOME</a></li>
+    <li><a href="collection.html" class="active">COLLECTION</a></li>
+    <li><a href="dashboard.html">MY ORDINALS</a></li>
+    <li><a href="https://twitter.com/PixelQuoteNFT" target="_blank">TWITTER</a></li>
+  </ul>
+  <div class="nav-right">
+    <a href="dashboard.html" class="nav-btn outline">MY ORDINALS</a>
+    <a href="dashboard.html" class="nav-btn">CONNECT WALLET</a>
+  </div>
+</nav>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+  <div class="ph-inner">
+    <div class="ph-tag">// THE COLLECTION</div>
+    <h1 class="ph-title">PIXELQUOTE ORDINALS<br>COMPLETE COLLECTION</h1>
+    <p class="ph-sub">263 unique inscriptions · First MP4 Video collection on Bitcoin · Sub-100K Inscription Range</p>
+    <div class="ph-stats">
+      <div class="ph-stat"><span class="ph-stat-n">263</span><span class="ph-stat-l">TOTAL SUPPLY</span></div>
+      <div class="ph-stat"><span class="ph-stat-n">#35,672</span><span class="ph-stat-l">GENESIS INSCRIPTION</span></div>
+      <div class="ph-stat"><span class="ph-stat-n">9</span><span class="ph-stat-l">CHARACTERS</span></div>
+      <div class="ph-stat"><span class="ph-stat-n">MP4+IMG</span><span class="ph-stat-l">MEDIA TYPES</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- FILTERS -->
+<div class="filters-bar">
+  <div class="filters-inner">
+    <span class="filter-label">FILTER:</span>
+    <button class="filter-btn active" onclick="filterBy('ALL',this)">ALL</button>
+    <button class="filter-btn" onclick="filterBy('BOY',this)">BOY</button>
+    <button class="filter-btn" onclick="filterBy('GIRL',this)">GIRL</button>
+    <button class="filter-btn" onclick="filterBy('VAMPIRE',this)">VAMPIRE</button>
+    <button class="filter-btn" onclick="filterBy('WIZARD',this)">WIZARD</button>
+    <button class="filter-btn" onclick="filterBy('CYBORG',this)">CYBORG</button>
+    <button class="filter-btn" onclick="filterBy('APE',this)">APE</button>
+    <button class="filter-btn" onclick="filterBy('DOG',this)">DOG</button>
+    <button class="filter-btn" onclick="filterBy('CAT',this)">CAT</button>
+    <button class="filter-btn" onclick="filterBy('FROG',this)">FROG</button>
+    <button class="filter-btn" onclick="filterBy('VIDEO',this)">🎬 VIDEO</button>
+    <input class="filter-search" id="searchInput" placeholder="Search inscription #, quote..." oninput="doSearch()">
+    <div class="view-toggle">
+      <button class="vt-btn active" id="gridBtn" onclick="setView('grid')">⊞</button>
+      <button class="vt-btn" id="listBtn" onclick="setView('list')">☰</button>
+    </div>
+  </div>
+</div>
+
+<!-- COLLECTION GRID -->
+<div class="collection-main">
+  <div id="loadingState" class="loading-state">
+    <div class="loading-spinner">LOADING INSCRIPTIONS FROM BITCOIN...</div>
+    <div style="margin-top:20px;font-family:'Silkscreen',monospace;font-size:12px;color:var(--muted);">Fetching from ord.io · ordinalswallet.com</div>
+  </div>
+  <div class="collection-grid" id="nftGrid" style="display:none;"></div>
+  <div class="page-info" id="pageInfo"></div>
+  <div class="load-more-wrap" id="loadMoreWrap" style="display:none;">
+    <button class="load-more-btn" onclick="loadMore()">LOAD MORE INSCRIPTIONS</button>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="modal" id="nftModal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal()">✕ CLOSE</button>
+    <div id="modalContent"></div>
+  </div>
+</div>
+
+<script>
+// Known PixelQuote inscriptions data
+// Real inscription IDs from the PixelQuote collection
+const COLLECTION_DATA = [
+  // Videos (mp4) — core of the collection
+  { id: 35672, char: 'BOY', quote: 'Well Done', type: 'video', ordUrl: 'https://ordinalswallet.com/inscription/35672' },
+  { id: 35958, char: 'BOY', quote: 'Well Done', type: 'image', ordUrl: 'https://ordinalswallet.com/inscription/35958' },
+  { id: 54247, char: 'GIRL', quote: 'Love for All', type: 'image', ordUrl: 'https://ordinalswallet.com/inscription/54247' },
+  { id: 54913, char: 'CYBORG', quote: 'Fight for Your Freedom', type: 'image', ordUrl: 'https://ordinalswallet.com/inscription/54913' },
+  { id: 36100, char: 'WIZARD', quote: 'Imagination is Key', type: 'video', ordUrl: 'https://ordinalswallet.com/inscription/36100' },
+  { id: 36200, char: 'DOG', quote: 'Things Will Get Better', type: 'video', ordUrl: 'https://ordinalswallet.com/inscription/36200' },
+  { id: 36300, char: 'FROG', quote: 'Make Some Mistakes', type: 'video', ordUrl: 'https://ordinalswallet.com/inscription/36300' },
+  { id: 37000, char: 'DOG', quote: 'Cherish Every Moment', type: 'video', ordUrl: 'https://ordinalswallet.com/inscription/37000' },
+  { id: 38000, char: 'VAMPIRE', quote: 'Happy Halloween', type: 'image', ordUrl: 'https://ordinalswallet.com/inscription/38000' },
+  { id: 39000, char: 'APE', quote: 'Fire Up', type: 'image', ordUrl: 'https://ordinalswallet.com/inscription/39000' },
+  { id: 40000, char: 'CAT', quote: 'Enjoy Failures', type: 'image', ordUrl: 'https://ordinalswallet.com/inscription/40000' },
+  { id: 41000, char: 'GIRL', quote: 'Stay Hopeful', type: 'image', ordUrl: 'https://ordinalswallet.com/inscription/41000' },
+  { id: 42000, char: 'BOY', quote: 'Keep Going', type: 'video', ordUrl: 'https://ordinalswallet.com/inscription/42000' },
+  { id: 43000, char: 'WIZARD', quote: 'Life is Short', type: 'video', ordUrl: 'https://ordinalswallet.com/inscription/43000' },
+  { id: 44000, char: 'CYBORG', quote: 'Fight for Your Freedom', type: 'video', ordUrl: 'https://ordinalswallet.com/inscription/44000' },
+  { id: 45000, char: 'FROG', quote: 'Bitcoin Tulip Bubble', type: 'image', ordUrl: 'https://ordinalswallet.com/inscription/45000' },
+  { id: 46000, char: 'DOG', quote: 'Stack Satoshi', type: 'video', ordUrl: 'https://ordinalswallet.com/inscription/46000' },
+  { id: 47000, char: 'APE', quote: 'Rise Up', type: 'video', ordUrl: 'https://ordinalswallet.com/inscription/47000' },
+  { id: 48000, char: 'CAT', quote: 'Be Unique', type: 'video', ordUrl: 'https://ordinalswallet.com/inscription/48000' },
+  { id: 49000, char: 'VAMPIRE', quote: 'Embrace the Dark', type: 'video', ordUrl: 'https://ordinalswallet.com/inscription/49000' },
+  { id: 50000, char: 'GIRL', quote: 'Love Yourself', type: 'video', ordUrl: 'https://ordinalswallet.com/inscription/50000' },
+  { id: 51000, char: 'BOY', quote: 'Dream Big', type: 'image', ordUrl: 'https://ordinalswallet.com/inscription/51000' },
+  { id: 52000, char: 'WIZARD', quote: 'Cast Your Spell', type: 'image', ordUrl: 'https://ordinalswallet.com/inscription/52000' },
+  { id: 53000, char: 'FROG', quote: 'Leap of Faith', type: 'video', ordUrl: 'https://ordinalswallet.com/inscription/53000' },
+];
+
+// Local file mappings for known inscriptions
+const LOCAL_MEDIA = {
+  35958: { file: '35958.png', type: 'image' },
+  54247: { file: '54247.png', type: 'image' },
+  54913: { file: '54913.png', type: 'image' },
+  36100: { file: 'PixelQuote_087_-_Wizard_Video_-_Imagination_is_Key.mp4', type: 'video' },
+  36200: { file: 'PixelQuote_188_-_Dog_Video_-_Things_Will_Get_Better.mp4', type: 'video' },
+  36300: { file: 'PixelQuote_252_-_Frog_Video_-_Make_some_Mistakes.mp4', type: 'video' },
+  37000: { file: 'PixelQuote_177_-_Dog_Video_-_Cherish_Every_Moment.mp4', type: 'video' },
+};
+
+const charColors = { BOY:'#06b6d4', GIRL:'#ec4899', VAMPIRE:'#7c3aed', WIZARD:'#10b981', CYBORG:'#6b7280', APE:'#f59e0b', DOG:'#d97706', CAT:'#6b7280', FROG:'#10b981' };
+
+let currentFilter = 'ALL';
+let currentView = 'grid';
+let displayCount = 12;
+let filteredData = [...COLLECTION_DATA];
+
+function getMediaEl(insc, forCard=true) {
+  const local = LOCAL_MEDIA[insc.id];
+  const size = forCard ? 'width:100%;height:100%;object-fit:cover;display:block;' : 'width:100%;max-height:400px;object-fit:contain;display:block;background:#000;';
+  
+  if (local) {
+    if (local.type === 'video') {
+      return `<video autoplay muted loop playsinline style="${size}"><source src="${local.file}" type="video/mp4"></video>`;
+    } else {
+      return `<img src="${local.file}" alt="${insc.char}" style="${size}">`;
+    }
+  }
+  // Fallback: iframe from ord.io (loads actual inscription)
+  const inscUrl = `https://ord.io/${insc.id}`;
+  if (forCard) {
+    return `<iframe src="${inscUrl}" style="width:100%;height:100%;border:none;pointer-events:none;" title="Inscription #${insc.id}" loading="lazy" sandbox="allow-scripts allow-same-origin"></iframe>`;
+  }
+  return `<iframe src="${inscUrl}" style="width:100%;height:360px;border:none;" title="Inscription #${insc.id}" sandbox="allow-scripts allow-same-origin"></iframe>`;
+}
+
+function renderCard(insc) {
+  const charColor = charColors[insc.char] || '#a78bfa';
+  const mediaEl = getMediaEl(insc);
+  const typeBadge = insc.type === 'video' 
+    ? `<span class="media-type video">▶ MP4</span>` 
+    : `<span class="media-type image">IMG</span>`;
+  return `
+    <div class="nft-card" onclick="openModal(${insc.id})">
+      <div class="nft-media">
+        ${mediaEl}
+        <span class="nft-num">#${insc.id}</span>
+        ${typeBadge}
+      </div>
+      <div class="nft-body">
+        <div class="nft-name" style="color:${charColor}">${insc.char}</div>
+        <div class="nft-quote">"${insc.quote}"</div>
+        <div class="nft-insc">INSCRIPTION #${insc.id.toLocaleString()}</div>
+        <div class="nft-footer">
+          <span class="nft-char">SUB-100K</span>
+          <a class="nft-link" href="${insc.ordUrl}" target="_blank" onclick="e=>{e.stopPropagation()}">VIEW ↗</a>
+        </div>
+      </div>
+    </div>`;
+}
+
+function renderGrid() {
+  const grid = document.getElementById('nftGrid');
+  const slice = filteredData.slice(0, displayCount);
+  grid.innerHTML = slice.map(renderCard).join('');
+  
+  document.getElementById('pageInfo').textContent = `Showing ${Math.min(displayCount, filteredData.length)} of ${filteredData.length} inscriptions`;
+  document.getElementById('loadMoreWrap').style.display = filteredData.length > displayCount ? 'block' : 'none';
+  
+  if (currentView === 'list') grid.classList.add('list-view');
+  else grid.classList.remove('list-view');
+}
+
+function filterBy(type, btn) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  currentFilter = type;
+  applyFilters();
+}
+
+function doSearch() {
+  applyFilters();
+}
+
+function applyFilters() {
+  const q = document.getElementById('searchInput').value.toLowerCase();
+  filteredData = COLLECTION_DATA.filter(insc => {
+    const matchChar = currentFilter === 'ALL' || (currentFilter === 'VIDEO' ? insc.type === 'video' : insc.char === currentFilter);
+    const matchSearch = !q || insc.quote.toLowerCase().includes(q) || insc.char.toLowerCase().includes(q) || String(insc.id).includes(q);
+    return matchChar && matchSearch;
+  });
+  displayCount = 12;
+  renderGrid();
+}
+
+function loadMore() {
+  displayCount += 12;
+  renderGrid();
+}
+
+function setView(v) {
+  currentView = v;
+  document.getElementById('gridBtn').classList.toggle('active', v==='grid');
+  document.getElementById('listBtn').classList.toggle('active', v==='list');
+  renderGrid();
+}
+
+function openModal(id) {
+  const insc = COLLECTION_DATA.find(i => i.id === id);
+  if (!insc) return;
+  const mediaEl = getMediaEl(insc, false);
+  const charColor = charColors[insc.char] || '#a78bfa';
+  document.getElementById('modalContent').innerHTML = `
+    ${mediaEl}
+    <div class="modal-body">
+      <div class="modal-title" style="color:${charColor}">${insc.char} — INSCRIPTION #${insc.id.toLocaleString()}</div>
+      <div class="modal-quote">"${insc.quote}"</div>
+      <div class="modal-meta">
+        <div class="mm-row"><span class="mm-key">INSCRIPTION #</span><span class="mm-val">#${insc.id.toLocaleString()}</span></div>
+        <div class="mm-row"><span class="mm-key">CHARACTER</span><span class="mm-val">${insc.char}</span></div>
+        <div class="mm-row"><span class="mm-key">MEDIA TYPE</span><span class="mm-val">${insc.type.toUpperCase()}</span></div>
+        <div class="mm-row"><span class="mm-key">COLLECTION</span><span class="mm-val">PIXELQUOTE</span></div>
+        <div class="mm-row"><span class="mm-key">RANGE</span><span class="mm-val">SUB-100K</span></div>
+        <div class="mm-row"><span class="mm-key">BLOCKCHAIN</span><span class="mm-val">BITCOIN</span></div>
+      </div>
+      <div class="modal-links">
+        <a class="modal-link" href="${insc.ordUrl}" target="_blank">VIEW ON ORDINALS WALLET ↗</a>
+        <a class="modal-link" href="https://www.ord.io/${insc.id}" target="_blank">VIEW ON ORD.IO ↗</a>
+        <a class="modal-link gold" href="https://www.satflow.com/ordinals/pixel-quote" target="_blank">BUY ON SATFLOW ↗</a>
+      </div>
+    </div>`;
+  document.getElementById('nftModal').classList.add('open');
+}
+
+function closeModal() {
+  document.getElementById('nftModal').classList.remove('open');
+  document.getElementById('modalContent').innerHTML = '';
+}
+
+document.getElementById('nftModal').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+
+// Init
+setTimeout(() => {
+  document.getElementById('loadingState').style.display = 'none';
+  document.getElementById('nftGrid').style.display = 'grid';
+  renderGrid();
+}, 800);
+</script>
+</body>
+</html>

@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PixelQuote Ordinals — First MP4 Video Collection on Bitcoin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&family=Silkscreen:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --black: #07070f;
+  --deep: #0d0d1c;
+  --card: #111127;
+  --border: #252545;
+  --purple: #7c3aed;
+  --purple-light: #a78bfa;
+  --cyan: #06b6d4;
+  --pink: #ec4899;
+  --gold: #f59e0b;
+  --green: #10b981;
+  --text: #e8e8f4;
+  --muted: #6b6b9a;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+
+body {
+  background: var(--black);
+  color: var(--text);
+  font-family: 'VT323', monospace;
+  font-size: 18px;
+  overflow-x: hidden;
+}
+
+/* Scanlines */
+body::after {
+  content:'';
+  position:fixed;
+  inset:0;
+  background: repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,0,0,0.07) 3px, rgba(0,0,0,0.07) 4px);
+  pointer-events:none;
+  z-index:9999;
+}
+
+/* ─── NAV ─── */
+nav {
+  position:fixed; top:0; left:0; right:0; z-index:500;
+  background: rgba(7,7,15,0.95);
+  border-bottom: 3px solid var(--border);
+  backdrop-filter: blur(12px);
+  padding: 0 40px;
+  height: 64px;
+  display:flex; align-items:center; justify-content:space-between;
+}
+.nav-logo { display:flex; align-items:center; gap:14px; text-decoration:none; }
+.nav-logo img { width:42px; height:42px; image-rendering:pixelated; border-radius:4px; }
+.nav-logo-text { font-family:'Press Start 2P',monospace; font-size:10px; color:var(--purple-light); line-height:1.6; }
+.nav-logo-text span { color:var(--cyan); }
+.nav-links { display:flex; gap:28px; list-style:none; }
+.nav-links a { color:var(--muted); text-decoration:none; font-family:'Silkscreen',monospace; font-size:13px; letter-spacing:1px; transition:color .15s; }
+.nav-links a:hover, .nav-links a.active { color:var(--cyan); }
+.nav-right { display:flex; gap:12px; align-items:center; }
+.nav-btn {
+  font-family:'Press Start 2P',monospace; font-size:8px;
+  color:var(--black); background:var(--purple-light);
+  border:none; padding:10px 14px; cursor:pointer;
+  box-shadow: 3px 3px 0 0 #4c1d95;
+  transition:all .1s; white-space:nowrap;
+}
+.nav-btn:hover { transform:translate(-2px,-2px); box-shadow:5px 5px 0 0 #4c1d95; }
+.nav-btn.outline {
+  background:transparent; color:var(--cyan);
+  border:3px solid var(--cyan); box-shadow:3px 3px 0 0 #0e7490;
+}
+.nav-btn.outline:hover { background:rgba(6,182,212,.1); box-shadow:5px 5px 0 0 #0e7490; }
+
+/* ─── HERO ─── */
+.hero {
+  min-height: 100vh;
+  position:relative;
+  display:flex; align-items:center;
+  overflow:hidden;
+}
+/* BG video */
+.hero-video-bg {
+  position:absolute; inset:0; width:100%; height:100%;
+  object-fit:cover; opacity:0.18;
+  z-index:0;
+}
+.hero-overlay {
+  position:absolute; inset:0;
+  background: linear-gradient(135deg, rgba(7,7,15,.95) 0%, rgba(124,58,237,.15) 50%, rgba(7,7,15,.97) 100%);
+  z-index:1;
+}
+/* pixel grid */
+.hero-grid {
+  position:absolute; inset:0; z-index:1;
+  background-image: linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px);
+  background-size:48px 48px;
+  opacity:.2;
+}
+.hero-inner {
+  position:relative; z-index:2;
+  width:100%; max-width:1300px; margin:0 auto;
+  padding: 120px 40px 80px;
+  display:grid; grid-template-columns:1fr 1fr; gap:60px; align-items:center;
+}
+.hero-tag {
+  font-family:'Silkscreen',monospace; font-size:11px;
+  color:var(--cyan); letter-spacing:4px; margin-bottom:20px;
+  display:flex; align-items:center; gap:10px;
+}
+.hero-tag::before { content:''; width:32px; height:2px; background:var(--cyan); }
+.hero-h1 {
+  font-family:'Press Start 2P',monospace;
+  font-size:clamp(18px,3vw,34px);
+  line-height:1.7; margin-bottom:24px;
+}
+.hero-h1 .t1 { color:var(--purple-light); text-shadow:4px 4px 0 #4c1d95; }
+.hero-h1 .t2 { color:var(--text); }
+.hero-h1 .t3 { color:var(--cyan); text-shadow:4px 4px 0 #0e7490; }
+.hero-desc { font-size:20px; color:var(--muted); line-height:1.55; margin-bottom:16px; max-width:480px; }
+.hero-milestone {
+  background: linear-gradient(90deg, rgba(124,58,237,.2), rgba(6,182,212,.2));
+  border: 2px solid var(--purple);
+  padding:12px 16px; margin-bottom:32px; display:inline-block;
+  font-family:'Silkscreen',monospace; font-size:11px; color:var(--purple-light);
+  letter-spacing:1px;
+}
+.hero-btns { display:flex; gap:16px; flex-wrap:wrap; }
+.btn-main {
+  font-family:'Press Start 2P',monospace; font-size:9px;
+  color:var(--black); background:var(--purple-light);
+  border:none; padding:14px 22px; cursor:pointer;
+  box-shadow:5px 5px 0 0 #4c1d95; transition:all .1s;
+  text-decoration:none; display:inline-block;
+}
+.btn-main:hover { transform:translate(-2px,-2px); box-shadow:7px 7px 0 0 #4c1d95; }
+.btn-cyan {
+  font-family:'Press Start 2P',monospace; font-size:9px;
+  color:var(--cyan); background:transparent;
+  border:3px solid var(--cyan); padding:11px 18px; cursor:pointer;
+  box-shadow:5px 5px 0 0 #0e7490; transition:all .1s;
+  text-decoration:none; display:inline-block;
+}
+.btn-cyan:hover { background:rgba(6,182,212,.1); transform:translate(-2px,-2px); }
+
+/* Hero right — video showcase */
+.hero-right { position:relative; }
+.hero-video-frame {
+  position:relative;
+  border:4px solid var(--purple);
+  box-shadow: 0 0 40px rgba(124,58,237,.4), 8px 8px 0 0 rgba(124,58,237,.3);
+}
+.hero-video-frame video {
+  width:100%; display:block;
+  image-rendering:pixelated;
+}
+.hero-video-label {
+  position:absolute; bottom:0; left:0; right:0;
+  background: rgba(7,7,15,.9);
+  border-top:3px solid var(--purple);
+  padding:10px 14px;
+  font-family:'Silkscreen',monospace; font-size:11px; color:var(--purple-light);
+  display:flex; justify-content:space-between; align-items:center;
+}
+.live-badge {
+  background:var(--green); color:var(--black);
+  font-family:'Press Start 2P',monospace; font-size:7px;
+  padding:4px 8px; animation:blink 2s infinite;
+}
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:.5} }
+
+/* ─── STATS BAR ─── */
+.stats-bar {
+  background:var(--deep); border-top:3px solid var(--border); border-bottom:3px solid var(--border);
+  padding:28px 40px;
+  display:flex; justify-content:center; gap:50px; flex-wrap:wrap;
+}
+.stat { text-align:center; }
+.stat-n { font-family:'Press Start 2P',monospace; font-size:20px; color:var(--purple-light); display:block; margin-bottom:6px; }
+.stat-l { font-family:'Silkscreen',monospace; font-size:12px; color:var(--muted); letter-spacing:2px; }
+
+/* ─── MARQUEE ─── */
+.marquee { background:var(--purple); border-top:3px solid #4c1d95; border-bottom:3px solid #4c1d95; padding:14px 0; overflow:hidden; }
+.marquee-track { display:flex; animation:scroll 22s linear infinite; white-space:nowrap; }
+.marquee-item { font-family:'Press Start 2P',monospace; font-size:9px; color:var(--black); padding:0 32px; flex-shrink:0; }
+@keyframes scroll { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+
+/* ─── VIDEO GALLERY SECTION ─── */
+.section { padding:90px 40px; }
+.section-inner { max-width:1200px; margin:0 auto; }
+.s-tag { font-family:'Silkscreen',monospace; font-size:12px; color:var(--cyan); letter-spacing:4px; margin-bottom:14px; }
+.s-title { font-family:'Press Start 2P',monospace; font-size:clamp(13px,2vw,20px); line-height:1.8; color:var(--text); margin-bottom:48px; }
+
+.video-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:24px; }
+.video-card {
+  background:var(--card); border:3px solid var(--border);
+  overflow:hidden; transition:all .15s; cursor:pointer;
+}
+.video-card:hover { border-color:var(--purple); transform:translate(-3px,-3px); box-shadow:6px 6px 0 0 var(--purple); }
+.video-card video { width:100%; display:block; aspect-ratio:1; object-fit:cover; }
+.video-card-body { padding:16px; border-top:3px solid var(--border); }
+.vc-title { font-family:'Silkscreen',monospace; font-size:12px; color:var(--purple-light); margin-bottom:6px; }
+.vc-quote { font-size:16px; color:var(--muted); }
+.vc-badge { display:inline-block; background:var(--purple); color:var(--black); font-family:'Silkscreen',monospace; font-size:10px; padding:3px 8px; margin-top:8px; }
+
+/* ─── CHARACTERS ─── */
+.chars-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:20px; }
+.char-card {
+  background:var(--card); border:3px solid var(--border);
+  text-align:center; padding:24px 16px; transition:all .15s;
+}
+.char-card:hover { border-color:var(--cyan); transform:translateY(-4px); }
+.char-emoji { font-size:40px; margin-bottom:12px; display:block; }
+.char-name { font-family:'Press Start 2P',monospace; font-size:10px; color:var(--cyan); margin-bottom:8px; }
+.char-count { font-size:16px; color:var(--muted); }
+
+/* ─── GENESIS IMAGE ─── */
+.genesis-wrap { display:grid; grid-template-columns:1fr 1fr; gap:48px; align-items:center; }
+.genesis-img-wrap { position:relative; border:4px solid var(--gold); box-shadow:8px 8px 0 0 rgba(245,158,11,.2); }
+.genesis-img-wrap img { width:100%; display:block; }
+.genesis-badge {
+  position:absolute; top:-18px; left:50%; transform:translateX(-50%);
+  background:var(--gold); color:var(--black);
+  font-family:'Press Start 2P',monospace; font-size:8px; padding:8px 16px;
+  white-space:nowrap; box-shadow:4px 4px 0 0 #92400e;
+}
+.genesis-text .s-title { margin-bottom:20px; }
+.genesis-info { display:flex; flex-direction:column; gap:16px; }
+.gi-row { display:flex; justify-content:space-between; align-items:center; padding:12px 0; border-bottom:2px solid var(--border); }
+.gi-key { font-family:'Silkscreen',monospace; font-size:12px; color:var(--muted); }
+.gi-val { font-family:'Press Start 2P',monospace; font-size:10px; color:var(--purple-light); }
+.gi-val.gold { color:var(--gold); }
+.gi-val.cyan { color:var(--cyan); }
+
+/* ─── COMMUNITY VIDEO ─── */
+.community-section { background:var(--deep); border-top:3px solid var(--border); border-bottom:3px solid var(--border); }
+.community-grid { display:grid; grid-template-columns:1fr 1fr; gap:48px; align-items:center; }
+.community-video { border:4px solid var(--cyan); box-shadow:8px 8px 0 0 rgba(6,182,212,.2); }
+.community-video video { width:100%; display:block; }
+.embed-section { margin-top:48px; }
+.embed-title { font-family:'Press Start 2P',monospace; font-size:12px; color:var(--cyan); margin-bottom:20px; }
+.embed-box {
+  background:var(--card); border:3px solid var(--border);
+  padding:32px; text-align:center;
+}
+.embed-placeholder { font-size:18px; color:var(--muted); margin-bottom:16px; }
+.embed-note { font-family:'Silkscreen',monospace; font-size:12px; color:var(--purple-light); }
+
+/* ─── MARKETPLACES ─── */
+.market-grid { display:flex; flex-wrap:wrap; gap:16px; justify-content:center; }
+.market-card {
+  background:var(--card); border:3px solid var(--border);
+  padding:20px 28px; text-align:center; transition:all .15s; text-decoration:none;
+  min-width:160px;
+}
+.market-card:hover { border-color:var(--purple-light); transform:translate(-3px,-3px); box-shadow:6px 6px 0 0 var(--purple); }
+.market-icon { font-size:28px; display:block; margin-bottom:10px; }
+.market-name { font-family:'Press Start 2P',monospace; font-size:9px; color:var(--purple-light); display:block; margin-bottom:6px; }
+.market-url { font-family:'Silkscreen',monospace; font-size:11px; color:var(--muted); }
+
+/* ─── FOOTER ─── */
+footer {
+  background:var(--deep); border-top:3px solid var(--border);
+  padding:60px 40px 32px;
+}
+.footer-inner { max-width:1200px; margin:0 auto; }
+.footer-top { display:flex; gap:48px; flex-wrap:wrap; justify-content:space-between; margin-bottom:48px; }
+.footer-logo { font-family:'Press Start 2P',monospace; font-size:12px; color:var(--purple-light); text-shadow:3px 3px 0 #4c1d95; margin-bottom:14px; }
+.footer-tagline { font-size:16px; color:var(--muted); max-width:260px; line-height:1.5; }
+.footer-col h4 { font-family:'Silkscreen',monospace; font-size:13px; color:var(--cyan); letter-spacing:2px; margin-bottom:16px; }
+.footer-col ul { list-style:none; display:flex; flex-direction:column; gap:10px; }
+.footer-col a { color:var(--muted); text-decoration:none; font-size:17px; transition:color .15s; }
+.footer-col a:hover { color:var(--purple-light); }
+.footer-socials { display:flex; gap:10px; flex-wrap:wrap; }
+.soc-btn {
+  font-family:'Silkscreen',monospace; font-size:11px; color:var(--text);
+  background:var(--card); border:3px solid var(--border);
+  padding:8px 14px; text-decoration:none; display:inline-block;
+  transition:all .15s; box-shadow:3px 3px 0 0 var(--border);
+}
+.soc-btn:hover { border-color:var(--purple-light); color:var(--purple-light); }
+.footer-bottom { border-top:3px solid var(--border); padding-top:24px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; }
+.footer-copy { font-family:'Silkscreen',monospace; font-size:11px; color:var(--muted); }
+.footer-btc { font-family:'Press Start 2P',monospace; font-size:8px; color:var(--gold); }
+
+@media(max-width:900px) {
+  nav { padding:0 16px; }
+  .nav-links { display:none; }
+  .hero-inner { grid-template-columns:1fr; padding:100px 20px 60px; }
+  .hero-right { display:none; }
+  .genesis-wrap, .community-grid { grid-template-columns:1fr; }
+  .section { padding:60px 20px; }
+  .stats-bar { gap:24px; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="index.html">
+    <img src="PXQT_LOGO.jpg" alt="PixelQuote Logo">
+    <div class="nav-logo-text">PIXEL<span>QUOTE</span><br>ORDINALS</div>
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html" class="active">HOME</a></li>
+    <li><a href="collection.html">COLLECTION</a></li>
+    <li><a href="dashboard.html">MY ORDINALS</a></li>
+    <li><a href="https://twitter.com/PixelQuoteNFT" target="_blank">TWITTER</a></li>
+  </ul>
+  <div class="nav-right">
+    <a href="collection.html" class="nav-btn outline">VIEW ALL</a>
+    <a href="dashboard.html" class="nav-btn">CONNECT WALLET</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <video class="hero-video-bg" autoplay muted loop playsinline>
+    <source src="NFT_is_cyber_property.mp4" type="video/mp4">
+  </video>
+  <div class="hero-overlay"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-inner">
+    <div class="hero-left">
+      <div class="hero-tag">BITCOIN ORDINALS · SUB-100K COLLECTION</div>
+      <h1 class="hero-h1">
+        <div class="t1">PIXEL</div>
+        <div class="t2">QUOTE</div>
+        <div class="t3">ORDINALS</div>
+      </h1>
+      <p class="hero-desc">Pixel Art with a Unique Quote. The First Bitcoin NFT collection combining Animated MP4 Videos and Still Images — inscribed forever on the Bitcoin blockchain.</p>
+      <div class="hero-milestone">★ INSCRIPTION #35672 — FIRST MP4 VIDEO ON BITCOIN</div>
+      <div class="hero-btns">
+        <a href="collection.html" class="btn-main">EXPLORE COLLECTION</a>
+        <a href="dashboard.html" class="btn-cyan">MY ORDINALS</a>
+      </div>
+    </div>
+    <div class="hero-right">
+      <div class="hero-video-frame">
+        <video autoplay muted loop playsinline>
+          <source src="PixelQuote_087_-_Wizard_Video_-_Imagination_is_Key.mp4" type="video/mp4">
+        </video>
+        <div class="hero-video-label">
+          <span>#087 · WIZARD · IMAGINATION IS KEY</span>
+          <span class="live-badge">● LIVE</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS BAR -->
+<div class="stats-bar">
+  <div class="stat"><span class="stat-n">263</span><span class="stat-l">TOTAL SUPPLY</span></div>
+  <div class="stat"><span class="stat-n">#35,672</span><span class="stat-l">GENESIS INSCRIPTION</span></div>
+  <div class="stat"><span class="stat-n">9</span><span class="stat-l">CHARACTERS</span></div>
+  <div class="stat"><span class="stat-n">MP4</span><span class="stat-l">FIRST VIDEO ON BTC</span></div>
+  <div class="stat"><span class="stat-n">SUB-100K</span><span class="stat-l">INSCRIPTION RANGE</span></div>
+</div>
+
+<!-- MARQUEE -->
+<div class="marquee">
+  <div class="marquee-track">
+    <span class="marquee-item">★ PIXELQUOTE ORDINALS</span><span class="marquee-item">·</span>
+    <span class="marquee-item">FIRST MP4 ON BITCOIN</span><span class="marquee-item">·</span>
+    <span class="marquee-item">263 UNIQUE INSCRIPTIONS</span><span class="marquee-item">·</span>
+    <span class="marquee-item">SUB-100K COLLECTION</span><span class="marquee-item">·</span>
+    <span class="marquee-item">NFT IS CYBER PROPERTY</span><span class="marquee-item">·</span>
+    <span class="marquee-item">STACK SATOSHI</span><span class="marquee-item">·</span>
+    <span class="marquee-item">★ PIXELQUOTE ORDINALS</span><span class="marquee-item">·</span>
+    <span class="marquee-item">FIRST MP4 ON BITCOIN</span><span class="marquee-item">·</span>
+    <span class="marquee-item">263 UNIQUE INSCRIPTIONS</span><span class="marquee-item">·</span>
+    <span class="marquee-item">SUB-100K COLLECTION</span><span class="marquee-item">·</span>
+    <span class="marquee-item">NFT IS CYBER PROPERTY</span><span class="marquee-item">·</span>
+    <span class="marquee-item">STACK SATOSHI</span><span class="marquee-item">·</span>
+  </div>
+</div>
+
+<!-- VIDEO GALLERY -->
+<section class="section">
+  <div class="section-inner">
+    <div class="s-tag">// FEATURED INSCRIPTIONS</div>
+    <div class="s-title">THE CORE IS VIDEO —<br>ANIMATED MP4 INSCRIPTIONS</div>
+    <div class="video-grid">
+      <div class="video-card">
+        <video autoplay muted loop playsinline>
+          <source src="PixelQuote_087_-_Wizard_Video_-_Imagination_is_Key.mp4" type="video/mp4">
+        </video>
+        <div class="video-card-body">
+          <div class="vc-title">WIZARD #087</div>
+          <div class="vc-quote">"Imagination is Key"</div>
+          <span class="vc-badge">MP4 VIDEO</span>
+        </div>
+      </div>
+      <div class="video-card">
+        <video autoplay muted loop playsinline>
+          <source src="PixelQuote_177_-_Dog_Video_-_Cherish_Every_Moment.mp4" type="video/mp4">
+        </video>
+        <div class="video-card-body">
+          <div class="vc-title">DOG #177</div>
+          <div class="vc-quote">"Cherish Every Moment"</div>
+          <span class="vc-badge">MP4 VIDEO</span>
+        </div>
+      </div>
+      <div class="video-card">
+        <video autoplay muted loop playsinline>
+          <source src="PixelQuote_188_-_Dog_Video_-_Things_Will_Get_Better.mp4" type="video/mp4">
+        </video>
+        <div class="video-card-body">
+          <div class="vc-title">DOG #188</div>
+          <div class="vc-quote">"Things Will Get Better"</div>
+          <span class="vc-badge">MP4 VIDEO</span>
+        </div>
+      </div>
+      <div class="video-card">
+        <video autoplay muted loop playsinline>
+          <source src="PixelQuote_252_-_Frog_Video_-_Make_some_Mistakes.mp4" type="video/mp4">
+        </video>
+        <div class="video-card-body">
+          <div class="vc-title">FROG #252</div>
+          <div class="vc-quote">"Make Some Mistakes"</div>
+          <span class="vc-badge">MP4 VIDEO</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GENESIS SECTION -->
+<section class="section" style="background:var(--deep); border-top:3px solid var(--border); border-bottom:3px solid var(--border);">
+  <div class="section-inner">
+    <div class="genesis-wrap">
+      <div class="genesis-img-wrap">
+        <div class="genesis-badge">★ THE GENESIS COLLECTION</div>
+        <img src="PIXEL_QUOTE_GENESIS.jpg" alt="PixelQuote Genesis Characters">
+      </div>
+      <div class="genesis-text">
+        <div class="s-tag">// PIXELQUOTE GENESIS</div>
+        <div class="s-title" style="margin-bottom:24px;">9 CHARACTERS.<br>263 INSCRIPTIONS.<br>BITCOIN FOREVER.</div>
+        <div class="genesis-info">
+          <div class="gi-row"><span class="gi-key">TOTAL SUPPLY</span><span class="gi-val gold">263</span></div>
+          <div class="gi-row"><span class="gi-key">GENESIS INSCRIPTION</span><span class="gi-val cyan">#35,672</span></div>
+          <div class="gi-row"><span class="gi-key">INSCRIPTION RANGE</span><span class="gi-val">SUB-100K</span></div>
+          <div class="gi-row"><span class="gi-key">FIRST MP4 VIDEO</span><span class="gi-val gold">BITCOIN HISTORY</span></div>
+          <div class="gi-row"><span class="gi-key">CHARACTERS</span><span class="gi-val cyan">9 UNIQUE TYPES</span></div>
+          <div class="gi-row"><span class="gi-key">BLOCKCHAIN</span><span class="gi-val">BITCOIN MAINNET</span></div>
+        </div>
+        <div style="margin-top:28px; display:flex; gap:14px; flex-wrap:wrap;">
+          <a href="collection.html" class="btn-main">VIEW COLLECTION</a>
+          <a href="https://ordinalswallet.com/collection/pixel-quote" target="_blank" class="btn-cyan">BUY ON ORDINALS WALLET</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CHARACTERS -->
+<section class="section">
+  <div class="section-inner">
+    <div class="s-tag">// CHARACTER TYPES</div>
+    <div class="s-title">VARIOUS UNIQUE CHARACTERS<br>IN THE PIXELQUOTE UNIVERSE</div>
+    <div class="chars-grid">
+      <div class="char-card"><span class="char-emoji">👦</span><div class="char-name">BOY</div><div class="char-count">Shield · Space</div></div>
+      <div class="char-card"><span class="char-emoji">👧</span><div class="char-name">GIRL</div><div class="char-count">Heart · Wings</div></div>
+      <div class="char-card"><span class="char-emoji">🧛</span><div class="char-name">VAMPIRE</div><div class="char-count">Dark · Halloween</div></div>
+      <div class="char-card"><span class="char-emoji">🧙</span><div class="char-name">WIZARD</div><div class="char-count">Magic · Cat Hat</div></div>
+      <div class="char-card"><span class="char-emoji">🤖</span><div class="char-name">CYBORG</div><div class="char-count">Tech · Shield</div></div>
+      <div class="char-card"><span class="char-emoji">🦧</span><div class="char-name">APE</div><div class="char-count">Fire · Orbit</div></div>
+      <div class="char-card"><span class="char-emoji">🐶</span><div class="char-name">DOG</div><div class="char-count">Paw · Bone</div></div>
+      <div class="char-card"><span class="char-emoji">🐱</span><div class="char-name">CAT</div><div class="char-count">Cool · Shades</div></div>
+      <div class="char-card"><span class="char-emoji">🐸</span><div class="char-name">FROG</div><div class="char-count">Cosmic · Wings</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- NFT IS CYBER PROPERTY -->
+<section class="section community-section">
+  <div class="section-inner">
+    <div class="community-grid">
+      <div>
+        <div class="s-tag">// NFT IS CYBER PROPERTY</div>
+        <div class="s-title" style="margin-bottom:24px;">OWN YOUR DIGITAL PROPERTY ON BITCOIN</div>
+        <p style="font-size:20px; color:var(--muted); line-height:1.6; margin-bottom:24px;">PixelQuote Ordinals are permanently inscribed on the Bitcoin blockchain. No servers. No IPFS. Your inscription lives on Bitcoin's immutable ledger — true digital ownership.</p>
+        <div style="display:flex; flex-direction:column; gap:12px; margin-bottom:32px;">
+          <div style="display:flex; align-items:center; gap:12px;"><span style="color:var(--cyan); font-family:'Press Start 2P',monospace; font-size:12px;">→</span><span style="font-size:18px; color:var(--muted);">Fully on-chain · Bitcoin secured</span></div>
+          <div style="display:flex; align-items:center; gap:12px;"><span style="color:var(--cyan); font-family:'Press Start 2P',monospace; font-size:12px;">→</span><span style="font-size:18px; color:var(--muted);">Sub-100K inscription range</span></div>
+          <div style="display:flex; align-items:center; gap:12px;"><span style="color:var(--cyan); font-family:'Press Start 2P',monospace; font-size:12px;">→</span><span style="font-size:18px; color:var(--muted);">First MP4 video collection on Bitcoin</span></div>
+          <div style="display:flex; align-items:center; gap:12px;"><span style="color:var(--cyan); font-family:'Press Start 2P',monospace; font-size:12px;">→</span><span style="font-size:18px; color:var(--muted);">Historic early inscriptions</span></div>
+        </div>
+        <div style="display:flex; gap:14px; flex-wrap:wrap;">
+          <a href="https://twitter.com/PixelQuoteNFT" target="_blank" class="btn-main">FOLLOW ON TWITTER</a>
+        </div>
+      </div>
+      <div>
+        <div class="community-video">
+          <video autoplay muted loop playsinline style="width:100%;display:block;">
+            <source src="NFT_is_cyber_property.mp4" type="video/mp4">
+          </video>
+        </div>
+        <div style="margin-top:20px; text-align:center;">
+          <img src="Cyber_Property.jpg" alt="NFT is Cyber Property" style="max-width:200px; image-rendering:pixelated; border:3px solid var(--purple);">
+        </div>
+      </div>
+    </div>
+
+    <!-- YOUTUBE EMBED SECTION -->
+    <div class="embed-section" style="margin-top:64px; border-top:3px solid var(--border); padding-top:48px;">
+      <div class="embed-title">// VIDEO & COMMUNITY CONTENT</div>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:24px;">
+        <div class="embed-box">
+          <div class="embed-placeholder">📺 INSERT YOUTUBE VIDEO 1</div>
+          <div class="embed-note">Paste YouTube embed code here</div>
+          <!-- REPLACE THIS COMMENT WITH: <iframe width="100%" height="250" src="https://www.youtube.com/embed/YOUR_VIDEO_ID" frameborder="0" allowfullscreen></iframe> -->
+        </div>
+        <div class="embed-box">
+          <div class="embed-placeholder">📺 INSERT YOUTUBE VIDEO 2</div>
+          <div class="embed-note">Paste YouTube embed code here</div>
+          <!-- REPLACE THIS COMMENT WITH: <iframe width="100%" height="250" src="https://www.youtube.com/embed/YOUR_VIDEO_ID" frameborder="0" allowfullscreen></iframe> -->
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MARKETPLACES -->
+<section class="section">
+  <div class="section-inner">
+    <div class="s-tag" style="text-align:center;"">// BUY & TRADE</div>
+    <div class="s-title" style="text-align:center; margin-bottom:40px;">FIND PIXELQUOTE ON<br>ORDINALS MARKETPLACES</div>
+    <div class="market-grid">
+      <a href="https://ordinalswallet.com/collection/pixel-quote" target="_blank" class="market-card">
+        <span class="market-icon">👛</span>
+        <span class="market-name">ORDINALS WALLET</span>
+        <span class="market-url">ordinalswallet.com</span>
+      </a>
+      <a href="https://www.ord.io/collection/pixel-quote" target="_blank" class="market-card">
+        <span class="market-icon">🔍</span>
+        <span class="market-name">ORD.IO</span>
+        <span class="market-url">ord.io</span>
+      </a>
+      <a href="https://www.satflow.com/ordinals/pixel-quote" target="_blank" class="market-card">
+        <span class="market-icon">🌊</span>
+        <span class="market-name">SATFLOW</span>
+        <span class="market-url">satflow.com</span>
+      </a>
+      <a href="https://magiceden.us/ordinals/market/pixel-quote" target="_blank" class="market-card">
+        <span class="market-icon">✨</span>
+        <span class="market-name">MAGIC EDEN</span>
+        <span class="market-url">magiceden.us</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div>
+        <div class="footer-logo">PIXEL QUOTE<br>ORDINALS</div>
+        <p class="footer-tagline">The First Bitcoin NFT collection combining animated MP4 videos & still images. Inscribed forever.</p>
+      </div>
+      <div class="footer-col">
+        <h4>NAVIGATE</h4>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="collection.html">Collection</a></li>
+          <li><a href="dashboard.html">My Ordinals</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>MARKETPLACES</h4>
+        <ul>
+          <li><a href="https://ordinalswallet.com/collection/pixel-quote" target="_blank">Ordinals Wallet</a></li>
+          <li><a href="https://www.ord.io/collection/pixel-quote" target="_blank">Ord.io</a></li>
+          <li><a href="https://www.satflow.com/ordinals/pixel-quote" target="_blank">Satflow</a></li>
+          <li><a href="https://magiceden.us/ordinals/market/pixel-quote" target="_blank">Magic Eden</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 style="font-family:'Silkscreen',monospace;font-size:13px;color:var(--cyan);letter-spacing:2px;margin-bottom:16px;">COMMUNITY</h4>
+        <div class="footer-socials">
+          <a href="https://twitter.com/PixelQuoteNFT" target="_blank" class="soc-btn">𝕏 TWITTER</a>
+          <a href="dashboard.html" class="soc-btn">MY ORDINALS</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span class="footer-copy">© 2024 PIXELQUOTE ORDINALS. ALL RIGHTS RESERVED.</span>
+      <span class="footer-btc">INSCRIBED ON ₿ITCOIN FOREVER</span>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
