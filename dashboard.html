@@ -25,7 +25,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:500;background:var(--nav);border
 .nav-btn{font-family:'Press Start 2P',monospace;font-size:7px;color:#000;background:var(--orange);border:none;padding:10px 14px;cursor:pointer;box-shadow:3px 3px 0 0 var(--os);transition:all .1s;text-decoration:none;display:inline-block;white-space:nowrap;}
 .nav-btn:hover{transform:translate(-2px,-2px);box-shadow:5px 5px 0 0 var(--os);}
 
-.dash-layout{display:grid;grid-template-columns:280px 1fr;min-height:100vh;padding-top:68px;}
+.dash-layout{display:grid;grid-template-columns:290px 1fr;min-height:100vh;padding-top:68px;}
 .sidebar{background:var(--deep);border-right:4px solid var(--border);padding:28px 20px;position:sticky;top:68px;height:calc(100vh - 68px);overflow-y:auto;}
 .sb-title{font-family:'Press Start 2P',monospace;font-size:8px;color:var(--muted);letter-spacing:2px;margin-bottom:14px;padding-bottom:8px;border-bottom:2px solid var(--border);}
 
@@ -37,12 +37,14 @@ nav{position:fixed;top:0;left:0;right:0;z-index:500;background:var(--nav);border
 .ws-text{font-family:'Silkscreen',monospace;font-size:11px;color:var(--muted);display:block;margin-bottom:10px;line-height:1.5;}
 .ws-addr{font-family:'Press Start 2P',monospace;font-size:7px;color:var(--orange2);word-break:break-all;display:none;margin-bottom:10px;}
 
+/* C7: Wallet buttons with real logos */
 .wallet-list{display:flex;flex-direction:column;gap:8px;margin-bottom:12px;}
 .w-btn{display:flex;align-items:center;gap:10px;background:var(--card);border:3px solid var(--border);padding:10px 12px;cursor:pointer;transition:all .15s;font-family:'Silkscreen',monospace;font-size:12px;color:var(--text);width:100%;text-align:left;}
 .w-btn:hover{border-color:var(--orange);color:var(--orange);}
 .w-btn.active-wallet{border-color:var(--green);color:var(--green);background:rgba(107,247,197,.05);}
-.w-icon{width:28px;height:28px;border-radius:3px;display:flex;align-items:center;justify-content:center;font-family:'Press Start 2P',monospace;font-size:11px;flex-shrink:0;}
-.w-dot{width:8px;height:8px;background:var(--muted);margin-left:auto;flex-shrink:0;}
+.w-logo{width:30px;height:30px;border-radius:6px;object-fit:cover;flex-shrink:0;image-rendering:pixelated;}
+.w-name{flex:1;font-family:'Silkscreen',monospace;font-size:12px;}
+.w-dot{width:8px;height:8px;background:var(--muted);flex-shrink:0;}
 .w-dot.on{background:var(--green);animation:blink 2s infinite;}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
 .disconnect-btn{width:100%;font-family:'Silkscreen',monospace;font-size:11px;color:var(--red);background:rgba(255,107,107,.05);border:2px solid var(--red);padding:8px;cursor:pointer;display:none;transition:all .15s;margin-bottom:16px;}
@@ -57,15 +59,20 @@ nav{position:fixed;top:0;left:0;right:0;z-index:500;background:var(--nav);border
 .sb-link:hover{border-color:var(--orange);color:var(--orange);}
 
 .dash-main{padding:36px;}
+
+/* C7: Connect screen - 3+2 formation with wallet logos */
 .connect-screen{text-align:center;padding:60px 20px;}
 .cs-btc{font-family:'Press Start 2P',monospace;font-size:80px;color:var(--orange);opacity:.15;display:block;margin-bottom:20px;animation:cpulse 3s infinite;}
 @keyframes cpulse{0%,100%{opacity:.15}50%{opacity:.25}}
 .cs-title{font-family:'Press Start 2P',monospace;font-size:18px;color:var(--orange);margin-bottom:14px;line-height:1.8;text-shadow:4px 4px 0 var(--os);}
 .cs-sub{font-size:22px;color:var(--muted);margin-bottom:36px;line-height:1.5;max-width:500px;margin-left:auto;margin-right:auto;}
-.cs-wallets{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:14px;max-width:640px;margin:0 auto 32px;}
-.cs-w{background:var(--card);border:3px solid var(--border);padding:20px 14px;cursor:pointer;transition:all .15s;text-align:center;}
+
+/* C7: 3+2 layout */
+.cs-wallets{max-width:680px;margin:0 auto 32px;}
+.cs-row{display:flex;gap:16px;justify-content:center;margin-bottom:16px;}
+.cs-w{background:var(--card);border:3px solid var(--border);padding:20px 16px;cursor:pointer;transition:all .15s;text-align:center;width:180px;flex-shrink:0;}
 .cs-w:hover{border-color:var(--orange);transform:translate(-3px,-3px);box-shadow:6px 6px 0 0 var(--os);}
-.cs-w-icon{font-size:32px;display:block;margin-bottom:10px;}
+.cs-w-logo{width:52px;height:52px;border-radius:10px;object-fit:cover;display:block;margin:0 auto 10px;image-rendering:pixelated;}
 .cs-w-name{font-family:'Press Start 2P',monospace;font-size:8px;color:var(--orange);}
 
 .dash-content{display:none;}
@@ -114,7 +121,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:500;background:var(--nav);border
 @media(max-width:900px){
   .dash-layout{grid-template-columns:1fr;}.sidebar{position:static;height:auto;}
   nav{padding:0 16px;}.nav-links{display:none;}.dash-main{padding:20px;}
-  .cs-wallets{grid-template-columns:repeat(3,1fr);}
+  .cs-row{flex-wrap:wrap;}
 }
 </style>
 </head>
@@ -141,14 +148,36 @@ nav{position:fixed;top:0;left:0;right:0;z-index:500;background:var(--nav);border
       <span class="ws-addr" id="wsAddr"></span>
     </div>
     <div class="sb-title">CONNECT WALLET</div>
+    <!-- C7: Real wallet logos in sidebar -->
     <div class="wallet-list">
-      <button class="w-btn" onclick="connect('xverse')" id="btn-xverse"><span class="w-icon" style="background:#1a0a3e;color:#a78bfa;">X</span><span>Xverse</span><span class="w-dot" id="dot-xverse"></span></button>
-      <button class="w-btn" onclick="connect('unisat')" id="btn-unisat"><span class="w-icon" style="background:#ff8c00;color:#fff;">U</span><span>UniSat</span><span class="w-dot" id="dot-unisat"></span></button>
-      <button class="w-btn" onclick="connect('leather')" id="btn-leather"><span class="w-icon" style="background:#c0a060;color:#fff;">L</span><span>Leather</span><span class="w-dot" id="dot-leather"></span></button>
-      <button class="w-btn" onclick="connect('okx')" id="btn-okx"><span class="w-icon" style="background:#000;color:#fff;border:1px solid #444;">O</span><span>OKX Wallet</span><span class="w-dot" id="dot-okx"></span></button>
-      <button class="w-btn" onclick="connect('tap')" id="btn-tap"><span class="w-icon" style="background:#0a2040;color:#06b6d4;">T</span><span>TAP Wallet</span><span class="w-dot" id="dot-tap"></span></button>
+      <button class="w-btn" onclick="connect('xverse')" id="btn-xverse">
+        <img src="Xverse.png" alt="Xverse" class="w-logo">
+        <span class="w-name">Xverse</span>
+        <span class="w-dot" id="dot-xverse"></span>
+      </button>
+      <button class="w-btn" onclick="connect('unisat')" id="btn-unisat">
+        <img src="Unisat.png" alt="UniSat" class="w-logo">
+        <span class="w-name">UniSat</span>
+        <span class="w-dot" id="dot-unisat"></span>
+      </button>
+      <button class="w-btn" onclick="connect('leather')" id="btn-leather">
+        <img src="Leather.png" alt="Leather" class="w-logo">
+        <span class="w-name">Leather</span>
+        <span class="w-dot" id="dot-leather"></span>
+      </button>
+      <button class="w-btn" onclick="connect('okx')" id="btn-okx">
+        <img src="OKX.png" alt="OKX" class="w-logo">
+        <span class="w-name">OKX Wallet</span>
+        <span class="w-dot" id="dot-okx"></span>
+      </button>
+      <button class="w-btn" onclick="connect('tap')" id="btn-tap">
+        <img src="TAP_Wallet.png" alt="TAP" class="w-logo">
+        <span class="w-name">TAP Wallet</span>
+        <span class="w-dot" id="dot-tap"></span>
+      </button>
     </div>
     <button class="disconnect-btn" id="disconnectBtn" onclick="disconnect()">✕ DISCONNECT</button>
+
     <div id="sbStats" style="display:none;">
       <div class="sb-title">YOUR STATS</div>
       <div class="sb-stat"><span class="sb-stat-l">PIXELQUOTE HELD</span><span class="sb-stat-n gold" id="sbPQ">0</span></div>
@@ -157,6 +186,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:500;background:var(--nav);border
       <div class="sb-stat"><span class="sb-stat-l">WALLET</span><span class="sb-stat-n green" id="sbWallet">-</span></div>
       <br>
     </div>
+
     <div class="sb-title">QUICK LINKS</div>
     <a href="collection.html" class="sb-link">₿ View Full Collection</a>
     <a href="https://ordinalswallet.com/collection/pixel-quote" target="_blank" class="sb-link">→ Ordinals Wallet</a>
@@ -165,21 +195,43 @@ nav{position:fixed;top:0;left:0;right:0;z-index:500;background:var(--nav);border
     <a href="https://web3.okx.com/nft/collection/btc/pixelquote-nft" target="_blank" class="sb-link">→ OKX NFT</a>
     <a href="https://www.trio.xyz/collections/pixel-quote" target="_blank" class="sb-link">→ Trio</a>
     <a href="https://bestinslot.xyz/ordinals/collections/pixel-quote" target="_blank" class="sb-link">→ Best in Slot</a>
-    <a href="https://app.ordinalhive.io/collections/pixel-quote" target="_blank" class="sb-link">→ Ordinal Hive</a>
+    <a href="https://magisat.io/collection/pixel-quote" target="_blank" class="sb-link">→ Magisat</a>
     <a href="https://www.ord.io/collection/pixel-quote" target="_blank" class="sb-link">🔍 Ord.io Explorer</a>
   </div>
 
   <div class="dash-main">
+    <!-- CONNECT SCREEN — C7: 3+2 formation with logos -->
     <div class="connect-screen" id="connectScreen">
       <span class="cs-btc">₿</span>
       <div class="cs-title">MY ORDINALS<br>DASHBOARD</div>
       <p class="cs-sub">Connect your Bitcoin wallet to view your PixelQuote Digital Artifacts and all other Ordinal inscriptions.</p>
       <div class="cs-wallets">
-        <div class="cs-w" onclick="connect('xverse')"><span class="cs-w-icon">🔷</span><div class="cs-w-name">XVERSE</div></div>
-        <div class="cs-w" onclick="connect('unisat')"><span class="cs-w-icon">🟠</span><div class="cs-w-name">UNISAT</div></div>
-        <div class="cs-w" onclick="connect('leather')"><span class="cs-w-icon">🟤</span><div class="cs-w-name">LEATHER</div></div>
-        <div class="cs-w" onclick="connect('okx')"><span class="cs-w-icon">⚫</span><div class="cs-w-name">OKX</div></div>
-        <div class="cs-w" onclick="connect('tap')"><span class="cs-w-icon">🔵</span><div class="cs-w-name">TAP WALLET</div></div>
+        <!-- Top row: 3 wallets -->
+        <div class="cs-row">
+          <div class="cs-w" onclick="connect('xverse')">
+            <img src="Xverse.png" alt="Xverse" class="cs-w-logo">
+            <div class="cs-w-name">XVERSE</div>
+          </div>
+          <div class="cs-w" onclick="connect('unisat')">
+            <img src="Unisat.png" alt="UniSat" class="cs-w-logo">
+            <div class="cs-w-name">UNISAT</div>
+          </div>
+          <div class="cs-w" onclick="connect('leather')">
+            <img src="Leather.png" alt="Leather" class="cs-w-logo">
+            <div class="cs-w-name">LEATHER</div>
+          </div>
+        </div>
+        <!-- Bottom row: 2 wallets centered -->
+        <div class="cs-row">
+          <div class="cs-w" onclick="connect('okx')">
+            <img src="OKX.png" alt="OKX" class="cs-w-logo">
+            <div class="cs-w-name">OKX WALLET</div>
+          </div>
+          <div class="cs-w" onclick="connect('tap')">
+            <img src="TAP_Wallet.png" alt="TAP" class="cs-w-logo">
+            <div class="cs-w-name">TAP WALLET</div>
+          </div>
+        </div>
       </div>
       <div style="font-family:'Silkscreen',monospace;font-size:12px;color:var(--muted);max-width:460px;margin:0 auto;line-height:1.7;">PixelQuote Ordinals shown first as primary. All other Bitcoin inscriptions shown as secondary.</div>
     </div>
@@ -230,25 +282,72 @@ const WALLETS={xverse:'Xverse',unisat:'UniSat',leather:'Leather',okx:'OKX Wallet
 const ORD_PRV='https://ordinals.com/preview/';
 let connectedWallet=null,walletAddress=null;
 
+// C7 FIX: Proper Xverse connection using getAddress API
 async function connect(type){
   let address=null;
   try{
-    if(type==='unisat'&&window.unisat){const a=await window.unisat.requestAccounts();address=a[0];}
-    else if(type==='xverse'&&window.XverseProviders){const r=await window.XverseProviders.BitcoinProvider.request('bitcoin_requestAccounts',null);address=r.result.addresses[0].address;}
-    else if(type==='leather'&&window.LeatherProvider){const r=await window.LeatherProvider.request('getAddresses',{});address=r.result.addresses.find(a=>a.type==='p2tr')?.address;}
-    else if(type==='okx'&&window.okxwallet?.bitcoin){const r=await window.okxwallet.bitcoin.requestAccounts();address=r[0];}
-    else{address='bc1p_'+type+'_'+Math.random().toString(36).substr(2,12);}
-  }catch(e){address='bc1p_demo_'+type+'_'+Math.random().toString(36).substr(2,8);}
+    if(type==='xverse'){
+      // Xverse uses window.XverseProviders or window.BitcoinProvider
+      if(window.XverseProviders?.BitcoinProvider){
+        const res = await window.XverseProviders.BitcoinProvider.request('getAddresses',{
+          purposes:['ordinals','payment'],
+          message:'Connect to PixelQuote Ordinals'
+        });
+        address = res?.result?.addresses?.find(a=>a.purpose==='ordinals')?.address
+                || res?.result?.addresses?.[0]?.address;
+      } else if(window.BitcoinProvider){
+        const res = await window.BitcoinProvider.request('getAddresses',{
+          purposes:['ordinals','payment'],
+          message:'Connect to PixelQuote Ordinals'
+        });
+        address = res?.result?.addresses?.find(a=>a.purpose==='ordinals')?.address
+                || res?.result?.addresses?.[0]?.address;
+      } else {
+        // Xverse not installed — open install page
+        window.open('https://www.xverse.app/download','_blank');
+        showToast('Xverse not detected. Opening download page...');
+        return;
+      }
+    } else if(type==='unisat'&&window.unisat){
+      const a=await window.unisat.requestAccounts();
+      address=a[0];
+    } else if(type==='leather'&&window.LeatherProvider){
+      const r=await window.LeatherProvider.request('getAddresses',{});
+      address=r?.result?.addresses?.find(a=>a.type==='p2tr')?.address||r?.result?.addresses?.[0]?.address;
+    } else if(type==='okx'&&window.okxwallet?.bitcoin){
+      const r=await window.okxwallet.bitcoin.requestAccounts();
+      address=r[0];
+    } else if(type==='tap'&&window.tapWallet){
+      const r=await window.tapWallet.requestAccounts();
+      address=r[0];
+    } else {
+      // Wallet not installed — demo mode
+      address='bc1p_demo_'+type+'_'+Math.random().toString(36).substr(2,10);
+      showToast(WALLETS[type]+' not detected — demo mode activated');
+    }
+  } catch(e){
+    console.error('Wallet connect error:',e);
+    address='bc1p_demo_'+type+'_'+Math.random().toString(36).substr(2,10);
+    showToast('Connection failed — demo mode activated');
+  }
   if(!address)return;
-  connectedWallet=type;walletAddress=address;
+  connectedWallet=type; walletAddress=address;
   onConnected(type,address);
+}
+
+function showToast(msg){
+  const t=document.createElement('div');
+  t.style.cssText='position:fixed;bottom:24px;right:24px;background:var(--card);border:3px solid var(--orange);padding:14px 20px;font-family:"Silkscreen",monospace;font-size:12px;color:var(--orange);z-index:9999;max-width:320px;';
+  t.textContent=msg;
+  document.body.appendChild(t);
+  setTimeout(()=>t.remove(),4000);
 }
 
 function onConnected(type,addr){
   document.getElementById('wsIcon').textContent='✅';
   document.getElementById('wsBadge').textContent='CONNECTED';
   document.getElementById('wsBadge').className='ws-badge on';
-  document.getElementById('wsText').textContent=WALLETS[type]+' wallet connected';
+  document.getElementById('wsText').textContent=WALLETS[type]+' connected';
   document.getElementById('wsAddr').textContent=addr.slice(0,14)+'...'+addr.slice(-6);
   document.getElementById('wsAddr').style.display='block';
   document.getElementById('disconnectBtn').style.display='block';
@@ -267,12 +366,15 @@ function onConnected(type,addr){
 }
 
 function disconnect(){
-  if(connectedWallet){document.getElementById('dot-'+connectedWallet).classList.remove('on');document.getElementById('btn-'+connectedWallet).classList.remove('active-wallet');}
-  connectedWallet=null;walletAddress=null;
+  if(connectedWallet){
+    document.getElementById('dot-'+connectedWallet).classList.remove('on');
+    document.getElementById('btn-'+connectedWallet).classList.remove('active-wallet');
+  }
+  connectedWallet=null; walletAddress=null;
   document.getElementById('wsIcon').textContent='₿';
   document.getElementById('wsBadge').textContent='NOT CONNECTED';
   document.getElementById('wsBadge').className='ws-badge off';
-  document.getElementById('wsText').textContent='Connect your Bitcoin wallet to view your PixelQuote Ordinals';
+  document.getElementById('wsText').textContent='Connect your Bitcoin wallet';
   document.getElementById('wsAddr').style.display='none';
   document.getElementById('disconnectBtn').style.display='none';
   document.getElementById('sbStats').style.display='none';
@@ -284,8 +386,11 @@ function disconnect(){
 
 async function fetchAndRender(addr){
   let inscriptions=[];
-  try{const r=await fetch('https://api.hiro.so/ordinals/v1/inscriptions?address='+addr+'&limit=60');if(r.ok){const d=await r.json();inscriptions=d.results||[];}}catch(e){}
-  if(!inscriptions.length)inscriptions=demoData(addr);
+  try{
+    const r=await fetch('https://api.hiro.so/ordinals/v1/inscriptions?address='+addr+'&limit=60');
+    if(r.ok){const d=await r.json();inscriptions=d.results||[];}
+  }catch(e){}
+  if(!inscriptions.length) inscriptions=demoData(addr);
   renderDash(inscriptions);
 }
 
@@ -297,9 +402,9 @@ function demoData(addr){
     {id:'7857ba6811510f33b8feacfc93eeaf98fc0afbc5ed85fc08bcadd9fa45c5b8a4i0',name:'PixelQuote Vampire #45',isPQ:true},
   ].filter((_,i)=>(seed+i)%2===0);
   return [...pqSample,
-    {id:'aaa111',name:'Bitcoin Frog #1234',isPQ:false},
-    {id:'bbb222',name:'Node Monke #5678',isPQ:false},
-    {id:'ccc333',name:'Inscription #9012',isPQ:false},
+    {id:'aaa111bbb222',name:'Bitcoin Frog #1234',isPQ:false},
+    {id:'ccc333ddd444',name:'Node Monke #5678',isPQ:false},
+    {id:'eee555fff666',name:'Inscription #9012',isPQ:false},
   ];
 }
 
@@ -308,30 +413,49 @@ function isPQ(ins){return ins.isPQ||(ins.collection_id&&ins.collection_id.includ
 function renderDash(inscriptions){
   const pq=inscriptions.filter(i=>isPQ(i));
   const others=inscriptions.filter(i=>!isPQ(i));
-  const total=inscriptions.length;
   document.getElementById('sumPQ').textContent=pq.length;
   document.getElementById('sumOther').textContent=others.length;
-  document.getElementById('sumTotal').textContent=total;
+  document.getElementById('sumTotal').textContent=inscriptions.length;
   document.getElementById('sbPQ').textContent=pq.length;
   document.getElementById('sbOther').textContent=others.length;
-  document.getElementById('sbTotal').textContent=total;
+  document.getElementById('sbTotal').textContent=inscriptions.length;
   document.getElementById('pqCount').textContent=pq.length+' INSCRIPTIONS';
-  if(pq.length===0){document.getElementById('pqEmpty').style.display='block';document.getElementById('pqGrid').style.display='none';}
-  else{document.getElementById('pqEmpty').style.display='none';document.getElementById('pqGrid').style.display='grid';document.getElementById('pqGrid').innerHTML=pq.map(i=>ordCard(i,true)).join('');}
-  document.getElementById('allCount').textContent=total+' TOTAL';
+  if(pq.length===0){
+    document.getElementById('pqEmpty').style.display='block';
+    document.getElementById('pqGrid').style.display='none';
+  } else {
+    document.getElementById('pqEmpty').style.display='none';
+    document.getElementById('pqGrid').style.display='grid';
+    document.getElementById('pqGrid').innerHTML=pq.map(i=>ordCard(i,true)).join('');
+  }
+  document.getElementById('allCount').textContent=inscriptions.length+' TOTAL';
   document.getElementById('allGrid').innerHTML=[...pq,...others].map(i=>ordCard(i,isPQ(i))).join('');
   document.getElementById('actBody').innerHTML=inscriptions.slice(0,10).map((ins,idx)=>{
     const t=idx%3===0?'send':'recv';
-    return '<tr><td><span class="td-badge '+t+'">'+(t==='recv'?'RECEIVED':'SENT')+'</span></td><td style="font-family:\'Silkscreen\',monospace;font-size:12px;">'+(ins.name||'Inscription')+'</td><td style="font-family:\'Silkscreen\',monospace;font-size:11px;color:var(--muted);">bc1p...'+Math.random().toString(36).substr(2,6)+'</td><td style="font-size:15px;">'+new Date(Date.now()-idx*86400000*3).toLocaleDateString()+'</td><td><a href="https://mempool.space" target="_blank" style="color:var(--orange2);font-family:\'Silkscreen\',monospace;font-size:11px;">VIEW ↗</a></td></tr>';
+    return `<tr>
+      <td><span class="td-badge ${t}">${t==='recv'?'RECEIVED':'SENT'}</span></td>
+      <td style="font-family:'Silkscreen',monospace;font-size:12px;">${(ins.name||'Inscription').slice(0,24)}</td>
+      <td style="font-family:'Silkscreen',monospace;font-size:11px;color:var(--muted);">bc1p...${Math.random().toString(36).substr(2,6)}</td>
+      <td style="font-size:15px;">${new Date(Date.now()-idx*86400000*3).toLocaleDateString()}</td>
+      <td><a href="https://mempool.space" target="_blank" style="color:var(--orange2);font-family:'Silkscreen',monospace;font-size:11px;">VIEW ↗</a></td>
+    </tr>`;
   }).join('');
 }
 
 function ordCard(ins,pq){
   const id=ins.id||'';
   const previewUrl=id.length>20?ORD_PRV+id:'';
-  const media=previewUrl?'<iframe src="'+previewUrl+'" loading="lazy" sandbox="allow-scripts allow-same-origin" style="width:100%;height:100%;border:none;pointer-events:none;"></iframe>':'<div style="display:flex;align-items:center;justify-content:center;width:100%;height:100%;font-size:32px;opacity:.3;">₿</div>';
+  const media=previewUrl
+    ?`<iframe src="${previewUrl}" loading="lazy" sandbox="allow-scripts allow-same-origin" style="width:100%;height:100%;border:none;pointer-events:none;"></iframe>`
+    :`<div style="display:flex;align-items:center;justify-content:center;width:100%;height:100%;font-size:32px;opacity:.3;">₿</div>`;
   const pqTag=pq?'<span class="ord-pq-tag">PIXELQUOTE</span>':'';
-  return '<div class="ord-card" onclick="window.open(\'https://ordinals.com/inscription/'+id+'\',\'_blank\')"><div class="ord-media">'+media+pqTag+'</div><div class="ord-body"><span class="ord-num">'+id.slice(0,10)+'...</span><div class="ord-name" style="'+(pq?'color:var(--orange)':'color:var(--muted)')+'">'+((ins.name||'Inscription').slice(0,20))+'</div></div></div>';
+  return `<div class="ord-card" onclick="window.open('https://ordinals.com/inscription/${id}','_blank')">
+    <div class="ord-media">${media}${pqTag}</div>
+    <div class="ord-body">
+      <span class="ord-num">${id.slice(0,10)}...</span>
+      <div class="ord-name" style="${pq?'color:var(--orange)':'color:var(--muted)'}">${(ins.name||'Inscription').slice(0,20)}</div>
+    </div>
+  </div>`;
 }
 
 function tab(t,btn){
