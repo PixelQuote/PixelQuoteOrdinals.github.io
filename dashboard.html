@@ -124,6 +124,17 @@ nav{position:fixed;top:0;left:0;right:0;z-index:500;background:var(--nav);border
   .cs-row{flex-wrap:wrap;}
 }
 </style>
+<!-- Xverse Sats Connect SDK -->
+<script src="https://cdn.jsdelivr.net/npm/sats-connect@2/dist/sats-connect.iife.js"></script>
+<script>
+// Make sats-connect available as window.satsConnect
+window.addEventListener('load', function() {
+  if(typeof SatsConnect !== 'undefined') {
+    window.satsConnect = SatsConnect;
+    console.log('sats-connect loaded:', typeof SatsConnect);
+  }
+});
+</script>
 </head>
 <body>
 <nav>
@@ -287,26 +298,44 @@ async function connect(type){
   let address=null;
   try{
     if(type==='xverse'){
-      // Xverse uses window.XverseProviders or window.BitcoinProvider
-      if(window.XverseProviders?.BitcoinProvider){
-        const res = await window.XverseProviders.BitcoinProvider.request('getAddresses',{
-          purposes:['ordinals','payment'],
-          message:'Connect to PixelQuote Ordinals'
+      // Use sats-connect library (official Xverse SDK)
+      if(typeof window.satsConnect !== 'undefined' || typeof window.SatsConnect !== 'undefined'){
+        const sc = window.satsConnect || window.SatsConnect;
+        await new Promise((resolve, reject) => {
+          sc.getAddress({
+            payload: {
+              purposes: ['ordinals', 'payment'],
+              message: 'Connect to PixelQuote Ordinals — The First MP4 Video Collection on Bitcoin',
+              network: { type: 'Mainnet' }
+            },
+            onFinish: (response) => {
+              const ordinalsAddr = response.addresses.find(a => a.purpose === 'ordinals');
+              const paymentAddr = response.addresses.find(a => a.purpose === 'payment');
+              address = ordinalsAddr?.address || paymentAddr?.address || response.addresses[0]?.address;
+              resolve();
+            },
+            onCancel: () => {
+              showToast('Xverse connection cancelled');
+              reject(new Error('cancelled'));
+            }
+          });
         });
-        address = res?.result?.addresses?.find(a=>a.purpose==='ordinals')?.address
-                || res?.result?.addresses?.[0]?.address;
-      } else if(window.BitcoinProvider){
-        const res = await window.BitcoinProvider.request('getAddresses',{
-          purposes:['ordinals','payment'],
-          message:'Connect to PixelQuote Ordinals'
-        });
-        address = res?.result?.addresses?.find(a=>a.purpose==='ordinals')?.address
-                || res?.result?.addresses?.[0]?.address;
       } else {
-        // Xverse not installed — open install page
-        window.open('https://www.xverse.app/download','_blank');
-        showToast('Xverse not detected. Opening download page...');
-        return;
+        // sats-connect not loaded — try direct provider as fallback
+        try {
+          if(window.XverseProviders?.BitcoinProvider) {
+            const res = await window.XverseProviders.BitcoinProvider.request('wallet_connect', null);
+            address = res?.result?.addresses?.find(a=>a.purpose==='ordinals')?.address
+                    || res?.result?.addresses?.[0]?.address;
+          } else {
+            window.open('https://www.xverse.app/download', '_blank');
+            showToast('Please install Xverse wallet to connect');
+            return;
+          }
+        } catch(xe) {
+          showToast('Xverse: ' + (xe.message || 'Connection failed'));
+          return;
+        }
       }
     } else if(type==='unisat'&&window.unisat){
       const a=await window.unisat.requestAccounts();
