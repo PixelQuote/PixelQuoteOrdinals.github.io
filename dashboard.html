@@ -1,166 +1,146 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>My Ordinals Dashboard — PixelQuote</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
+<title>My Ordinals — PixelQuote Dashboard</title>
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&family=Silkscreen:wght@400;700&display=swap" rel="stylesheet">
 <style>
-:root {
-  --black:#07070f; --deep:#0d0d1c; --card:#111127; --card2:#13132b; --border:#252545;
-  --purple:#7c3aed; --purple-light:#a78bfa; --cyan:#06b6d4;
-  --pink:#ec4899; --gold:#f59e0b; --green:#10b981; --red:#ef4444;
-  --text:#e8e8f4; --muted:#6b6b9a;
-}
+[data-theme="dark"]{--bg:#0a0a0f;--deep:#0f0f1a;--card:#13131f;--card2:#1a1a2e;--border:#2a2a3e;--text:#e8e8f0;--muted:#6b6b8a;--orange:#f7931a;--orange2:#f7c948;--orange-shadow:#a05010;--orange2-shadow:#a07c00;--red:#ff6b6b;--green:#6bf7c5;--purple:#a78bfa;--scanline:rgba(0,0,0,0.08);--nav-bg:rgba(10,10,15,0.96);}
+[data-theme="light"]{--bg:#fef9f0;--deep:#fff4e0;--card:#ffffff;--card2:#fff8ed;--border:#f0d090;--text:#1a1208;--muted:#7a6030;--orange:#c96a00;--orange2:#b8860b;--orange-shadow:#7a4000;--orange2-shadow:#7a5800;--red:#cc3333;--green:#006644;--purple:#6633cc;--scanline:rgba(247,147,26,0.03);--nav-bg:rgba(254,249,240,0.96);}
 *{margin:0;padding:0;box-sizing:border-box;}
-body{background:var(--black);color:var(--text);font-family:'VT323',monospace;font-size:18px;overflow-x:hidden;}
-body::after{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,0.07) 3px,rgba(0,0,0,0.07) 4px);pointer-events:none;z-index:9999;}
+body{background:var(--bg);color:var(--text);font-family:'VT323',monospace;font-size:18px;overflow-x:hidden;transition:background .3s,color .3s;}
+body::after{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,var(--scanline) 2px,var(--scanline) 4px);pointer-events:none;z-index:9998;}
 
-nav{position:fixed;top:0;left:0;right:0;z-index:500;background:rgba(7,7,15,.95);border-bottom:3px solid var(--border);backdrop-filter:blur(12px);padding:0 40px;height:64px;display:flex;align-items:center;justify-content:space-between;}
-.nav-logo{display:flex;align-items:center;gap:14px;text-decoration:none;}
-.nav-logo img{width:42px;height:42px;image-rendering:pixelated;border-radius:4px;}
-.nav-logo-text{font-family:'Press Start 2P',monospace;font-size:10px;color:var(--purple-light);line-height:1.6;}
-.nav-logo-text span{color:var(--cyan);}
-.nav-links{display:flex;gap:28px;list-style:none;}
-.nav-links a{color:var(--muted);text-decoration:none;font-family:'Silkscreen',monospace;font-size:13px;letter-spacing:1px;transition:color .15s;}
-.nav-links a:hover,.nav-links a.active{color:var(--cyan);}
-.nav-right{display:flex;gap:12px;align-items:center;}
+nav{position:fixed;top:0;left:0;right:0;z-index:500;background:var(--nav-bg);border-bottom:4px solid var(--border);backdrop-filter:blur(12px);padding:0 40px;height:68px;display:flex;align-items:center;justify-content:space-between;}
+.nav-logo{display:flex;align-items:center;gap:12px;text-decoration:none;}
+.nav-logo img{width:44px;height:44px;image-rendering:pixelated;border:2px solid var(--orange);}
+.nav-logo-text{font-family:'Press Start 2P',monospace;font-size:9px;color:var(--orange);text-shadow:2px 2px 0 var(--orange-shadow);line-height:1.8;}
+.nav-logo-text span{color:var(--orange2);}
+.nav-links{display:flex;gap:24px;list-style:none;}
+.nav-links a{color:var(--muted);text-decoration:none;font-family:'Silkscreen',monospace;font-size:12px;letter-spacing:1px;transition:color .15s;}
+.nav-links a:hover,.nav-links a.active{color:var(--orange);}
+.nav-right{display:flex;gap:10px;align-items:center;}
+.theme-toggle{background:var(--card);border:3px solid var(--border);padding:8px 12px;cursor:pointer;font-family:'Silkscreen',monospace;font-size:12px;color:var(--muted);transition:all .15s;}
+.theme-toggle:hover{border-color:var(--orange);color:var(--orange);}
+.nav-btn{font-family:'Press Start 2P',monospace;font-size:7px;color:#000;background:var(--orange);border:none;padding:10px 14px;cursor:pointer;box-shadow:3px 3px 0 0 var(--orange-shadow);transition:all .1s;text-decoration:none;display:inline-block;white-space:nowrap;}
+.nav-btn:hover{transform:translate(-2px,-2px);box-shadow:5px 5px 0 0 var(--orange-shadow);}
 
-/* MAIN LAYOUT */
-.dash-layout{display:grid;grid-template-columns:300px 1fr;min-height:100vh;padding-top:64px;}
+/* LAYOUT */
+.dash-layout{display:grid;grid-template-columns:280px 1fr;min-height:100vh;padding-top:68px;}
 
 /* SIDEBAR */
-.sidebar{background:var(--deep);border-right:3px solid var(--border);padding:32px 24px;position:sticky;top:64px;height:calc(100vh - 64px);overflow-y:auto;}
-
-.sidebar-section{margin-bottom:32px;}
-.sidebar-title{font-family:'Press Start 2P',monospace;font-size:9px;color:var(--muted);letter-spacing:2px;margin-bottom:16px;padding-bottom:8px;border-bottom:2px solid var(--border);}
+.sidebar{background:var(--deep);border-right:4px solid var(--border);padding:28px 20px;position:sticky;top:68px;height:calc(100vh - 68px);overflow-y:auto;}
+.sb-title{font-family:'Press Start 2P',monospace;font-size:8px;color:var(--muted);letter-spacing:2px;margin-bottom:14px;padding-bottom:8px;border-bottom:2px solid var(--border);}
 
 /* WALLET STATUS */
-.wallet-status{background:var(--card);border:3px solid var(--border);padding:16px;margin-bottom:24px;text-align:center;}
-.ws-icon{font-size:32px;display:block;margin-bottom:10px;}
-.ws-text{font-family:'Silkscreen',monospace;font-size:12px;color:var(--muted);margin-bottom:14px;display:block;}
-.ws-address{font-family:'Press Start 2P',monospace;font-size:7px;color:var(--cyan);word-break:break-all;margin-bottom:12px;display:none;}
-.ws-badge{display:inline-block;font-family:'Silkscreen',monospace;font-size:11px;padding:4px 12px;margin-bottom:12px;}
-.ws-badge.connected{background:rgba(16,185,129,.15);border:2px solid var(--green);color:var(--green);}
-.ws-badge.disconnected{background:rgba(107,107,154,.1);border:2px solid var(--border);color:var(--muted);}
+.ws-box{background:var(--card);border:3px solid var(--border);padding:16px;margin-bottom:20px;text-align:center;}
+.ws-icon{font-size:36px;display:block;margin-bottom:10px;}
+.ws-badge{display:inline-block;font-family:'Silkscreen',monospace;font-size:11px;padding:4px 12px;margin-bottom:10px;}
+.ws-badge.off{background:rgba(107,107,138,.1);border:2px solid var(--border);color:var(--muted);}
+.ws-badge.on{background:rgba(107,247,197,.1);border:2px solid var(--green);color:var(--green);}
+.ws-text{font-family:'Silkscreen',monospace;font-size:11px;color:var(--muted);display:block;margin-bottom:10px;line-height:1.5;}
+.ws-addr{font-family:'Press Start 2P',monospace;font-size:7px;color:var(--orange2);word-break:break-all;display:none;margin-bottom:10px;}
 
 /* WALLET BUTTONS */
-.wallet-list{display:flex;flex-direction:column;gap:10px;}
-.wallet-btn{
-  display:flex;align-items:center;gap:12px;
-  background:var(--card);border:3px solid var(--border);
-  padding:12px 14px;cursor:pointer;transition:all .15s;
-  font-family:'Silkscreen',monospace;font-size:12px;color:var(--text);
-  width:100%;text-align:left;
-}
-.wallet-btn:hover{border-color:var(--purple-light);color:var(--purple-light);}
-.wallet-btn.connected-wallet{border-color:var(--green);color:var(--green);background:rgba(16,185,129,.05);}
-.wallet-icon{width:28px;height:28px;border-radius:4px;object-fit:contain;flex-shrink:0;background:#fff;padding:3px;image-rendering:pixelated;}
-.wallet-name{flex:1;}
-.wallet-dot{width:8px;height:8px;border-radius:0;background:var(--muted);flex-shrink:0;}
-.wallet-dot.on{background:var(--green);animation:wblink 2s infinite;}
-@keyframes wblink{0%,100%{opacity:1}50%{opacity:.4}}
+.wallet-list{display:flex;flex-direction:column;gap:8px;margin-bottom:12px;}
+.w-btn{display:flex;align-items:center;gap:10px;background:var(--card);border:3px solid var(--border);padding:10px 12px;cursor:pointer;transition:all .15s;font-family:'Silkscreen',monospace;font-size:12px;color:var(--text);width:100%;text-align:left;}
+.w-btn:hover{border-color:var(--orange);color:var(--orange);}
+.w-btn.active-wallet{border-color:var(--green);color:var(--green);background:rgba(107,247,197,.05);}
+.w-icon{width:28px;height:28px;border-radius:3px;display:flex;align-items:center;justify-content:center;font-family:'Press Start 2P',monospace;font-size:11px;flex-shrink:0;}
+.w-dot{width:8px;height:8px;background:var(--muted);margin-left:auto;flex-shrink:0;}
+.w-dot.on{background:var(--green);animation:blink 2s infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.disconnect-btn{width:100%;font-family:'Silkscreen',monospace;font-size:11px;color:var(--red);background:rgba(255,107,107,.05);border:2px solid var(--red);padding:8px;cursor:pointer;display:none;transition:all .15s;margin-bottom:16px;}
+.disconnect-btn:hover{background:rgba(255,107,107,.15);}
 
-.disconnect-btn{width:100%;font-family:'Silkscreen',monospace;font-size:11px;color:var(--red);background:rgba(239,68,68,.05);border:2px solid var(--red);padding:8px;cursor:pointer;margin-top:8px;display:none;transition:all .15s;}
-.disconnect-btn:hover{background:rgba(239,68,68,.15);}
+/* SIDEBAR STATS */
+.sb-stat{background:var(--card);border:3px solid var(--border);padding:10px 14px;margin-bottom:8px;}
+.sb-stat-l{font-family:'Silkscreen',monospace;font-size:11px;color:var(--muted);display:block;margin-bottom:3px;}
+.sb-stat-n{font-family:'Press Start 2P',monospace;font-size:13px;color:var(--orange);}
+.sb-stat-n.gold{color:var(--orange2);}
+.sb-stat-n.green{color:var(--green);}
 
-/* STATS SIDEBAR */
-.dash-stat{background:var(--card);border:3px solid var(--border);padding:12px 14px;margin-bottom:8px;}
-.ds-label{font-family:'Silkscreen',monospace;font-size:11px;color:var(--muted);display:block;margin-bottom:4px;}
-.ds-val{font-family:'Press Start 2P',monospace;font-size:13px;color:var(--purple-light);}
-.ds-val.gold{color:var(--gold);}
-.ds-val.cyan{color:var(--cyan);}
-.ds-val.green{color:var(--green);}
+/* SIDEBAR LINKS */
+.sb-link{display:block;font-family:'Silkscreen',monospace;font-size:12px;color:var(--muted);text-decoration:none;padding:8px 10px;background:var(--card);border:2px solid var(--border);margin-bottom:6px;transition:all .15s;}
+.sb-link:hover{border-color:var(--orange);color:var(--orange);}
 
-/* MAIN CONTENT */
-.dash-main{padding:40px;overflow-y:auto;}
+/* MAIN */
+.dash-main{padding:36px;}
 
 /* CONNECT SCREEN */
-.connect-screen{text-align:center;padding:80px 20px;display:block;}
-.cs-title{font-family:'Press Start 2P',monospace;font-size:20px;color:var(--purple-light);margin-bottom:16px;line-height:1.8;}
-.cs-sub{font-size:22px;color:var(--muted);margin-bottom:40px;line-height:1.5;}
-.cs-wallets{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;max-width:700px;margin:0 auto 40px;}
-.cs-wallet{background:var(--card);border:3px solid var(--border);padding:24px 16px;cursor:pointer;transition:all .15s;text-align:center;}
-.cs-wallet:hover{border-color:var(--purple-light);transform:translate(-3px,-3px);box-shadow:6px 6px 0 0 var(--purple);}
-.cs-wallet-icon{font-size:36px;display:block;margin-bottom:12px;}
-.cs-wallet-name{font-family:'Press Start 2P',monospace;font-size:9px;color:var(--purple-light);}
+.connect-screen{text-align:center;padding:60px 20px;}
+.cs-title{font-family:'Press Start 2P',monospace;font-size:18px;color:var(--orange);margin-bottom:14px;line-height:1.8;text-shadow:4px 4px 0 var(--orange-shadow);}
+.cs-sub{font-size:22px;color:var(--muted);margin-bottom:36px;line-height:1.5;max-width:500px;margin-left:auto;margin-right:auto;}
+.cs-btc{font-family:'Press Start 2P',monospace;font-size:80px;color:var(--orange);opacity:.15;display:block;margin-bottom:20px;animation:pulse 3s infinite;}
+@keyframes pulse{0%,100%{opacity:.15}50%{opacity:.25}}
+.cs-wallets{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;max-width:640px;margin:0 auto 32px;}
+.cs-w{background:var(--card);border:3px solid var(--border);padding:20px 14px;cursor:pointer;transition:all .15s;text-align:center;}
+.cs-w:hover{border-color:var(--orange);transform:translate(-3px,-3px);box-shadow:6px 6px 0 0 var(--orange-shadow);}
+.cs-w-icon{font-size:32px;display:block;margin-bottom:10px;}
+.cs-w-name{font-family:'Press Start 2P',monospace;font-size:8px;color:var(--orange);}
 
-/* DASHBOARD CONTENT */
+/* DASHBOARD */
 .dash-content{display:none;}
-.dash-header{margin-bottom:32px;}
-.dh-tag{font-family:'Silkscreen',monospace;font-size:12px;color:var(--cyan);letter-spacing:3px;margin-bottom:10px;}
-.dh-title{font-family:'Press Start 2P',monospace;font-size:16px;color:var(--text);line-height:1.8;}
-.dh-addr{font-family:'VT323',monospace;font-size:18px;color:var(--muted);margin-top:8px;}
-
-/* TAB NAVIGATION */
-.dash-tabs{display:flex;gap:0;border-bottom:3px solid var(--border);margin-bottom:32px;}
-.dash-tab{font-family:'Silkscreen',monospace;font-size:12px;color:var(--muted);background:none;border:none;border-bottom:3px solid transparent;padding:12px 20px;cursor:pointer;margin-bottom:-3px;transition:all .15s;letter-spacing:1px;}
-.dash-tab:hover{color:var(--text);}
-.dash-tab.active{color:var(--cyan);border-bottom-color:var(--cyan);}
+.dh-tag{font-family:'Silkscreen',monospace;font-size:11px;color:var(--orange2);letter-spacing:3px;margin-bottom:8px;}
+.dh-title{font-family:'Press Start 2P',monospace;font-size:14px;color:var(--text);line-height:1.8;margin-bottom:6px;}
+.dh-addr{font-size:18px;color:var(--muted);margin-bottom:24px;font-family:'Silkscreen',monospace;word-break:break-all;}
 
 /* SUMMARY CARDS */
-.summary-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:16px;margin-bottom:40px;}
-.sum-card{background:var(--card);border:3px solid var(--border);padding:20px 16px;text-align:center;}
-.sum-card.highlight{border-color:var(--purple);}
-.sum-n{font-family:'Press Start 2P',monospace;font-size:18px;color:var(--purple-light);display:block;margin-bottom:6px;}
-.sum-n.gold{color:var(--gold);}
-.sum-n.cyan{color:var(--cyan);}
+.sum-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:14px;margin-bottom:32px;}
+.sum-card{background:var(--card);border:3px solid var(--border);padding:18px 14px;text-align:center;}
+.sum-card.highlight{border-color:var(--orange);}
+.sum-n{font-family:'Press Start 2P',monospace;font-size:18px;color:var(--orange);display:block;margin-bottom:6px;}
+.sum-n.gold{color:var(--orange2);}
 .sum-n.green{color:var(--green);}
-.sum-l{font-family:'Silkscreen',monospace;font-size:11px;color:var(--muted);letter-spacing:1px;}
+.sum-l{font-family:'Silkscreen',monospace;font-size:11px;color:var(--muted);}
 
-/* INSCRIPTION PANELS */
-.pq-section{margin-bottom:40px;}
-.pq-section-title{font-family:'Press Start 2P',monospace;font-size:10px;color:var(--cyan);margin-bottom:20px;display:flex;align-items:center;gap:12px;}
-.pq-section-title::after{content:'';flex:1;height:2px;background:var(--border);}
-.pq-count{font-family:'Silkscreen',monospace;font-size:12px;color:var(--muted);background:var(--card);border:2px solid var(--border);padding:3px 10px;}
+/* TABS */
+.dash-tabs{display:flex;border-bottom:3px solid var(--border);margin-bottom:28px;}
+.dash-tab{font-family:'Silkscreen',monospace;font-size:12px;color:var(--muted);background:none;border:none;border-bottom:3px solid transparent;padding:12px 18px;cursor:pointer;margin-bottom:-3px;transition:all .15s;letter-spacing:1px;}
+.dash-tab:hover{color:var(--text);}
+.dash-tab.active{color:var(--orange);border-bottom-color:var(--orange);}
 
-.ordinals-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:16px;}
-.ord-card{background:var(--card2);border:3px solid var(--border);transition:all .15s;cursor:pointer;overflow:hidden;}
-.ord-card:hover{border-color:var(--purple-light);transform:translate(-3px,-3px);box-shadow:6px 6px 0 0 var(--purple);}
-.ord-media{width:100%;aspect-ratio:1;background:#000;display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative;}
-.ord-media video,.ord-media img,.ord-media iframe{width:100%;height:100%;object-fit:cover;display:block;border:none;}
-.ord-media-badge{position:absolute;top:4px;right:4px;font-family:'Silkscreen',monospace;font-size:9px;padding:2px 6px;}
-.ord-media-badge.v{background:rgba(124,58,237,.8);color:#fff;border:1px solid var(--purple);}
-.ord-media-badge.i{background:rgba(7,7,15,.8);color:var(--muted);border:1px solid var(--border);}
+/* ORD GRID */
+.ord-section-title{font-family:'Press Start 2P',monospace;font-size:9px;color:var(--orange2);margin-bottom:18px;display:flex;align-items:center;gap:10px;}
+.ord-section-title::after{content:'';flex:1;height:2px;background:var(--border);}
+.ord-count{font-family:'Silkscreen',monospace;font-size:12px;color:var(--muted);background:var(--card);border:2px solid var(--border);padding:3px 10px;}
+.ord-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:14px;}
+.ord-card{background:var(--card2);border:3px solid var(--border);overflow:hidden;transition:all .15s;cursor:pointer;}
+.ord-card:hover{border-color:var(--orange);transform:translate(-2px,-2px);box-shadow:5px 5px 0 0 var(--orange-shadow);}
+.ord-media{width:100%;aspect-ratio:1;background:#000;overflow:hidden;position:relative;}
+.ord-media iframe{width:100%;height:100%;border:none;display:block;pointer-events:none;}
+.ord-pq-tag{position:absolute;bottom:4px;left:4px;background:var(--orange);color:#000;font-family:'Press Start 2P',monospace;font-size:6px;padding:3px 6px;}
 .ord-body{padding:10px;}
 .ord-num{font-family:'Press Start 2P',monospace;font-size:7px;color:var(--muted);display:block;margin-bottom:4px;}
-.ord-name{font-family:'Silkscreen',monospace;font-size:12px;color:var(--purple-light);}
-.ord-pq-badge{display:inline-block;background:var(--purple);color:var(--black);font-family:'Press Start 2P',monospace;font-size:6px;padding:2px 6px;margin-top:6px;}
+.ord-name{font-family:'Silkscreen',monospace;font-size:12px;color:var(--orange);}
 
 /* EMPTY STATE */
-.empty-state{text-align:center;padding:60px 20px;border:3px dashed var(--border);}
-.empty-icon{font-size:48px;display:block;margin-bottom:16px;opacity:.5;}
-.empty-text{font-family:'Silkscreen',monospace;font-size:14px;color:var(--muted);}
+.empty-state{border:3px dashed var(--border);padding:60px 20px;text-align:center;}
+.empty-icon{font-size:48px;display:block;margin-bottom:16px;opacity:.4;}
+.empty-text{font-family:'Silkscreen',monospace;font-size:14px;color:var(--muted);line-height:1.6;}
 
-/* ACTIVITY TABLE */
-.activity-table{width:100%;border-collapse:collapse;}
-.activity-table th{font-family:'Silkscreen',monospace;font-size:11px;color:var(--muted);padding:10px 14px;text-align:left;border-bottom:2px solid var(--border);letter-spacing:1px;}
-.activity-table td{padding:12px 14px;border-bottom:1px solid var(--border);font-size:16px;color:var(--text);}
-.activity-table tr:hover td{background:var(--card2);}
-.td-type{font-family:'Silkscreen',monospace;font-size:11px;padding:3px 8px;}
-.td-type.recv{background:rgba(16,185,129,.15);border:2px solid var(--green);color:var(--green);}
-.td-type.send{background:rgba(239,68,68,.1);border:2px solid var(--red);color:var(--red);}
+/* ACTIVITY */
+.act-table{width:100%;border-collapse:collapse;}
+.act-table th{font-family:'Silkscreen',monospace;font-size:11px;color:var(--muted);padding:10px 14px;text-align:left;border-bottom:2px solid var(--border);letter-spacing:1px;}
+.act-table td{padding:12px 14px;border-bottom:1px solid var(--border);font-size:16px;}
+.act-table tr:hover td{background:var(--card2);}
+.td-badge{font-family:'Silkscreen',monospace;font-size:10px;padding:3px 8px;}
+.td-badge.recv{background:rgba(107,247,197,.1);border:2px solid var(--green);color:var(--green);}
+.td-badge.send{background:rgba(255,107,107,.1);border:2px solid var(--red);color:var(--red);}
 
-/* Responsive */
-@media(max-width:1000px){
+@media(max-width:900px){
   .dash-layout{grid-template-columns:1fr;}
   .sidebar{position:static;height:auto;}
-}
-@media(max-width:700px){
   nav{padding:0 16px;}.nav-links{display:none;}
   .dash-main{padding:20px;}
-  .cs-wallets{grid-template-columns:1fr 1fr;}
+  .cs-wallets{grid-template-columns:repeat(3,1fr);}
 }
 </style>
 </head>
 <body>
-
 <nav>
-  <a class="nav-logo" href="index.html">
-    <img src="PXQT_LOGO.jpg" alt="PixelQuote Logo">
-    <div class="nav-logo-text">PIXEL<span>QUOTE</span><br>ORDINALS</div>
-  </a>
+  <a class="nav-logo" href="index.html"><img src="PXQT_LOGO.jpg" alt="PQ"><div class="nav-logo-text">PIXEL<span>QUOTE</span><br>ORDINALS</div></a>
   <ul class="nav-links">
     <li><a href="index.html">HOME</a></li>
     <li><a href="collection.html">COLLECTION</a></li>
@@ -168,442 +148,306 @@ nav{position:fixed;top:0;left:0;right:0;z-index:500;background:rgba(7,7,15,.95);
     <li><a href="https://twitter.com/PixelQuoteNFT" target="_blank">TWITTER</a></li>
   </ul>
   <div class="nav-right">
-    <div id="navWalletStatus" style="font-family:'Silkscreen',monospace;font-size:11px;color:var(--muted);">NO WALLET</div>
+    <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn">☀ LIGHT</button>
+    <span id="navAddr" style="font-family:'Silkscreen',monospace;font-size:11px;color:var(--muted);">NO WALLET</span>
   </div>
 </nav>
 
 <div class="dash-layout">
   <!-- SIDEBAR -->
   <div class="sidebar">
-    <!-- Wallet Status -->
-    <div class="wallet-status">
-      <span class="ws-icon" id="wsIcon">🔌</span>
+    <div class="ws-box">
+      <span class="ws-icon" id="wsIcon">₿</span>
+      <span class="ws-badge off" id="wsBadge">NOT CONNECTED</span>
       <span class="ws-text" id="wsText">Connect your Bitcoin wallet to view your PixelQuote Ordinals</span>
-      <span class="ws-badge disconnected" id="wsBadge">NOT CONNECTED</span>
-      <span class="ws-address" id="wsAddress"></span>
+      <span class="ws-addr" id="wsAddr"></span>
     </div>
 
-    <!-- Wallet Buttons -->
-    <div class="sidebar-section">
-      <div class="sidebar-title">CONNECT WALLET</div>
-      <div class="wallet-list">
-        <button class="wallet-btn" onclick="connectWallet('xverse')" id="btn-xverse">
-          <span class="wallet-icon" style="background:#1a1a2e;color:#7c3aed;font-size:18px;display:flex;align-items:center;justify-content:center;">X</span>
-          <span class="wallet-name">Xverse</span>
-          <span class="wallet-dot" id="dot-xverse"></span>
-        </button>
-        <button class="wallet-btn" onclick="connectWallet('unisat')" id="btn-unisat">
-          <span class="wallet-icon" style="background:#ff8c00;color:#fff;font-size:16px;display:flex;align-items:center;justify-content:center;">U</span>
-          <span class="wallet-name">UniSat</span>
-          <span class="wallet-dot" id="dot-unisat"></span>
-        </button>
-        <button class="wallet-btn" onclick="connectWallet('leather')" id="btn-leather">
-          <span class="wallet-icon" style="background:#c0a060;color:#fff;font-size:16px;display:flex;align-items:center;justify-content:center;">L</span>
-          <span class="wallet-name">Leather</span>
-          <span class="wallet-dot" id="dot-leather"></span>
-        </button>
-        <button class="wallet-btn" onclick="connectWallet('okx')" id="btn-okx">
-          <span class="wallet-icon" style="background:#000;color:#fff;font-size:16px;display:flex;align-items:center;justify-content:center;">O</span>
-          <span class="wallet-name">OKX Wallet</span>
-          <span class="wallet-dot" id="dot-okx"></span>
-        </button>
-        <button class="wallet-btn" onclick="connectWallet('tap')" id="btn-tap">
-          <span class="wallet-icon" style="background:#0a2040;color:#06b6d4;font-size:16px;display:flex;align-items:center;justify-content:center;">T</span>
-          <span class="wallet-name">TAP Wallet</span>
-          <span class="wallet-dot" id="dot-tap"></span>
-        </button>
-      </div>
-      <button class="disconnect-btn" id="disconnectBtn" onclick="disconnectWallet()">✕ DISCONNECT WALLET</button>
+    <div class="sb-title">CONNECT WALLET</div>
+    <div class="wallet-list">
+      <button class="w-btn" onclick="connect('xverse')" id="btn-xverse">
+        <span class="w-icon" style="background:#1a0a3e;color:#a78bfa;">X</span>
+        <span>Xverse</span><span class="w-dot" id="dot-xverse"></span>
+      </button>
+      <button class="w-btn" onclick="connect('unisat')" id="btn-unisat">
+        <span class="w-icon" style="background:#ff8c00;color:#fff;">U</span>
+        <span>UniSat</span><span class="w-dot" id="dot-unisat"></span>
+      </button>
+      <button class="w-btn" onclick="connect('leather')" id="btn-leather">
+        <span class="w-icon" style="background:#c0a060;color:#fff;">L</span>
+        <span>Leather</span><span class="w-dot" id="dot-leather"></span>
+      </button>
+      <button class="w-btn" onclick="connect('okx')" id="btn-okx">
+        <span class="w-icon" style="background:#000;color:#fff;border:1px solid #444;">O</span>
+        <span>OKX Wallet</span><span class="w-dot" id="dot-okx"></span>
+      </button>
+      <button class="w-btn" onclick="connect('tap')" id="btn-tap">
+        <span class="w-icon" style="background:#0a2040;color:#06b6d4;">T</span>
+        <span>TAP Wallet</span><span class="w-dot" id="dot-tap"></span>
+      </button>
+    </div>
+    <button class="disconnect-btn" id="disconnectBtn" onclick="disconnect()">✕ DISCONNECT</button>
+
+    <div id="sbStats" style="display:none;">
+      <div class="sb-title">YOUR STATS</div>
+      <div class="sb-stat"><span class="sb-stat-l">PIXELQUOTE HELD</span><span class="sb-stat-n gold" id="sbPQ">0</span></div>
+      <div class="sb-stat"><span class="sb-stat-l">OTHER ORDINALS</span><span class="sb-stat-n" id="sbOther">0</span></div>
+      <div class="sb-stat"><span class="sb-stat-l">TOTAL INSCRIPTIONS</span><span class="sb-stat-n" id="sbTotal">0</span></div>
+      <div class="sb-stat"><span class="sb-stat-l">WALLET TYPE</span><span class="sb-stat-n green" id="sbWallet">-</span></div>
+      <br>
     </div>
 
-    <!-- Sidebar Stats -->
-    <div class="sidebar-section" id="sidebarStats" style="display:none;">
-      <div class="sidebar-title">YOUR STATS</div>
-      <div class="dash-stat"><span class="ds-label">PIXELQUOTE HELD</span><span class="ds-val gold" id="statPQ">0</span></div>
-      <div class="dash-stat"><span class="ds-label">OTHER ORDINALS</span><span class="ds-val cyan" id="statOther">0</span></div>
-      <div class="dash-stat"><span class="ds-label">TOTAL INSCRIPTIONS</span><span class="ds-val" id="statTotal">0</span></div>
-      <div class="dash-stat"><span class="ds-label">WALLET</span><span class="ds-val green" id="statWallet">-</span></div>
-    </div>
-
-    <!-- Links -->
-    <div class="sidebar-section">
-      <div class="sidebar-title">QUICK LINKS</div>
-      <div style="display:flex;flex-direction:column;gap:8px;">
-        <a href="collection.html" style="font-family:'Silkscreen',monospace;font-size:12px;color:var(--purple-light);text-decoration:none;padding:8px;background:var(--card);border:2px solid var(--border);">→ View Collection</a>
-        <a href="https://ordinalswallet.com/collection/pixel-quote" target="_blank" style="font-family:'Silkscreen',monospace;font-size:12px;color:var(--cyan);text-decoration:none;padding:8px;background:var(--card);border:2px solid var(--border);">→ Buy on Ordinals Wallet</a>
-        <a href="https://www.ord.io/collection/pixel-quote" target="_blank" style="font-family:'Silkscreen',monospace;font-size:12px;color:var(--muted);text-decoration:none;padding:8px;background:var(--card);border:2px solid var(--border);">→ View on Ord.io</a>
-        <a href="https://www.satflow.com/ordinals/pixel-quote" target="_blank" style="font-family:'Silkscreen',monospace;font-size:12px;color:var(--muted);text-decoration:none;padding:8px;background:var(--card);border:2px solid var(--border);">→ Satflow Marketplace</a>
-      </div>
-    </div>
+    <div class="sb-title">QUICK LINKS</div>
+    <a href="collection.html" class="sb-link">₿ View Full Collection</a>
+    <a href="https://ordinalswallet.com/collection/pixel-quote" target="_blank" class="sb-link">→ Ordinals Wallet</a>
+    <a href="https://www.satflow.com/ordinals/pixel-quote" target="_blank" class="sb-link">→ Satflow</a>
+    <a href="https://unisat.io/market/collection?collectionId=pixel-quote" target="_blank" class="sb-link">→ UniSat Market</a>
+    <a href="https://web3.okx.com/nft/collection/btc/pixelquote-nft" target="_blank" class="sb-link">→ OKX NFT</a>
+    <a href="https://www.trio.xyz/collections/pixel-quote" target="_blank" class="sb-link">→ Trio</a>
+    <a href="https://bestinslot.xyz/ordinals/collections/pixel-quote" target="_blank" class="sb-link">→ Best in Slot</a>
+    <a href="https://app.ordinalhive.io/collections/pixel-quote" target="_blank" class="sb-link">→ Ordinal Hive</a>
+    <a href="https://www.ord.io/collection/pixel-quote" target="_blank" class="sb-link">🔍 Ord.io Explorer</a>
   </div>
 
   <!-- MAIN -->
   <div class="dash-main">
-
-    <!-- Connect Screen -->
+    <!-- CONNECT SCREEN -->
     <div class="connect-screen" id="connectScreen">
+      <span class="cs-btc">₿</span>
       <div class="cs-title">MY ORDINALS<br>DASHBOARD</div>
-      <p class="cs-sub">Connect your Bitcoin wallet to view your PixelQuote Ordinals and all other inscription holdings.</p>
+      <p class="cs-sub">Connect your Bitcoin wallet to view your PixelQuote Digital Artifacts and all other Ordinal inscriptions.</p>
       <div class="cs-wallets">
-        <div class="cs-wallet" onclick="connectWallet('xverse')">
-          <span class="cs-wallet-icon">🔷</span>
-          <div class="cs-wallet-name">XVERSE</div>
-        </div>
-        <div class="cs-wallet" onclick="connectWallet('unisat')">
-          <span class="cs-wallet-icon">🟠</span>
-          <div class="cs-wallet-name">UNISAT</div>
-        </div>
-        <div class="cs-wallet" onclick="connectWallet('leather')">
-          <span class="cs-wallet-icon">🟤</span>
-          <div class="cs-wallet-name">LEATHER</div>
-        </div>
-        <div class="cs-wallet" onclick="connectWallet('okx')">
-          <span class="cs-wallet-icon">⚫</span>
-          <div class="cs-wallet-name">OKX WALLET</div>
-        </div>
-        <div class="cs-wallet" onclick="connectWallet('tap')">
-          <span class="cs-wallet-icon">🔵</span>
-          <div class="cs-wallet-name">TAP WALLET</div>
-        </div>
+        <div class="cs-w" onclick="connect('xverse')"><span class="cs-w-icon">🔷</span><div class="cs-w-name">XVERSE</div></div>
+        <div class="cs-w" onclick="connect('unisat')"><span class="cs-w-icon">🟠</span><div class="cs-w-name">UNISAT</div></div>
+        <div class="cs-w" onclick="connect('leather')"><span class="cs-w-icon">🟤</span><div class="cs-w-name">LEATHER</div></div>
+        <div class="cs-w" onclick="connect('okx')"><span class="cs-w-icon">⚫</span><div class="cs-w-name">OKX</div></div>
+        <div class="cs-w" onclick="connect('tap')"><span class="cs-w-icon">🔵</span><div class="cs-w-name">TAP WALLET</div></div>
       </div>
-      <div style="font-family:'Silkscreen',monospace;font-size:12px;color:var(--muted);max-width:500px;margin:0 auto;line-height:1.6;">
-        Connects to your installed Bitcoin wallet. PixelQuote Ordinals will appear first, followed by all other ordinal inscriptions in your wallet.
-      </div>
+      <div style="font-family:'Silkscreen',monospace;font-size:12px;color:var(--muted);max-width:460px;margin:0 auto;line-height:1.7;">PixelQuote Ordinals shown first as primary. All other Bitcoin inscriptions shown as secondary.</div>
     </div>
 
-    <!-- Dashboard Content -->
+    <!-- DASHBOARD CONTENT -->
     <div class="dash-content" id="dashContent">
-      <div class="dash-header">
-        <div class="dh-tag">// MY ORDINALS DASHBOARD</div>
-        <div class="dh-title" id="dhTitle">WALLET CONNECTED</div>
-        <div class="dh-addr" id="dhAddr"></div>
+      <div class="dh-tag">// MY ORDINALS DASHBOARD</div>
+      <div class="dh-title" id="dhTitle">WALLET CONNECTED</div>
+      <div class="dh-addr" id="dhAddr"></div>
+
+      <div class="sum-grid">
+        <div class="sum-card highlight"><span class="sum-n gold" id="sumPQ">0</span><span class="sum-l">PIXELQUOTE HELD</span></div>
+        <div class="sum-card"><span class="sum-n" id="sumOther">0</span><span class="sum-l">OTHER ORDINALS</span></div>
+        <div class="sum-card"><span class="sum-n" id="sumTotal">0</span><span class="sum-l">TOTAL INSCRIPTIONS</span></div>
+        <div class="sum-card"><span class="sum-n green" id="sumBtc">₿ ---</span><span class="sum-l">BITCOIN ADDRESS</span></div>
       </div>
 
-      <!-- Summary -->
-      <div class="summary-grid">
-        <div class="sum-card highlight">
-          <span class="sum-n gold" id="sumPQ">0</span>
-          <span class="sum-l">PIXELQUOTE HELD</span>
-        </div>
-        <div class="sum-card">
-          <span class="sum-n cyan" id="sumOther">0</span>
-          <span class="sum-l">OTHER ORDINALS</span>
-        </div>
-        <div class="sum-card">
-          <span class="sum-n" id="sumTotal">0</span>
-          <span class="sum-l">TOTAL INSCRIPTIONS</span>
-        </div>
-        <div class="sum-card">
-          <span class="sum-n green" id="sumBtc">-</span>
-          <span class="sum-l">BTC BALANCE</span>
-        </div>
-      </div>
-
-      <!-- TABS -->
       <div class="dash-tabs">
-        <button class="dash-tab active" onclick="switchTab('pixelquote',this)">★ PIXELQUOTE ORDINALS</button>
-        <button class="dash-tab" onclick="switchTab('all',this)">ALL ORDINALS</button>
-        <button class="dash-tab" onclick="switchTab('activity',this)">ACTIVITY</button>
+        <button class="dash-tab active" onclick="tab('pq',this)">★ PIXELQUOTE ORDINALS</button>
+        <button class="dash-tab" onclick="tab('all',this)">ALL ORDINALS</button>
+        <button class="dash-tab" onclick="tab('activity',this)">ACTIVITY</button>
       </div>
 
-      <!-- PIXELQUOTE TAB -->
-      <div id="tab-pixelquote">
-        <div class="pq-section">
-          <div class="pq-section-title">
-            YOUR PIXELQUOTE COLLECTION
-            <span class="pq-count" id="pqCount">0 INSCRIPTIONS</span>
-          </div>
-          <div id="pqGrid" class="ordinals-grid"></div>
-          <div id="pqEmpty" class="empty-state" style="display:none;">
-            <span class="empty-icon">🎨</span>
-            <div class="empty-text">No PixelQuote Ordinals found in this wallet.<br><br>
-              <a href="collection.html" style="color:var(--purple-light);">Browse & buy the collection →</a>
-            </div>
+      <!-- PQ TAB -->
+      <div id="tab-pq">
+        <div class="ord-section-title">YOUR PIXELQUOTE COLLECTION <span class="ord-count" id="pqCount">0</span></div>
+        <div class="ord-grid" id="pqGrid"></div>
+        <div class="empty-state" id="pqEmpty" style="display:none;">
+          <span class="empty-icon">₿</span>
+          <div class="empty-text">No PixelQuote Ordinals found in this wallet.<br><br>
+            <a href="collection.html" style="color:var(--orange);">Browse the collection →</a><br><br>
+            <a href="https://ordinalswallet.com/collection/pixel-quote" target="_blank" style="color:var(--orange2);">Buy on Ordinals Wallet →</a>
           </div>
         </div>
       </div>
 
-      <!-- ALL ORDINALS TAB -->
+      <!-- ALL TAB -->
       <div id="tab-all" style="display:none;">
-        <div class="pq-section">
-          <div class="pq-section-title">
-            ALL ORDINAL INSCRIPTIONS
-            <span class="pq-count" id="allCount">0 TOTAL</span>
-          </div>
-          <div id="allGrid" class="ordinals-grid"></div>
-        </div>
+        <div class="ord-section-title">ALL BITCOIN INSCRIPTIONS <span class="ord-count" id="allCount">0</span></div>
+        <div class="ord-grid" id="allGrid"></div>
       </div>
 
       <!-- ACTIVITY TAB -->
       <div id="tab-activity" style="display:none;">
-        <div class="pq-section">
-          <div class="pq-section-title">RECENT ACTIVITY</div>
-          <table class="activity-table">
-            <thead>
-              <tr>
-                <th>TYPE</th>
-                <th>INSCRIPTION</th>
-                <th>FROM/TO</th>
-                <th>DATE</th>
-                <th>TX</th>
-              </tr>
-            </thead>
-            <tbody id="activityBody"></tbody>
-          </table>
-        </div>
+        <div class="ord-section-title">RECENT ACTIVITY</div>
+        <table class="act-table">
+          <thead><tr><th>TYPE</th><th>INSCRIPTION</th><th>ADDRESS</th><th>DATE</th><th>TX</th></tr></thead>
+          <tbody id="actBody"></tbody>
+        </table>
       </div>
     </div>
   </div>
 </div>
 
 <script>
-// ─── WALLET CONNECTION ───
-const WALLETS = {
-  xverse: { name:'Xverse', provider:'XverseProviders' },
-  unisat: { name:'UniSat', provider:'unisat' },
-  leather: { name:'Leather', provider:'LeatherProvider' },
-  okx: { name:'OKX Wallet', provider:'okxwallet' },
-  tap: { name:'TAP Wallet', provider:'tapWallet' },
-};
+const WALLETS = {xverse:'Xverse',unisat:'UniSat',leather:'Leather',okx:'OKX Wallet',tap:'TAP Wallet'};
+const PQ_IDS_SHORT = ['815f699b','e683703e','b846639b','354526c9','427b1fc6','0deb5aa3','d7cc93c5','940749f7','10c0ad75','213d0015'];
+const ORD_PREVIEW = 'https://ordinals.com/preview/';
 
 let connectedWallet = null;
 let walletAddress = null;
 
-// Known PixelQuote inscriptions (from collection)
-const PIXELQUOTE_IDS = [35672,35958,54247,54913,36100,36200,36300,37000,38000,39000,40000,41000,42000,43000,44000,45000,46000,47000,48000,49000,50000,51000,52000,53000];
-
-const charColors = { BOY:'#06b6d4', GIRL:'#ec4899', VAMPIRE:'#7c3aed', WIZARD:'#10b981', CYBORG:'#6b7280', APE:'#f59e0b', DOG:'#d97706', CAT:'#6b7280', FROG:'#10b981' };
-const charMap = { 35672:'BOY', 35958:'BOY', 54247:'GIRL', 54913:'CYBORG', 36100:'WIZARD', 36200:'DOG', 36300:'FROG', 37000:'DOG', 38000:'VAMPIRE', 39000:'APE', 40000:'CAT', 41000:'GIRL', 42000:'BOY', 43000:'WIZARD', 44000:'CYBORG', 45000:'FROG', 46000:'DOG', 47000:'APE', 48000:'CAT', 49000:'VAMPIRE', 50000:'GIRL', 51000:'BOY', 52000:'WIZARD', 53000:'FROG' };
-const quoteMap = { 35672:'Well Done', 35958:'Well Done', 54247:'Love for All', 54913:'Fight for Freedom', 36100:'Imagination is Key', 36200:'Things Will Get Better', 36300:'Make Some Mistakes', 37000:'Cherish Every Moment', 38000:'Happy Halloween', 39000:'Fire Up', 40000:'Enjoy Failures', 41000:'Stay Hopeful', 42000:'Keep Going', 43000:'Life is Short', 44000:'Fight for Freedom', 45000:'Bitcoin Tulip Bubble', 46000:'Stack Satoshi', 47000:'Rise Up', 48000:'Be Unique', 49000:'Embrace the Dark', 50000:'Love Yourself', 51000:'Dream Big', 52000:'Cast Your Spell', 53000:'Leap of Faith' };
-const videoIds = new Set([35672,36100,36200,36300,37000,42000,43000,44000,46000,47000,48000,49000,50000,53000]);
-const localMedia = { 35958:'35958.png', 54247:'54247.png', 54913:'54913.png', 36100:'PixelQuote_087_-_Wizard_Video_-_Imagination_is_Key.mp4', 36200:'PixelQuote_188_-_Dog_Video_-_Things_Will_Get_Better.mp4', 36300:'PixelQuote_252_-_Frog_Video_-_Make_some_Mistakes.mp4', 37000:'PixelQuote_177_-_Dog_Video_-_Cherish_Every_Moment.mp4' };
-
-async function connectWallet(type) {
-  const w = WALLETS[type];
-  // Try real wallet provider
+async function connect(type) {
   let address = null;
-
   try {
-    if (type === 'unisat' && window.unisat) {
-      const accounts = await window.unisat.requestAccounts();
-      address = accounts[0];
-    } else if (type === 'xverse' && window.XverseProviders) {
-      // Xverse uses bitcoin:requestAccounts via provider
-      const res = await window.XverseProviders.BitcoinProvider.request('bitcoin_requestAccounts', null);
-      address = res.result.addresses[0].address;
-    } else if (type === 'leather' && window.LeatherProvider) {
-      const res = await window.LeatherProvider.request('getAddresses', {});
-      address = res.result.addresses.find(a => a.type === 'p2tr')?.address;
-    } else if (type === 'okx' && window.okxwallet?.bitcoin) {
-      const res = await window.okxwallet.bitcoin.requestAccounts();
-      address = res[0];
+    if (type==='unisat' && window.unisat) {
+      const acc = await window.unisat.requestAccounts(); address = acc[0];
+    } else if (type==='xverse' && window.XverseProviders) {
+      const r = await window.XverseProviders.BitcoinProvider.request('bitcoin_requestAccounts',null);
+      address = r.result.addresses[0].address;
+    } else if (type==='leather' && window.LeatherProvider) {
+      const r = await window.LeatherProvider.request('getAddresses',{});
+      address = r.result.addresses.find(a=>a.type==='p2tr')?.address;
+    } else if (type==='okx' && window.okxwallet?.bitcoin) {
+      const r = await window.okxwallet.bitcoin.requestAccounts(); address = r[0];
     } else {
-      // Wallet not installed — demo mode
-      address = 'bc1p' + Math.random().toString(36).substr(2, 38) + 'demo';
+      address = 'bc1p_' + type + '_' + Math.random().toString(36).substr(2,12);
     }
   } catch(e) {
-    // Wallet rejected or not installed — demo mode
     address = 'bc1p_demo_' + type + '_' + Math.random().toString(36).substr(2,8);
   }
-
   if (!address) return;
-
-  connectedWallet = type;
-  walletAddress = address;
-  onWalletConnected(type, address);
+  connectedWallet = type; walletAddress = address;
+  onConnected(type, address);
 }
 
-function onWalletConnected(type, address) {
-  const w = WALLETS[type];
-
-  // Update sidebar
+function onConnected(type, addr) {
   document.getElementById('wsIcon').textContent = '✅';
-  document.getElementById('wsText').textContent = w.name + ' connected';
   document.getElementById('wsBadge').textContent = 'CONNECTED';
-  document.getElementById('wsBadge').className = 'ws-badge connected';
-  document.getElementById('wsAddress').textContent = address.slice(0,12) + '...' + address.slice(-6);
-  document.getElementById('wsAddress').style.display = 'block';
+  document.getElementById('wsBadge').className = 'ws-badge on';
+  document.getElementById('wsText').textContent = WALLETS[type] + ' wallet connected';
+  document.getElementById('wsAddr').textContent = addr.slice(0,14)+'...'+addr.slice(-6);
+  document.getElementById('wsAddr').style.display = 'block';
   document.getElementById('disconnectBtn').style.display = 'block';
-  document.getElementById('sidebarStats').style.display = 'block';
+  document.getElementById('sbStats').style.display = 'block';
   document.getElementById('dot-'+type).classList.add('on');
-  document.getElementById('btn-'+type).classList.add('connected-wallet');
-
-  // Nav
-  document.getElementById('navWalletStatus').textContent = address.slice(0,8)+'...';
-  document.getElementById('navWalletStatus').style.color = 'var(--green)';
-
-  // Show dashboard
+  document.getElementById('btn-'+type).classList.add('active-wallet');
+  document.getElementById('sbWallet').textContent = WALLETS[type].toUpperCase();
+  document.getElementById('navAddr').textContent = addr.slice(0,10)+'...';
+  document.getElementById('navAddr').style.color = 'var(--green)';
   document.getElementById('connectScreen').style.display = 'none';
   document.getElementById('dashContent').style.display = 'block';
-  document.getElementById('dhTitle').textContent = w.name.toUpperCase() + ' CONNECTED';
-  document.getElementById('dhAddr').textContent = address.slice(0,18)+'...'+address.slice(-8);
-
-  // Load inscriptions
-  loadInscriptions(address);
+  document.getElementById('dhTitle').textContent = WALLETS[type].toUpperCase() + ' CONNECTED';
+  document.getElementById('dhAddr').textContent = addr.slice(0,20)+'...'+addr.slice(-8);
+  document.getElementById('sumBtc').textContent = addr.slice(0,8)+'...';
+  fetchAndRender(addr);
 }
 
-function disconnectWallet() {
+function disconnect() {
   if (connectedWallet) {
     document.getElementById('dot-'+connectedWallet).classList.remove('on');
-    document.getElementById('btn-'+connectedWallet).classList.remove('connected-wallet');
+    document.getElementById('btn-'+connectedWallet).classList.remove('active-wallet');
   }
   connectedWallet = null; walletAddress = null;
-  document.getElementById('wsIcon').textContent = '🔌';
-  document.getElementById('wsText').textContent = 'Connect your Bitcoin wallet';
+  document.getElementById('wsIcon').textContent = '₿';
   document.getElementById('wsBadge').textContent = 'NOT CONNECTED';
-  document.getElementById('wsBadge').className = 'ws-badge disconnected';
-  document.getElementById('wsAddress').style.display = 'none';
+  document.getElementById('wsBadge').className = 'ws-badge off';
+  document.getElementById('wsText').textContent = 'Connect your Bitcoin wallet to view your PixelQuote Ordinals';
+  document.getElementById('wsAddr').style.display = 'none';
   document.getElementById('disconnectBtn').style.display = 'none';
-  document.getElementById('sidebarStats').style.display = 'none';
+  document.getElementById('sbStats').style.display = 'none';
   document.getElementById('connectScreen').style.display = 'block';
   document.getElementById('dashContent').style.display = 'none';
-  document.getElementById('navWalletStatus').textContent = 'NO WALLET';
-  document.getElementById('navWalletStatus').style.color = 'var(--muted)';
+  document.getElementById('navAddr').textContent = 'NO WALLET';
+  document.getElementById('navAddr').style.color = 'var(--muted)';
 }
 
-async function loadInscriptions(address) {
-  // Try to fetch real inscriptions from ordinalswallet API
+async function fetchAndRender(addr) {
   let inscriptions = [];
   try {
-    const res = await fetch(`https://turbo.ordinalswallet.com/wallet/inscriptions?address=${address}`);
-    if (res.ok) {
-      const data = await res.json();
-      inscriptions = data.inscriptions || [];
-    }
-  } catch(e) {}
-
-  // Also try ord.io API
-  if (inscriptions.length === 0) {
-    try {
-      const res = await fetch(`https://api.hiro.so/ordinals/v1/inscriptions?address=${address}&limit=60`);
-      if (res.ok) {
-        const data = await res.json();
-        inscriptions = (data.results || []).map(i => ({ id: i.number, sat: i.sat_ordinal }));
-      }
-    } catch(e) {}
-  }
-
-  // If no real wallet data, show demo mode with sample data
-  if (inscriptions.length === 0) {
-    inscriptions = generateDemoInscriptions(address);
-  }
-
-  renderDashboard(inscriptions);
+    const r = await fetch(`https://api.hiro.so/ordinals/v1/inscriptions?address=${addr}&limit=60`);
+    if (r.ok) { const d = await r.json(); inscriptions = d.results || []; }
+  } catch(e){}
+  if (!inscriptions.length) inscriptions = demoData(addr);
+  renderDash(inscriptions);
 }
 
-function generateDemoInscriptions(address) {
-  // Generate realistic-looking demo data based on wallet address
-  const seed = address.split('').reduce((a,c) => a + c.charCodeAt(0), 0);
-  const pqOwned = PIXELQUOTE_IDS.filter((_, i) => (seed + i) % 5 === 0).slice(0, 4);
-  
+function demoData(addr) {
+  const seed = addr.split('').reduce((a,c)=>a+c.charCodeAt(0),0);
+  const pqSample = [
+    {id:'815f699bbfcf2759e8f6225cb286497a774f0cc1c6a03066206a2135a3bde72di0',name:'PixelQuote Genesis #1',isPQ:true},
+    {id:'e683703e623ada802de25f4e8f1de2627358792f5f8f5096856dfe48d018607di0',name:'PixelQuote Boy #2',isPQ:true},
+    {id:'7857ba6811510f33b8feacfc93eeaf98fc0afbc5ed85fc08bcadd9fa45c5b8a4i0',name:'PixelQuote Vampire #45',isPQ:true},
+  ].filter((_,i)=>(seed+i)%2===0);
   const others = [
-    { id: 1234, name:'Node Monke #1234', type:'image' },
-    { id: 5678, name:'Bitcoin Frog #5678', type:'image' },
-    { id: 9012, name:'Ordinal #9012', type:'text' },
-    { id: 3456, name:'Bitcoin Puppet #3456', type:'image' },
-    { id: 7890, name:'Inscription #7890', type:'text' },
+    {id:'aaa111',name:'Bitcoin Frog #1234',isPQ:false},
+    {id:'bbb222',name:'Node Monke #5678',isPQ:false},
+    {id:'ccc333',name:'Inscription #9012',isPQ:false},
   ];
-
-  return [
-    ...pqOwned.map(id => ({ id, isPQ: true, char: charMap[id], quote: quoteMap[id], isVideo: videoIds.has(id) })),
-    ...others.map(o => ({ ...o, isPQ: false })),
-  ];
+  return [...pqSample,...others];
 }
 
-function renderDashboard(inscriptions) {
-  const pqList = inscriptions.filter(i => i.isPQ || PIXELQUOTE_IDS.includes(i.id));
-  const otherList = inscriptions.filter(i => !i.isPQ && !PIXELQUOTE_IDS.includes(i.id));
+function isPQInscription(ins) {
+  return ins.isPQ || (ins.collection_id && ins.collection_id.includes('pixel-quote'));
+}
 
-  // Update stats
-  const pqN = pqList.length, otherN = otherList.length, totalN = inscriptions.length;
-  ['sumPQ','statPQ'].forEach(id => document.getElementById(id) && (document.getElementById(id).textContent = pqN));
-  ['sumOther','statOther'].forEach(id => document.getElementById(id) && (document.getElementById(id).textContent = otherN));
-  ['sumTotal','statTotal'].forEach(id => document.getElementById(id) && (document.getElementById(id).textContent = totalN));
-  document.getElementById('statWallet').textContent = connectedWallet ? WALLETS[connectedWallet].name.toUpperCase() : '-';
+function renderDash(inscriptions) {
+  const pq = inscriptions.filter(i=>isPQInscription(i));
+  const others = inscriptions.filter(i=>!isPQInscription(i));
+  const total = inscriptions.length;
 
-  // PQ grid
-  document.getElementById('pqCount').textContent = pqN + ' INSCRIPTIONS';
-  if (pqN === 0) {
+  document.getElementById('sumPQ').textContent = pq.length;
+  document.getElementById('sumOther').textContent = others.length;
+  document.getElementById('sumTotal').textContent = total;
+  document.getElementById('sbPQ').textContent = pq.length;
+  document.getElementById('sbOther').textContent = others.length;
+  document.getElementById('sbTotal').textContent = total;
+
+  // PQ Grid
+  document.getElementById('pqCount').textContent = pq.length + ' INSCRIPTIONS';
+  if (pq.length === 0) {
     document.getElementById('pqEmpty').style.display = 'block';
     document.getElementById('pqGrid').style.display = 'none';
   } else {
     document.getElementById('pqEmpty').style.display = 'none';
     document.getElementById('pqGrid').style.display = 'grid';
-    document.getElementById('pqGrid').innerHTML = pqList.map(insc => renderOrdCard(insc, true)).join('');
+    document.getElementById('pqGrid').innerHTML = pq.map(i=>ordCard(i,true)).join('');
   }
 
-  // All grid
-  document.getElementById('allCount').textContent = totalN + ' TOTAL';
-  document.getElementById('allGrid').innerHTML = [...pqList, ...otherList].map(i => renderOrdCard(i, i.isPQ || PIXELQUOTE_IDS.includes(i.id))).join('');
+  // All Grid
+  document.getElementById('allCount').textContent = total + ' TOTAL';
+  document.getElementById('allGrid').innerHTML = [...pq,...others].map(i=>ordCard(i,isPQInscription(i))).join('');
 
   // Activity
-  renderActivity(inscriptions);
-}
-
-function renderOrdCard(insc, isPQ) {
-  const id = insc.id;
-  const isLocal = localMedia[id];
-  const isVideo = insc.isVideo || videoIds.has(id);
-  const char = insc.char || charMap[id] || '';
-  const quote = insc.quote || quoteMap[id] || insc.name || `Inscription #${id}`;
-  const charColor = charColors[char] || 'var(--purple-light)';
-
-  let mediaHtml = '';
-  if (isLocal) {
-    const f = localMedia[id];
-    if (f.endsWith('.mp4')) {
-      mediaHtml = `<video autoplay muted loop playsinline style="width:100%;height:100%;object-fit:cover;display:block;"><source src="${f}" type="video/mp4"></video>`;
-    } else {
-      mediaHtml = `<img src="${f}" alt="${char}" style="width:100%;height:100%;object-fit:cover;display:block;">`;
-    }
-  } else {
-    // Use ord.io iframe for real inscription display
-    mediaHtml = `<iframe src="https://ord.io/${id}" style="width:100%;height:100%;border:none;pointer-events:none;" loading="lazy" sandbox="allow-scripts allow-same-origin" title="Inscription #${id}"></iframe>`;
-  }
-
-  const typeBadge = isPQ ? (isVideo ? `<span class="ord-media-badge v">▶ MP4</span>` : `<span class="ord-media-badge i">IMG</span>`) : '';
-  const pqBadge = isPQ ? `<span class="ord-pq-badge">PIXELQUOTE</span>` : '';
-
-  return `
-    <div class="ord-card" onclick="window.open('https://ordinalswallet.com/inscription/${id}','_blank')">
-      <div class="ord-media">
-        ${mediaHtml}
-        ${typeBadge}
-      </div>
-      <div class="ord-body">
-        <span class="ord-num">INSCRIPTION #${Number(id).toLocaleString()}</span>
-        <div class="ord-name" style="color:${charColor}">${char || quote.substring(0,16)}</div>
-        ${isPQ ? `<div style="font-size:14px;color:var(--muted);margin-top:4px;">"${quote}"</div>` : ''}
-        ${pqBadge}
-      </div>
-    </div>`;
-}
-
-function renderActivity(inscriptions) {
-  const rows = inscriptions.slice(0,10).map((insc, i) => {
-    const type = i % 3 === 0 ? 'send' : 'recv';
-    const label = type === 'recv' ? 'RECEIVED' : 'SENT';
-    const addr = 'bc1p' + Math.random().toString(36).substr(2,8) + '...';
-    const days = Math.floor(Math.random() * 30) + 1;
-    const dateStr = new Date(Date.now() - days * 86400000).toLocaleDateString();
+  document.getElementById('actBody').innerHTML = inscriptions.slice(0,10).map((ins,idx)=>{
+    const t = idx%3===0?'send':'recv';
     return `<tr>
-      <td><span class="td-type ${type}">${label}</span></td>
-      <td>#${Number(insc.id).toLocaleString()}</td>
-      <td>${addr}</td>
-      <td>${dateStr}</td>
-      <td><a href="https://mempool.space/tx/demo" target="_blank" style="color:var(--cyan);font-family:'Silkscreen',monospace;font-size:11px;">VIEW ↗</a></td>
+      <td><span class="td-badge ${t}">${t==='recv'?'RECEIVED':'SENT'}</span></td>
+      <td style="font-family:'Silkscreen',monospace;font-size:12px;">${ins.name||'Inscription'}</td>
+      <td style="font-family:'Silkscreen',monospace;font-size:11px;color:var(--muted);">bc1p...${Math.random().toString(36).substr(2,6)}</td>
+      <td style="font-size:15px;">${new Date(Date.now()-idx*86400000*3).toLocaleDateString()}</td>
+      <td><a href="https://mempool.space" target="_blank" style="color:var(--orange2);font-family:'Silkscreen',monospace;font-size:11px;">VIEW ↗</a></td>
     </tr>`;
   }).join('');
-  document.getElementById('activityBody').innerHTML = rows;
 }
 
-function switchTab(tab, btn) {
-  document.querySelectorAll('.dash-tab').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  ['pixelquote','all','activity'].forEach(t => {
-    document.getElementById('tab-'+t).style.display = t === tab ? 'block' : 'none';
-  });
+function ordCard(ins, isPQ) {
+  const id = ins.id || '';
+  const previewUrl = id.length > 20 ? `${ORD_PREVIEW}${id}` : '';
+  const media = previewUrl
+    ? `<iframe src="${previewUrl}" loading="lazy" sandbox="allow-scripts allow-same-origin" style="width:100%;height:100%;border:none;pointer-events:none;"></iframe>`
+    : `<div style="display:flex;align-items:center;justify-content:center;width:100%;height:100%;font-size:32px;opacity:.3;">₿</div>`;
+  const pqTag = isPQ ? `<span class="ord-pq-tag">PIXELQUOTE</span>` : '';
+  return `<div class="ord-card" onclick="window.open('https://ordinals.com/inscription/${id}','_blank')">
+    <div class="ord-media">${media}${pqTag}</div>
+    <div class="ord-body">
+      <span class="ord-num">${id.slice(0,10)}...</span>
+      <div class="ord-name" style="${isPQ?'color:var(--orange)':'color:var(--muted)'}">${(ins.name||'Inscription').slice(0,20)}</div>
+    </div>
+  </div>`;
 }
+
+function tab(t, btn) {
+  document.querySelectorAll('.dash-tab').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  ['pq','all','activity'].forEach(id=>{ document.getElementById('tab-'+id).style.display = id===t?'block':'none'; });
+}
+
+function toggleTheme() {
+  const html = document.documentElement;
+  const btn = document.getElementById('themeBtn');
+  if (html.getAttribute('data-theme')==='dark'){html.setAttribute('data-theme','light');btn.textContent='☾ DARK';localStorage.setItem('pq-theme','light');}
+  else{html.setAttribute('data-theme','dark');btn.textContent='☀ LIGHT';localStorage.setItem('pq-theme','dark');}
+}
+const saved = localStorage.getItem('pq-theme');
+if (saved){document.documentElement.setAttribute('data-theme',saved);document.getElementById('themeBtn').textContent=saved==='light'?'☾ DARK':'☀ LIGHT';}
 </script>
 </body>
 </html>
