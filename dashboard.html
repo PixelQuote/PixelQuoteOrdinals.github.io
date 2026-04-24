@@ -114,6 +114,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:500;background:var(--nav);border
 .act-table th{font-family:'Silkscreen',monospace;font-size:11px;color:var(--muted);padding:10px 14px;text-align:left;border-bottom:2px solid var(--border);letter-spacing:1px;}
 .act-table td{padding:12px 14px;border-bottom:1px solid var(--border);font-size:16px;}
 .act-table tr:hover td{background:var(--card2);}
+.tap-fallback{width:30px;height:30px;border-radius:6px;background:#0a2040;color:#06b6d4;font-family:'Press Start 2P',monospace;font-size:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
 .td-badge{font-family:'Silkscreen',monospace;font-size:10px;padding:3px 8px;}
 .td-badge.recv{background:rgba(107,247,197,.1);border:2px solid var(--green);color:var(--green);}
 .td-badge.send{background:rgba(255,107,107,.1);border:2px solid var(--red);color:var(--red);}
@@ -182,7 +183,8 @@ window.addEventListener('load', function() {
         <span class="w-dot" id="dot-okx"></span>
       </button>
       <button class="w-btn" onclick="connect('tap')" id="btn-tap">
-        <img src="TAP_Wallet.png" alt="TAP" class="w-logo">
+        <img src="TAP_Wallet.png" alt="TAP" class="w-logo" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <span class="w-logo-fallback" style="display:none;width:30px;height:30px;border-radius:6px;background:#0a2040;color:#06b6d4;font-family:'Press Start 2P',monospace;font-size:11px;align-items:center;justify-content:center;flex-shrink:0;">T</span>
         <span class="w-name">TAP Wallet</span>
         <span class="w-dot" id="dot-tap"></span>
       </button>
@@ -295,75 +297,113 @@ let connectedWallet=null,walletAddress=null;
 
 // C7 FIX: Proper Xverse connection using getAddress API
 async function connect(type){
-  let address=null;
-  try{
-    if(type==='xverse'){
-      // Use sats-connect library (official Xverse SDK)
-      if(typeof window.satsConnect !== 'undefined' || typeof window.SatsConnect !== 'undefined'){
-        const sc = window.satsConnect || window.SatsConnect;
+  let address = null;
+  showToast('Connecting to ' + WALLETS[type] + '...');
+  
+  try {
+    // ── XVERSE ──
+    if (type === 'xverse') {
+      // Try sats-connect CDN first
+      const sc = window.satsConnect || window.SatsConnect;
+      if (sc && sc.getAddress) {
         await new Promise((resolve, reject) => {
           sc.getAddress({
             payload: {
-              purposes: ['ordinals', 'payment'],
-              message: 'Connect to PixelQuote Ordinals — The First MP4 Video Collection on Bitcoin',
+              purposes: ['ordinals','payment'],
+              message: 'Connect to PixelQuote Ordinals',
               network: { type: 'Mainnet' }
             },
-            onFinish: (response) => {
-              const ordinalsAddr = response.addresses.find(a => a.purpose === 'ordinals');
-              const paymentAddr = response.addresses.find(a => a.purpose === 'payment');
-              address = ordinalsAddr?.address || paymentAddr?.address || response.addresses[0]?.address;
+            onFinish: (res) => {
+              address = (res.addresses.find(a=>a.purpose==='ordinals') || res.addresses[0])?.address;
               resolve();
             },
-            onCancel: () => {
-              showToast('Xverse connection cancelled');
-              reject(new Error('cancelled'));
-            }
+            onCancel: () => { showToast('Xverse: Connection cancelled'); reject(); }
           });
         });
-      } else {
-        // sats-connect not loaded — try direct provider as fallback
-        try {
-          if(window.XverseProviders?.BitcoinProvider) {
-            const res = await window.XverseProviders.BitcoinProvider.request('wallet_connect', null);
-            address = res?.result?.addresses?.find(a=>a.purpose==='ordinals')?.address
-                    || res?.result?.addresses?.[0]?.address;
-          } else {
-            window.open('https://www.xverse.app/download', '_blank');
-            showToast('Please install Xverse wallet to connect');
-            return;
-          }
-        } catch(xe) {
-          showToast('Xverse: ' + (xe.message || 'Connection failed'));
-          return;
-        }
       }
-    } else if(type==='unisat'&&window.unisat){
-      const a=await window.unisat.requestAccounts();
-      address=a[0];
-    } else if(type==='leather'&&window.LeatherProvider){
-      const r=await window.LeatherProvider.request('getAddresses',{});
-      address=r?.result?.addresses?.find(a=>a.type==='p2tr')?.address||r?.result?.addresses?.[0]?.address;
-    } else if(type==='okx'&&window.okxwallet?.bitcoin){
-      const r=await window.okxwallet.bitcoin.requestAccounts();
-      address=r[0];
-    } else if(type==='tap'&&window.tapWallet){
-      const r=await window.tapWallet.requestAccounts();
-      address=r[0];
-    } else {
-      // Wallet not installed — demo mode
-      address='bc1p_demo_'+type+'_'+Math.random().toString(36).substr(2,10);
-      showToast(WALLETS[type]+' not detected — demo mode activated');
+      // Try XverseProviders
+      else if (window.XverseProviders?.BitcoinProvider) {
+        const res = await window.XverseProviders.BitcoinProvider.request('wallet_connect', null);
+        address = res?.result?.addresses?.find(a=>a.purpose==='ordinals')?.address
+                || res?.result?.addresses?.[0]?.address;
+      }
+      // Try bitcoin: protocol (newer Xverse)
+      else if (window.bitcoin) {
+        const res = await window.bitcoin.connect();
+        address = res?.address || res?.addresses?.[0]?.address;
+      }
+      else {
+        window.open('https://www.xverse.app/download','_blank');
+        showToast('Xverse not detected — install from xverse.app');
+        return;
+      }
     }
-  } catch(e){
-    console.error('Wallet connect error:',e);
-    address='bc1p_demo_'+type+'_'+Math.random().toString(36).substr(2,10);
-    showToast('Connection failed — demo mode activated');
+    // ── UNISAT ──
+    else if (type === 'unisat') {
+      if (!window.unisat) {
+        window.open('https://unisat.io/download','_blank');
+        showToast('UniSat not detected — install from unisat.io');
+        return;
+      }
+      const accounts = await window.unisat.requestAccounts();
+      address = accounts[0];
+    }
+    // ── LEATHER ──
+    else if (type === 'leather') {
+      if (!window.LeatherProvider) {
+        window.open('https://leather.io/install-extension','_blank');
+        showToast('Leather not detected — install from leather.io');
+        return;
+      }
+      const res = await window.LeatherProvider.request('getAddresses', {});
+      address = res?.result?.addresses?.find(a=>a.type==='p2tr')?.address
+              || res?.result?.addresses?.[0]?.address;
+    }
+    // ── OKX ──
+    else if (type === 'okx') {
+      const okx = window.okxwallet?.bitcoin || window.okxwallet?.bitcoinTestnet;
+      if (!okx) {
+        window.open('https://www.okx.com/web3','_blank');
+        showToast('OKX Wallet not detected — install from okx.com');
+        return;
+      }
+      const accounts = await okx.requestAccounts();
+      address = accounts[0];
+    }
+    // ── TAP WALLET ──
+    else if (type === 'tap') {
+      if (window.tapwallet || window.TapWallet || window.tap) {
+        const tap = window.tapwallet || window.TapWallet || window.tap;
+        const accounts = await tap.requestAccounts();
+        address = accounts[0];
+      } else if (window.unisat) {
+        // TAP uses UniSat provider as base
+        const accounts = await window.unisat.requestAccounts();
+        address = accounts[0];
+        showToast('Connected via UniSat provider');
+      } else {
+        window.open('https://trac.network','_blank');
+        showToast('TAP Wallet not detected — install from trac.network');
+        return;
+      }
+    }
+  } catch(e) {
+    console.error('Wallet error:', e);
+    if (e && e.message && e.message !== 'cancelled') {
+      showToast((WALLETS[type]||type) + ' error: ' + (e.message || 'Connection failed'));
+    }
+    return;
   }
-  if(!address)return;
-  connectedWallet=type; walletAddress=address;
-  onConnected(type,address);
-}
 
+  if (!address) {
+    showToast('No address returned from ' + WALLETS[type]);
+    return;
+  }
+  
+  connectedWallet = type;
+  walletAddress = address;
+  onConnected(type, address);
+}
 function showToast(msg){
   const t=document.createElement('div');
   t.style.cssText='position:fixed;bottom:24px;right:24px;background:var(--card);border:3px solid var(--orange);padding:14px 20px;font-family:"Silkscreen",monospace;font-size:12px;color:var(--orange);z-index:9999;max-width:320px;';
@@ -560,12 +600,23 @@ function tab(t,btn){
 }
 
 function toggleTheme(){
-  const h=document.documentElement,b=document.getElementById('themeBtn');
-  if(h.getAttribute('data-theme')==='dark'){h.setAttribute('data-theme','light');b.textContent='☾ DARK';localStorage.setItem('pq-theme','light');}
-  else{h.setAttribute('data-theme','dark');b.textContent='☀ LIGHT';localStorage.setItem('pq-theme','dark');}
+  const h = document.documentElement;
+  const btn = document.getElementById('themeBtn');
+  const current = h.getAttribute('data-theme');
+  const next = current === 'dark' ? 'light' : 'dark';
+  h.setAttribute('data-theme', next);
+  btn.textContent = next === 'dark' ? '☀ LIGHT' : '☾ DARK';
+  localStorage.setItem('pq-theme', next);
 }
-const sv=localStorage.getItem('pq-theme');
-if(sv){document.documentElement.setAttribute('data-theme',sv);document.getElementById('themeBtn').textContent=sv==='light'?'☾ DARK':'☀ LIGHT';}
+// Restore saved theme on load
+(function(){
+  const saved = localStorage.getItem('pq-theme');
+  if (saved) {
+    document.documentElement.setAttribute('data-theme', saved);
+    const btn = document.getElementById('themeBtn');
+    if (btn) btn.textContent = saved === 'dark' ? '☀ LIGHT' : '☾ DARK';
+  }
+})();
 </script>
 </body>
 </html>
