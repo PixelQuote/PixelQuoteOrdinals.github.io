@@ -118,7 +118,6 @@ nav{position:fixed;top:0;left:0;right:0;z-index:500;background:var(--nav);border
 .act-table th{font-family:'Silkscreen',monospace;font-size:11px;color:var(--muted);padding:10px 14px;text-align:left;border-bottom:2px solid var(--border);letter-spacing:1px;}
 .act-table td{padding:12px 14px;border-bottom:1px solid var(--border);font-size:16px;}
 .act-table tr:hover td{background:var(--card2);}
-.tap-fallback{width:30px;height:30px;border-radius:6px;background:#0a2040;color:#06b6d4;font-family:'Press Start 2P',monospace;font-size:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
 .td-badge{font-family:'Silkscreen',monospace;font-size:10px;padding:3px 8px;}
 .td-badge.recv{background:rgba(107,247,197,.1);border:2px solid var(--green);color:var(--green);}
 .td-badge.send{background:rgba(255,107,107,.1);border:2px solid var(--red);color:var(--red);}
@@ -140,6 +139,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:500;background:var(--nav);border
     <li><a href="index.html">HOME</a></li>
     <li><a href="collection.html">COLLECTION</a></li>
     <li><a href="dashboard.html" class="active">MY ORDINALS</a></li>
+    <li><a href="resources.html">ORD RESOURCES</a></li>
   </ul>
   <div class="nav-right">
     <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn">☾ DARK</button>
@@ -168,22 +168,13 @@ nav{position:fixed;top:0;left:0;right:0;z-index:500;background:var(--nav);border
         <span class="w-name">UniSat</span>
         <span class="w-dot" id="dot-unisat"></span>
       </button>
-      <button class="w-btn" onclick="connect('leather')" id="btn-leather">
-        <img src="Leather.png" alt="Leather" class="w-logo">
-        <span class="w-name">Leather</span>
-        <span class="w-dot" id="dot-leather"></span>
-      </button>
+
       <button class="w-btn" onclick="connect('okx')" id="btn-okx">
         <img src="OKX.png" alt="OKX" class="w-logo">
         <span class="w-name">OKX Wallet</span>
         <span class="w-dot" id="dot-okx"></span>
       </button>
-      <button class="w-btn" onclick="connect('tap')" id="btn-tap">
-        <img src="TAP_Wallet.png" alt="TAP" class="w-logo" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-        <span class="w-logo-fallback" style="display:none;width:30px;height:30px;border-radius:6px;background:#0a2040;color:#06b6d4;font-family:'Press Start 2P',monospace;font-size:11px;align-items:center;justify-content:center;flex-shrink:0;">T</span>
-        <span class="w-name">TAP Wallet</span>
-        <span class="w-dot" id="dot-tap"></span>
-      </button>
+  
     </div>
     <button class="disconnect-btn" id="disconnectBtn" onclick="disconnect()">✕ DISCONNECT</button>
 
@@ -215,7 +206,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:500;background:var(--nav);border
       <div class="cs-title">MY ORDINALS<br>DASHBOARD</div>
       <p class="cs-sub">Connect your Bitcoin wallet to view your PixelQuote Digital Artifacts and all other Ordinal inscriptions.</p>
       <div class="cs-wallets">
-        <!-- Top row: 3 wallets -->
+        <!-- 3 wallets in one centered row -->
         <div class="cs-row">
           <div class="cs-w" onclick="connect('xverse')">
             <img src="Xverse.png" alt="Xverse" class="cs-w-logo">
@@ -225,20 +216,9 @@ nav{position:fixed;top:0;left:0;right:0;z-index:500;background:var(--nav);border
             <img src="Unisat.png" alt="UniSat" class="cs-w-logo">
             <div class="cs-w-name">UNISAT</div>
           </div>
-          <div class="cs-w" onclick="connect('leather')">
-            <img src="Leather.png" alt="Leather" class="cs-w-logo">
-            <div class="cs-w-name">LEATHER</div>
-          </div>
-        </div>
-        <!-- Bottom row: 2 wallets centered -->
-        <div class="cs-row">
           <div class="cs-w" onclick="connect('okx')">
             <img src="OKX.png" alt="OKX" class="cs-w-logo">
             <div class="cs-w-name">OKX WALLET</div>
-          </div>
-          <div class="cs-w" onclick="connect('tap')">
-            <img src="TAP_Wallet.png" alt="TAP" class="cs-w-logo">
-            <div class="cs-w-name">TAP WALLET</div>
           </div>
         </div>
       </div>
@@ -288,7 +268,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:500;background:var(--nav);border
 
 <script>
 /* PixelQuote Dashboard v4 - Wallet Native API */
-var WALLETS = {xverse:'Xverse',unisat:'UniSat',leather:'Leather',okx:'OKX Wallet',tap:'TAP Wallet'};
+var WALLETS = {xverse:'Xverse',unisat:'UniSat',okx:'OKX Wallet'};
 var ORD_PRV = 'https://ordinals.com/preview/';
 var connectedWallet = null;
 var walletAddress = null;
@@ -335,9 +315,7 @@ function connect(type) {
     try {
       if (type === 'xverse') doXverse();
       else if (type === 'unisat') doUnisat();
-      else if (type === 'leather') doLeather();
       else if (type === 'okx') doOKX();
-      else if (type === 'tap') doTAP();
     } catch(err) {
       showToast('Connect error: ' + (err.message || String(err)));
     }
@@ -411,27 +389,6 @@ function doUnisat() {
     .catch(function(e) { showToast('UniSat: ' + (e.message || 'Connection failed')); });
 }
 
-/* LEATHER */
-function doLeather() {
-  if (!window.LeatherProvider) {
-    showToast('Leather not detected. Opening install page...');
-    setTimeout(function() { window.open('https://leather.io/install-extension', '_blank'); }, 1000);
-    return;
-  }
-  window.LeatherProvider.request('getAddresses', {})
-    .then(function(res) {
-      var addrs = res && res.result && res.result.addresses || [];
-      var a = null;
-      for (var i = 0; i < addrs.length; i++) {
-        if (addrs[i].type === 'p2tr') { a = addrs[i]; break; }
-      }
-      if (!a && addrs.length) a = addrs[0];
-      if (a) onConnected('leather', a.address);
-      else showToast('Leather: No address returned');
-    })
-    .catch(function(e) { showToast('Leather: ' + (e.message || 'Connection failed')); });
-}
-
 /* OKX */
 function doOKX() {
   var okx = window.okxwallet && window.okxwallet.bitcoin;
@@ -446,31 +403,6 @@ function doOKX() {
       else showToast('OKX: No accounts returned');
     })
     .catch(function(e) { showToast('OKX: ' + (e.message || 'Connection failed')); });
-}
-
-/* TAP */
-function doTAP() {
-  var tap = window.tapwallet || window.TapWallet;
-  if (tap && tap.requestAccounts) {
-    tap.requestAccounts()
-      .then(function(accounts) {
-        if (accounts && accounts[0]) onConnected('tap', accounts[0]);
-        else showToast('TAP: No accounts returned');
-      })
-      .catch(function(e) { showToast('TAP: ' + (e.message || 'Connection failed')); });
-    return;
-  }
-  /* TAP uses UniSat provider */
-  if (window.unisat) {
-    window.unisat.requestAccounts()
-      .then(function(accounts) {
-        if (accounts && accounts[0]) onConnected('tap', accounts[0]);
-      })
-      .catch(function(e) { showToast('TAP: ' + (e.message || 'Failed')); });
-    return;
-  }
-  showToast('TAP Wallet not detected. Opening install page...');
-  setTimeout(function() { window.open('https://trac.network', '_blank'); }, 1000);
 }
 
 /* ON CONNECTED */
@@ -618,8 +550,7 @@ function fetchInscriptions(type, addr) {
     return;
   }
 
-  /* Leather and TAP: no native inscription API, but we have the address.
-     Try multiple CORS-friendly approaches to load inscriptions */
+  /* No native inscription API for this wallet type - use address-based lookup */
   fetchByAddress(addr);
 }
 
