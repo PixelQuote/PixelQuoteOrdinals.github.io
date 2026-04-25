@@ -1,7 +1,11 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en" data-theme="light">
 <head>
 <meta charset="UTF-8">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="favicon-180.png">
+  <link rel="shortcut icon" href="favicon.ico">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Collection — PixelQuote Ordinals</title>
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&family=Silkscreen:wght@400;700&display=swap" rel="stylesheet">
@@ -117,7 +121,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:500;background:var(--nav);border
     <li><a href="resources.html">RESOURCES</a></li>
   </ul>
   <div class="nav-right">
-    <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn">☀ LIGHT</button>
+    <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn">☾ DARK</button>
     <a href="dashboard.html" class="nav-btn outline">MY ORDINALS</a>
     <a href="dashboard.html" class="nav-btn">CONNECT WALLET</a>
   </div>
@@ -126,10 +130,10 @@ nav{position:fixed;top:0;left:0;right:0;z-index:500;background:var(--nav);border
 <div class="page-header">
   <div class="ph-inner">
     <div class="ph-tag">₿ THE COMPLETE COLLECTION</div>
-    <h1 class="ph-title">PIXELQUOTE GENESIS<br>264 DIGITAL ARTIFACTS</h1>
+    <h1 class="ph-title">PIXELQUOTE GENESIS<br>263 DIGITAL ARTIFACTS</h1>
     <p class="ph-sub">Ordered lowest → highest inscription number · First MP4 Video collection on Bitcoin · Sub-100K</p>
     <div class="ph-stats">
-      <div class="ph-stat"><span class="ph-stat-n">264</span><span class="ph-stat-l">TOTAL</span></div>
+      <div class="ph-stat"><span class="ph-stat-n">263</span><span class="ph-stat-l">TOTAL</span></div>
       <div class="ph-stat"><span class="ph-stat-n">#35,672</span><span class="ph-stat-l">GENESIS</span></div>
       <div class="ph-stat"><span class="ph-stat-n">9</span><span class="ph-stat-l">CHARACTERS</span></div>
       <div class="ph-stat"><span class="ph-stat-n">SUB-100K</span><span class="ph-stat-l">RANGE</span></div>
@@ -152,7 +156,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:500;background:var(--nav);border
     <button class="f-btn" onclick="filter('Cat',this)">CAT</button>
     <button class="f-btn" onclick="filter('Frog',this)">FROG</button>
     <input class="f-search" id="searchBox" placeholder="Search #number, name..." oninput="doSearch()">
-    <span class="f-count" id="fCount">264 / 264</span>
+    <span class="f-count" id="fCount">263 / 263</span>
   </div>
 </div>
 
@@ -339,33 +343,33 @@ const INSCRIPTIONS = [
   {seq:165,id:"baa29924fda02a9104696a234f373168010edd8f4a19961501d46181553f573di0",name:"PixelQuote Dog #165",char:"Dog",btc:55386},
   {seq:166,id:"93128fef7440813310992af61ed863f577b4e94a926dfdeca169c2a9cdc0ca3ei0",name:"PixelQuote Dog #166",char:"Dog",btc:55387},
   {seq:167,id:"c7f52340de355c8e93d32838872dac78a812eba0df82eef14098f6c2aead9e0di0",name:"PixelQuote Dog #167",char:"Dog",btc:55388},
-  {seq:168,id:"f08fde44d97c1e7a7df54e36d3ddb1771bccc3566afa14f139872371d62095f0i0",name:"PixelQuote Dog #168",char:"Dog",btc:55395},
-  {seq:169,id:"f565cae875bf13c5e81f1bb814c1ae5b3cd47f28005b2ce29506b0bddc5c226ai0",name:"PixelQuote Dog #169",char:"Dog",btc:55396},
-  {seq:170,id:"65d2f176f9489f40c8308e655b2b262e2064d8189213188a489aaa9a11da104ai0",name:"PixelQuote Dog #170",char:"Dog",btc:55397},
-  {seq:171,id:"2c4eaecde15f3e72af770a5e5d35e6e1d4fdd74e2612b1544a8e45fe4240b595i0",name:"PixelQuote Dog #171",char:"Dog",btc:55398},
-  {seq:172,id:"32688d125cb80fc384fe4af5d4497beed451c9668d8964bcd576d2e2defd916ai0",name:"PixelQuote Dog #172",char:"Dog",btc:55399},
-  {seq:173,id:"4abc7071ae233339c698e9d654ee4a7f100ffe3dbb0f6cdcd471e407004239e8i0",name:"PixelQuote Dog #173",char:"Dog",btc:56270},
-  {seq:174,id:"b82ba4432a31ad45ec23f43f6f753490d8ad2a05e1b5ee9930a2f73ba9a5efcei0",name:"PixelQuote Dog #174",char:"Dog",btc:56271},
-  {seq:175,id:"951de4a476d4776f542f6436529a1f814261468eed4ba60841d90b2b304f39b1i0",name:"PixelQuote Dog #175",char:"Dog",btc:56272},
-  {seq:176,id:"379f02812b654a7fb500a31862f2315d28cc8cb08d008d8379a819a8659f2a67i0",name:"PixelQuote Dog #176",char:"Dog",btc:56273},
-  {seq:177,id:"467a78850e997f4733943530e8ba996c2f0ade775c41cf5e982eb82c577ca9c3i0",name:"PixelQuote Dog #177",char:"Dog",btc:56274},
-  {seq:178,id:"20a66637d57fbeeb029aaf7d56d4fd86e2a527f44f7278417cd1a81d874feccfi0",name:"PixelQuote Dog #178",char:"Dog",btc:56275},
-  {seq:179,id:"b9850e7864930b9cd7fe83e688daa39e1f68d467b753789c3c866f3d39d8b2e0i0",name:"PixelQuote Dog #179",char:"Dog",btc:56276},
-  {seq:180,id:"bb3d2cb425c5a9517aeb26a4eb277443b038e77b80504f77de7e2316a25bf091i0",name:"PixelQuote Dog #180",char:"Dog",btc:56277},
-  {seq:181,id:"3b836b2f328790090be118e4d8ae4ede503590480cb8248d48d89570991bc371i0",name:"PixelQuote Dog #181",char:"Dog",btc:56278},
-  {seq:182,id:"d34e85a90c6c1cf77cc4bae59517416c3d318c5eafcbd66c961a45197f4f262ei0",name:"PixelQuote Dog #182",char:"Dog",btc:56279},
-  {seq:183,id:"9982eb5677ce3f9481fb0d60f37ac016bf60b9ca462a9fab1bb976768f503991i0",name:"PixelQuote Dog #183",char:"Dog",btc:56280},
-  {seq:184,id:"025042ee501f4fcf81c807566b152408f9c02bb78a48736307b94e512fa15929i0",name:"PixelQuote Dog #184",char:"Dog",btc:56281},
-  {seq:185,id:"5f890ff3693d1ee2de108edefa14cc052fe2de7dec03dff7e60ef8b15f35f787i0",name:"PixelQuote Dog #185",char:"Dog",btc:56282},
-  {seq:186,id:"4c25b0db17597fb785441bb51f70857c9240d9fe043a2fb64250dc3649d72ccdi0",name:"PixelQuote Dog #186",char:"Dog",btc:56364},
-  {seq:187,id:"ab74615fa09e463cc4b503cc4267747b9505ab284f77fca1d70d459d9729c332i0",name:"PixelQuote Dog #187",char:"Dog",btc:56365},
-  {seq:188,id:"293d0570c4e358ea8d08527e92cb5a479c4a324d553e8fda432935de54b512a4i0",name:"PixelQuote Dog #188",char:"Dog",btc:56366},
-  {seq:189,id:"abab94ac63d757687dd2ab30c6f2af5994d4dc6958e81e21b2934ff04e2d32f5i0",name:"PixelQuote Dog #189",char:"Dog",btc:56367},
-  {seq:190,id:"91f518a9c4ca19ea0bf228543009aa7740e9bfa0ae42e476a92aa582f6fbb050i0",name:"PixelQuote Dog #190",char:"Dog",btc:56368},
-  {seq:191,id:"d92089b85e4e2a4ba55bdcf7dc8c344459728149ff4ba7c88b090f886772bd57i0",name:"PixelQuote Dog #191",char:"Dog",btc:56369},
-  {seq:192,id:"a2f93bd7936d86332a76d3965bbc7d9e61f90062522256e63504fd2c6ace3a15i0",name:"PixelQuote Dog #192",char:"Dog",btc:56370},
-  {seq:193,id:"579b4913039a367150d95e1f93aa949d1458f4fb0ade82f7ca00408995fcee84i0",name:"PixelQuote Dog #193",char:"Dog",btc:56371},
-  {seq:194,id:"857087c4d4b35c4b3533d6d548addc8ae74fb054eb8cbf343c9921d4835a136di0",name:"PixelQuote Dog #194",char:"Dog",btc:56372},
+  {seq:168,id:"f08fde44d97c1e7a7df54e36d3ddb1771bccc3566afa14f139872371d62095f0i0",name:"PixelQuote Dog #168",char:"Dog",btc:56270},
+  {seq:169,id:"f565cae875bf13c5e81f1bb814c1ae5b3cd47f28005b2ce29506b0bddc5c226ai0",name:"PixelQuote Dog #169",char:"Dog",btc:56271},
+  {seq:170,id:"65d2f176f9489f40c8308e655b2b262e2064d8189213188a489aaa9a11da104ai0",name:"PixelQuote Dog #170",char:"Dog",btc:56272},
+  {seq:171,id:"2c4eaecde15f3e72af770a5e5d35e6e1d4fdd74e2612b1544a8e45fe4240b595i0",name:"PixelQuote Dog #171",char:"Dog",btc:56273},
+  {seq:172,id:"32688d125cb80fc384fe4af5d4497beed451c9668d8964bcd576d2e2defd916ai0",name:"PixelQuote Dog #172",char:"Dog",btc:56274},
+  {seq:173,id:"4abc7071ae233339c698e9d654ee4a7f100ffe3dbb0f6cdcd471e407004239e8i0",name:"PixelQuote Dog #173",char:"Dog",btc:56275},
+  {seq:174,id:"b82ba4432a31ad45ec23f43f6f753490d8ad2a05e1b5ee9930a2f73ba9a5efcei0",name:"PixelQuote Dog #174",char:"Dog",btc:56276},
+  {seq:175,id:"951de4a476d4776f542f6436529a1f814261468eed4ba60841d90b2b304f39b1i0",name:"PixelQuote Dog #175",char:"Dog",btc:56277},
+  {seq:176,id:"379f02812b654a7fb500a31862f2315d28cc8cb08d008d8379a819a8659f2a67i0",name:"PixelQuote Dog #176",char:"Dog",btc:56278},
+  {seq:177,id:"467a78850e997f4733943530e8ba996c2f0ade775c41cf5e982eb82c577ca9c3i0",name:"PixelQuote Dog #177",char:"Dog",btc:56279},
+  {seq:178,id:"20a66637d57fbeeb029aaf7d56d4fd86e2a527f44f7278417cd1a81d874feccfi0",name:"PixelQuote Dog #178",char:"Dog",btc:56280},
+  {seq:179,id:"b9850e7864930b9cd7fe83e688daa39e1f68d467b753789c3c866f3d39d8b2e0i0",name:"PixelQuote Dog #179",char:"Dog",btc:56281},
+  {seq:180,id:"bb3d2cb425c5a9517aeb26a4eb277443b038e77b80504f77de7e2316a25bf091i0",name:"PixelQuote Dog #180",char:"Dog",btc:56282},
+  {seq:181,id:"3b836b2f328790090be118e4d8ae4ede503590480cb8248d48d89570991bc371i0",name:"PixelQuote Dog #181",char:"Dog",btc:56364},
+  {seq:182,id:"d34e85a90c6c1cf77cc4bae59517416c3d318c5eafcbd66c961a45197f4f262ei0",name:"PixelQuote Dog #182",char:"Dog",btc:56365},
+  {seq:183,id:"9982eb5677ce3f9481fb0d60f37ac016bf60b9ca462a9fab1bb976768f503991i0",name:"PixelQuote Dog #183",char:"Dog",btc:56366},
+  {seq:184,id:"025042ee501f4fcf81c807566b152408f9c02bb78a48736307b94e512fa15929i0",name:"PixelQuote Dog #184",char:"Dog",btc:56367},
+  {seq:185,id:"5f890ff3693d1ee2de108edefa14cc052fe2de7dec03dff7e60ef8b15f35f787i0",name:"PixelQuote Dog #185",char:"Dog",btc:56368},
+  {seq:186,id:"4c25b0db17597fb785441bb51f70857c9240d9fe043a2fb64250dc3649d72ccdi0",name:"PixelQuote Dog #186",char:"Dog",btc:56369},
+  {seq:187,id:"ab74615fa09e463cc4b503cc4267747b9505ab284f77fca1d70d459d9729c332i0",name:"PixelQuote Dog #187",char:"Dog",btc:56370},
+  {seq:188,id:"293d0570c4e358ea8d08527e92cb5a479c4a324d553e8fda432935de54b512a4i0",name:"PixelQuote Dog #188",char:"Dog",btc:56371},
+  {seq:189,id:"abab94ac63d757687dd2ab30c6f2af5994d4dc6958e81e21b2934ff04e2d32f5i0",name:"PixelQuote Dog #189",char:"Dog",btc:56372},
+  {seq:190,id:"91f518a9c4ca19ea0bf228543009aa7740e9bfa0ae42e476a92aa582f6fbb050i0",name:"PixelQuote Dog #190",char:"Dog",btc:55395},
+  {seq:191,id:"d92089b85e4e2a4ba55bdcf7dc8c344459728149ff4ba7c88b090f886772bd57i0",name:"PixelQuote Dog #191",char:"Dog",btc:55396},
+  {seq:192,id:"a2f93bd7936d86332a76d3965bbc7d9e61f90062522256e63504fd2c6ace3a15i0",name:"PixelQuote Dog #192",char:"Dog",btc:55397},
+  {seq:193,id:"579b4913039a367150d95e1f93aa949d1458f4fb0ade82f7ca00408995fcee84i0",name:"PixelQuote Dog #193",char:"Dog",btc:55398},
+  {seq:194,id:"857087c4d4b35c4b3533d6d548addc8ae74fb054eb8cbf343c9921d4835a136di0",name:"PixelQuote Dog #194",char:"Dog",btc:55399},
   {seq:195,id:"5b5023a09c04639682c13f2aa5c15d6270e06ad9665f7f52fb32e7460dacce41i0",name:"PixelQuote Dog #195",char:"Dog",btc:56448},
   {seq:196,id:"168713739847e8990efc5ff419c0785bffa4101b3b5418d5174cbda46e99e7c6i0",name:"PixelQuote Dog #196",char:"Dog",btc:56449},
   {seq:197,id:"326adb14010188d396cf570e28eac6446252c3532671fcdcfc73afed5a4ef7c3i0",name:"PixelQuote Cat #197",char:"Cat",btc:56450},
@@ -432,10 +436,9 @@ const INSCRIPTIONS = [
   {seq:258,id:"f325466005bfcd3fd776bbfff90d7e38415025fbd7cefcb4db469f8197947f3ci0",name:"PixelQuote Frog #258",char:"Frog",btc:65163},
   {seq:259,id:"3df9cf0edb75bae36b568018aa31139fcb33c8f17f418376f29649dce370c6a5i0",name:"PixelQuote Frog #259",char:"Frog",btc:65269},
   {seq:260,id:"8604e8830c3620acb74ed59d307eab773848d76a16c6bb5e58f0560ef1bfc84ei0",name:"PixelQuote Frog #260",char:"Frog",btc:66270},
-  {seq:261,id:"98260a95311f0c878db36502012198e98adbbed0ca31525fe8ba068c15c38f45i0",name:"PixelQuote Frog #261",char:"Frog",btc:76681},
-  {seq:262,id:"33595f98b743b17dbb4dc405744a5a2d520a6a192b08c5af1900d29b31ece029i0",name:"PixelQuote Frog #262",char:"Frog",btc:78233},
-  {seq:263,id:"a29b57963cc8381db70ee69f1e99f2209a218f84cc295d135c77211af6469330i0",name:"PixelQuote Frog #263",char:"Frog",btc:78234},
-  {seq:264,id:"fb485e962fab1b619ed6a94322bb32827b7e265a29a0f1ca7701ecfdbc1a7e59i0",name:"PixelQuote Frog #264",char:"Frog",btc:78235}
+  {seq:261,id:"98260a95311f0c878db36502012198e98adbbed0ca31525fe8ba068c15c38f45i0",name:"PixelQuote Frog #261",char:"Frog",btc:78233},
+  {seq:262,id:"33595f98b743b17dbb4dc405744a5a2d520a6a192b08c5af1900d29b31ece029i0",name:"PixelQuote Frog #262",char:"Frog",btc:78234},
+  {seq:263,id:"a29b57963cc8381db70ee69f1e99f2209a218f84cc295d135c77211af6469330i0",name:"PixelQuote Frog #263",char:"Frog",btc:78235}
 ];
 
 const ORD_SRC = 'https://ordinals.com/inscription/';

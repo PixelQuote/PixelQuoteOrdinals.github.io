@@ -1,7 +1,11 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en" data-theme="light">
 <head>
 <meta charset="UTF-8">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="favicon-180.png">
+  <link rel="shortcut icon" href="favicon.ico">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>My Ordinals — PixelQuote Dashboard</title>
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&family=Silkscreen:wght@400;700&display=swap" rel="stylesheet">
@@ -146,7 +150,7 @@ window.addEventListener('load', function() {
     <li><a href="dashboard.html" class="active">MY ORDINALS</a></li>
   </ul>
   <div class="nav-right">
-    <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn">☀ LIGHT</button>
+    <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn">☾ DARK</button>
     <span id="navAddr" style="font-family:'Silkscreen',monospace;font-size:11px;color:var(--muted);">NO WALLET</span>
   </div>
 </nav>
@@ -291,332 +295,306 @@ window.addEventListener('load', function() {
 </div>
 
 <script>
-const WALLETS={xverse:'Xverse',unisat:'UniSat',leather:'Leather',okx:'OKX Wallet',tap:'TAP Wallet'};
-const ORD_PRV='https://ordinals.com/preview/';
-let connectedWallet=null,walletAddress=null;
+// ── SATS-CONNECT for Xverse ──
+// Loaded via CDN in head
 
-// C7 FIX: Proper Xverse connection using getAddress API
-async function connect(type){
-  let address = null;
-  showToast('Connecting to ' + WALLETS[type] + '...');
-  
-  try {
-    // ── XVERSE ──
-    if (type === 'xverse') {
-      // Try sats-connect CDN first
-      const sc = window.satsConnect || window.SatsConnect;
-      if (sc && sc.getAddress) {
-        await new Promise((resolve, reject) => {
-          sc.getAddress({
-            payload: {
-              purposes: ['ordinals','payment'],
-              message: 'Connect to PixelQuote Ordinals',
-              network: { type: 'Mainnet' }
-            },
-            onFinish: (res) => {
-              address = (res.addresses.find(a=>a.purpose==='ordinals') || res.addresses[0])?.address;
-              resolve();
-            },
-            onCancel: () => { showToast('Xverse: Connection cancelled'); reject(); }
-          });
-        });
-      }
-      // Try XverseProviders
-      else if (window.XverseProviders?.BitcoinProvider) {
-        const res = await window.XverseProviders.BitcoinProvider.request('wallet_connect', null);
-        address = res?.result?.addresses?.find(a=>a.purpose==='ordinals')?.address
-                || res?.result?.addresses?.[0]?.address;
-      }
-      // Try bitcoin: protocol (newer Xverse)
-      else if (window.bitcoin) {
-        const res = await window.bitcoin.connect();
-        address = res?.address || res?.addresses?.[0]?.address;
-      }
-      else {
-        window.open('https://www.xverse.app/download','_blank');
-        showToast('Xverse not detected — install from xverse.app');
-        return;
-      }
-    }
-    // ── UNISAT ──
-    else if (type === 'unisat') {
-      if (!window.unisat) {
-        window.open('https://unisat.io/download','_blank');
-        showToast('UniSat not detected — install from unisat.io');
-        return;
-      }
-      const accounts = await window.unisat.requestAccounts();
-      address = accounts[0];
-    }
-    // ── LEATHER ──
-    else if (type === 'leather') {
-      if (!window.LeatherProvider) {
-        window.open('https://leather.io/install-extension','_blank');
-        showToast('Leather not detected — install from leather.io');
-        return;
-      }
-      const res = await window.LeatherProvider.request('getAddresses', {});
-      address = res?.result?.addresses?.find(a=>a.type==='p2tr')?.address
-              || res?.result?.addresses?.[0]?.address;
-    }
-    // ── OKX ──
-    else if (type === 'okx') {
-      const okx = window.okxwallet?.bitcoin || window.okxwallet?.bitcoinTestnet;
-      if (!okx) {
-        window.open('https://www.okx.com/web3','_blank');
-        showToast('OKX Wallet not detected — install from okx.com');
-        return;
-      }
-      const accounts = await okx.requestAccounts();
-      address = accounts[0];
-    }
-    // ── TAP WALLET ──
-    else if (type === 'tap') {
-      if (window.tapwallet || window.TapWallet || window.tap) {
-        const tap = window.tapwallet || window.TapWallet || window.tap;
-        const accounts = await tap.requestAccounts();
-        address = accounts[0];
-      } else if (window.unisat) {
-        // TAP uses UniSat provider as base
-        const accounts = await window.unisat.requestAccounts();
-        address = accounts[0];
-        showToast('Connected via UniSat provider');
-      } else {
-        window.open('https://trac.network','_blank');
-        showToast('TAP Wallet not detected — install from trac.network');
-        return;
-      }
-    }
-  } catch(e) {
-    console.error('Wallet error:', e);
-    if (e && e.message && e.message !== 'cancelled') {
-      showToast((WALLETS[type]||type) + ' error: ' + (e.message || 'Connection failed'));
-    }
-    return;
-  }
+const WALLETS = {xverse:'Xverse', unisat:'UniSat', leather:'Leather', okx:'OKX Wallet', tap:'TAP Wallet'};
+const ORD_PRV = 'https://ordinals.com/preview/';
+let connectedWallet = null, walletAddress = null;
 
-  if (!address) {
-    showToast('No address returned from ' + WALLETS[type]);
-    return;
-  }
-  
-  connectedWallet = type;
-  walletAddress = address;
-  onConnected(type, address);
+// ── THEME ──
+function toggleTheme() {
+  const html = document.documentElement;
+  const btn = document.getElementById('themeBtn');
+  const isDark = html.getAttribute('data-theme') === 'dark';
+  html.setAttribute('data-theme', isDark ? 'light' : 'dark');
+  btn.textContent = isDark ? '☾ DARK' : '☀ LIGHT';
+  localStorage.setItem('pq-theme', isDark ? 'light' : 'dark');
 }
-function showToast(msg){
-  const t=document.createElement('div');
-  t.style.cssText='position:fixed;bottom:24px;right:24px;background:var(--card);border:3px solid var(--orange);padding:14px 20px;font-family:"Silkscreen",monospace;font-size:12px;color:var(--orange);z-index:9999;max-width:320px;';
-  t.textContent=msg;
+
+// Apply saved theme immediately
+(function() {
+  const saved = localStorage.getItem('pq-theme') || 'light';
+  document.documentElement.setAttribute('data-theme', saved);
+  const btn = document.getElementById('themeBtn');
+  if (btn) btn.textContent = saved === 'dark' ? '☀ LIGHT' : '☾ DARK';
+})();
+
+// ── TOAST ──
+function showToast(msg) {
+  const existing = document.getElementById('pq-toast');
+  if (existing) existing.remove();
+  const t = document.createElement('div');
+  t.id = 'pq-toast';
+  t.style.cssText = 'position:fixed;bottom:24px;right:24px;background:var(--card);border:3px solid var(--orange);padding:14px 20px;font-family:"Silkscreen",monospace;font-size:12px;color:var(--orange);z-index:9999;max-width:340px;box-shadow:4px 4px 0 0 var(--os);';
+  t.textContent = msg;
   document.body.appendChild(t);
-  setTimeout(()=>t.remove(),4000);
+  setTimeout(() => { if(t.parentNode) t.remove(); }, 4000);
 }
 
-function onConnected(type,addr){
-  document.getElementById('wsIcon').textContent='✅';
-  document.getElementById('wsBadge').textContent='CONNECTED';
-  document.getElementById('wsBadge').className='ws-badge on';
-  document.getElementById('wsText').textContent=WALLETS[type]+' connected';
-  document.getElementById('wsAddr').textContent=addr.slice(0,14)+'...'+addr.slice(-6);
-  document.getElementById('wsAddr').style.display='block';
-  document.getElementById('disconnectBtn').style.display='block';
-  document.getElementById('sbStats').style.display='block';
+// ── XVERSE CONNECTION ──
+function connectXverse() {
+  // Try sats-connect CDN
+  try {
+    const SatsConnect = window.SatsConnect || window.satsConnect;
+    if (SatsConnect && SatsConnect.getAddress) {
+      SatsConnect.getAddress({
+        payload: {
+          purposes: ['ordinals', 'payment'],
+          message: 'Connect to PixelQuote Ordinals',
+          network: { type: 'Mainnet' }
+        },
+        onFinish: function(response) {
+          const addr = (response.addresses.find(function(a){return a.purpose==='ordinals';}) || response.addresses[0]);
+          if (addr) handleConnected('xverse', addr.address);
+          else showToast('Xverse: No address returned');
+        },
+        onCancel: function() { showToast('Xverse: Connection cancelled'); }
+      });
+      return;
+    }
+  } catch(e) { console.log('sats-connect error:', e); }
+
+  // Try XverseProviders
+  try {
+    if (window.XverseProviders && window.XverseProviders.BitcoinProvider) {
+      window.XverseProviders.BitcoinProvider.request('wallet_connect', null).then(function(res) {
+        const addr = res && res.result && res.result.addresses && res.result.addresses[0];
+        if (addr) handleConnected('xverse', addr.address);
+      }).catch(function(e) { showToast('Xverse error: ' + e.message); });
+      return;
+    }
+  } catch(e) { console.log('XverseProviders error:', e); }
+
+  // Not installed
+  showToast('Xverse not detected — opening download page');
+  setTimeout(function(){ window.open('https://www.xverse.app/download','_blank'); }, 500);
+}
+
+// ── UNISAT CONNECTION ──
+function connectUnisat() {
+  if (!window.unisat) {
+    showToast('UniSat not detected — opening download page');
+    setTimeout(function(){ window.open('https://unisat.io/download','_blank'); }, 500);
+    return;
+  }
+  window.unisat.requestAccounts().then(function(accounts) {
+    if (accounts && accounts[0]) handleConnected('unisat', accounts[0]);
+    else showToast('UniSat: No accounts found');
+  }).catch(function(e) { showToast('UniSat: ' + (e.message || 'Connection failed')); });
+}
+
+// ── LEATHER CONNECTION ──
+function connectLeather() {
+  if (!window.LeatherProvider) {
+    showToast('Leather not detected — opening download page');
+    setTimeout(function(){ window.open('https://leather.io/install-extension','_blank'); }, 500);
+    return;
+  }
+  window.LeatherProvider.request('getAddresses', {}).then(function(res) {
+    const addrs = res && res.result && res.result.addresses;
+    const addr = addrs && (addrs.find(function(a){return a.type==='p2tr';}) || addrs[0]);
+    if (addr) handleConnected('leather', addr.address);
+    else showToast('Leather: No address returned');
+  }).catch(function(e) { showToast('Leather: ' + (e.message || 'Connection failed')); });
+}
+
+// ── OKX CONNECTION ──
+function connectOKX() {
+  const okx = window.okxwallet && (window.okxwallet.bitcoin || window.okxwallet.bitcoinTestnet);
+  if (!okx) {
+    showToast('OKX Wallet not detected — opening download page');
+    setTimeout(function(){ window.open('https://www.okx.com/web3','_blank'); }, 500);
+    return;
+  }
+  okx.requestAccounts().then(function(accounts) {
+    if (accounts && accounts[0]) handleConnected('okx', accounts[0]);
+    else showToast('OKX: No accounts found');
+  }).catch(function(e) { showToast('OKX: ' + (e.message || 'Connection failed')); });
+}
+
+// ── TAP CONNECTION ──
+function connectTAP() {
+  const tap = window.tapwallet || window.TapWallet || window.tap;
+  if (tap && tap.requestAccounts) {
+    tap.requestAccounts().then(function(accounts) {
+      if (accounts && accounts[0]) handleConnected('tap', accounts[0]);
+      else showToast('TAP: No accounts found');
+    }).catch(function(e) { showToast('TAP: ' + (e.message || 'Connection failed')); });
+    return;
+  }
+  // TAP fallback via UniSat
+  if (window.unisat) {
+    showToast('Connecting TAP via UniSat provider...');
+    window.unisat.requestAccounts().then(function(accounts) {
+      if (accounts && accounts[0]) handleConnected('tap', accounts[0]);
+    }).catch(function(e) { showToast('TAP: ' + (e.message || 'Connection failed')); });
+    return;
+  }
+  showToast('TAP Wallet not detected — opening download page');
+  setTimeout(function(){ window.open('https://trac.network','_blank'); }, 500);
+}
+
+// ── MAIN CONNECT DISPATCHER ──
+function connect(type) {
+  showToast('Connecting to ' + WALLETS[type] + '...');
+  if (type === 'xverse') connectXverse();
+  else if (type === 'unisat') connectUnisat();
+  else if (type === 'leather') connectLeather();
+  else if (type === 'okx') connectOKX();
+  else if (type === 'tap') connectTAP();
+}
+
+// ── ON CONNECTED ──
+function handleConnected(type, addr) {
+  connectedWallet = type;
+  walletAddress = addr;
+  onConnected(type, addr);
+}
+
+function onConnected(type, addr) {
+  document.getElementById('wsIcon').textContent = '✅';
+  document.getElementById('wsBadge').textContent = 'CONNECTED';
+  document.getElementById('wsBadge').className = 'ws-badge on';
+  document.getElementById('wsText').textContent = WALLETS[type] + ' connected';
+  document.getElementById('wsAddr').textContent = addr.slice(0,14)+'...'+addr.slice(-6);
+  document.getElementById('wsAddr').style.display = 'block';
+  document.getElementById('disconnectBtn').style.display = 'block';
+  document.getElementById('sbStats').style.display = 'block';
   document.getElementById('dot-'+type).classList.add('on');
   document.getElementById('btn-'+type).classList.add('active-wallet');
-  document.getElementById('sbWallet').textContent=WALLETS[type].toUpperCase();
-  document.getElementById('navAddr').textContent=addr.slice(0,10)+'...';
-  document.getElementById('navAddr').style.color='var(--green)';
-  document.getElementById('connectScreen').style.display='none';
-  document.getElementById('dashContent').style.display='block';
-  document.getElementById('dhTitle').textContent=WALLETS[type].toUpperCase()+' CONNECTED';
-  document.getElementById('dhAddr').textContent=addr.slice(0,20)+'...'+addr.slice(-8);
-  document.getElementById('sumBtc').textContent=addr.slice(0,8)+'...';
+  document.getElementById('sbWallet').textContent = WALLETS[type].toUpperCase();
+  document.getElementById('navAddr').textContent = addr.slice(0,10)+'...';
+  document.getElementById('navAddr').style.color = 'var(--green)';
+  document.getElementById('connectScreen').style.display = 'none';
+  document.getElementById('dashContent').style.display = 'block';
+  document.getElementById('dhTitle').textContent = WALLETS[type].toUpperCase() + ' CONNECTED';
+  document.getElementById('dhAddr').textContent = addr.slice(0,20)+'...'+addr.slice(-8);
+  document.getElementById('sumBtc').textContent = addr.slice(0,8)+'...';
+  showToast('✅ ' + WALLETS[type] + ' connected!');
   fetchAndRender(addr);
 }
 
-function disconnect(){
-  if(connectedWallet){
+function disconnect() {
+  if (connectedWallet) {
     document.getElementById('dot-'+connectedWallet).classList.remove('on');
     document.getElementById('btn-'+connectedWallet).classList.remove('active-wallet');
   }
-  connectedWallet=null; walletAddress=null;
-  document.getElementById('wsIcon').textContent='₿';
-  document.getElementById('wsBadge').textContent='NOT CONNECTED';
-  document.getElementById('wsBadge').className='ws-badge off';
-  document.getElementById('wsText').textContent='Connect your Bitcoin wallet';
-  document.getElementById('wsAddr').style.display='none';
-  document.getElementById('disconnectBtn').style.display='none';
-  document.getElementById('sbStats').style.display='none';
-  document.getElementById('connectScreen').style.display='block';
-  document.getElementById('dashContent').style.display='none';
-  document.getElementById('navAddr').textContent='NO WALLET';
-  document.getElementById('navAddr').style.color='var(--muted)';
+  connectedWallet = null; walletAddress = null;
+  document.getElementById('wsIcon').textContent = '₿';
+  document.getElementById('wsBadge').textContent = 'NOT CONNECTED';
+  document.getElementById('wsBadge').className = 'ws-badge off';
+  document.getElementById('wsText').textContent = 'Connect your Bitcoin wallet to view your PixelQuote Ordinals';
+  document.getElementById('wsAddr').style.display = 'none';
+  document.getElementById('disconnectBtn').style.display = 'none';
+  document.getElementById('sbStats').style.display = 'none';
+  document.getElementById('connectScreen').style.display = 'block';
+  document.getElementById('dashContent').style.display = 'none';
+  document.getElementById('navAddr').textContent = 'NO WALLET';
+  document.getElementById('navAddr').style.color = 'var(--muted)';
 }
 
-async function fetchAndRender(addr){
-  let inscriptions=[];
+// ── FETCH INSCRIPTIONS ──
+async function fetchAndRender(addr) {
   showLoadingState();
+  let inscriptions = [];
 
-  // Try Hiro API first - supports taproot bc1p addresses
-  try{
-    const r=await fetch('https://api.hiro.so/ordinals/v1/inscriptions?address='+encodeURIComponent(addr)+'&limit=60&offset=0',{
-      headers:{'Accept':'application/json','x-api-key':''}
-    });
-    if(r.ok){
-      const d=await r.json();
-      inscriptions=d.results||[];
-      console.log('Hiro API returned:',inscriptions.length,'inscriptions');
+  // Try Hiro API
+  try {
+    const r = await fetch('https://api.hiro.so/ordinals/v1/inscriptions?address=' + encodeURIComponent(addr) + '&limit=60&offset=0');
+    if (r.ok) {
+      const d = await r.json();
+      inscriptions = d.results || [];
     }
-  }catch(e){console.warn('Hiro API failed:',e);}
+  } catch(e) { console.warn('Hiro API failed:', e); }
 
-  // Try Best in Slot API as fallback
-  if(!inscriptions.length){
-    try{
-      const r=await fetch('https://api.bestinslot.xyz/v3/wallet/inscriptions?address='+encodeURIComponent(addr)+'&sort_by=inscr_num&order=asc&count=60&cursor=0',{
-        headers:{'x-api-key':'null','Accept':'application/json'}
-      });
-      if(r.ok){
-        const d=await r.json();
-        const items=d.data||d.results||[];
-        inscriptions=items.map(i=>({
-          id:i.inscription_id||i.id,
-          name:i.collection_name?i.collection_name+' #'+i.inscription_number:'Inscription #'+i.inscription_number,
-          collection_id:(i.collection_slug||'').toLowerCase(),
-          inscription_number:i.inscription_number
-        }));
-        console.log('BestInSlot API returned:',inscriptions.length,'inscriptions');
+  // Try Ordinals Wallet API as fallback
+  if (!inscriptions.length) {
+    try {
+      const r = await fetch('https://turbo.ordinalswallet.com/wallet/inscriptions?address=' + encodeURIComponent(addr));
+      if (r.ok) {
+        const d = await r.json();
+        inscriptions = (d.inscriptions || d || []).map(function(i) {
+          return { id: i.id || i.inscription_id, name: (i.meta && i.meta.name) || i.collection_name || 'Inscription', collection_id: (i.collection_slug || '').toLowerCase() };
+        });
       }
-    }catch(e){console.warn('BestInSlot API failed:',e);}
-  }
-
-  // Try Ordinals Wallet API as second fallback
-  if(!inscriptions.length){
-    try{
-      const r=await fetch('https://turbo.ordinalswallet.com/wallet/inscriptions?address='+encodeURIComponent(addr));
-      if(r.ok){
-        const d=await r.json();
-        const items=d.inscriptions||d||[];
-        inscriptions=items.map(i=>({
-          id:i.id||i.inscription_id,
-          name:i.meta?.name||i.collection_name||'Inscription',
-          collection_id:(i.collection_slug||i.collectionId||'').toLowerCase()
-        }));
-        console.log('OW API returned:',inscriptions.length,'inscriptions');
-      }
-    }catch(e){console.warn('OW API failed:',e);}
+    } catch(e) { console.warn('OW API failed:', e); }
   }
 
   hideLoadingState();
 
-  if(inscriptions.length){
+  if (inscriptions.length) {
     renderDash(inscriptions);
   } else {
-    // Show empty state with helpful message - no fake demo data
-    document.getElementById('sumPQ').textContent='0';
-    document.getElementById('sumOther').textContent='0';
-    document.getElementById('sumTotal').textContent='0';
-    document.getElementById('sbPQ').textContent='0';
-    document.getElementById('sbOther').textContent='0';
-    document.getElementById('sbTotal').textContent='0';
-    document.getElementById('pqCount').textContent='0 INSCRIPTIONS';
-    document.getElementById('pqEmpty').style.display='block';
-    document.getElementById('pqGrid').style.display='none';
-    document.getElementById('allCount').textContent='0 TOTAL';
-    document.getElementById('allGrid').innerHTML='<div style="grid-column:1/-1;text-align:center;padding:40px;font-family:Silkscreen,monospace;font-size:13px;color:var(--muted);">No inscriptions found for this address.<br><br>Note: Some wallet APIs may have CORS restrictions when accessed from browser.<br>Try viewing your inscriptions directly on <a href="https://www.ord.io" target="_blank" style="color:var(--orange);">ord.io</a> or <a href="https://ordinalswallet.com" target="_blank" style="color:var(--orange);">ordinalswallet.com</a></div>';
-    document.getElementById('actBody').innerHTML='<tr><td colspan="5" style="text-align:center;color:var(--muted);padding:20px;">No activity found</td></tr>';
+    document.getElementById('sumPQ').textContent = '0';
+    document.getElementById('sumOther').textContent = '0';
+    document.getElementById('sumTotal').textContent = '0';
+    document.getElementById('sbPQ').textContent = '0';
+    document.getElementById('sbOther').textContent = '0';
+    document.getElementById('sbTotal').textContent = '0';
+    document.getElementById('pqCount').textContent = '0 INSCRIPTIONS';
+    document.getElementById('pqEmpty').style.display = 'block';
+    document.getElementById('pqGrid').style.display = 'none';
+    document.getElementById('allCount').textContent = '0 TOTAL';
+    document.getElementById('allGrid').innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;font-family:Silkscreen,monospace;font-size:13px;color:var(--muted);">No inscriptions found. View on <a href="https://www.ord.io" target="_blank" style="color:var(--orange);">ord.io</a> or <a href="https://ordinalswallet.com" target="_blank" style="color:var(--orange);">ordinalswallet.com</a></div>';
+    document.getElementById('actBody').innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--muted);padding:20px;">No activity found</td></tr>';
   }
 }
 
-function showLoadingState(){
-  document.getElementById('allGrid').innerHTML='<div style="grid-column:1/-1;text-align:center;padding:40px;font-family:'Press Start 2P',monospace;font-size:10px;color:var(--orange);animation:blink 1s infinite;">LOADING INSCRIPTIONS...</div>';
+function showLoadingState() {
+  document.getElementById('allGrid').innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;font-family:'Press Start 2P',monospace;font-size:10px;color:var(--orange);animation:blink 1s infinite;">LOADING...</div>';
 }
-function hideLoadingState(){
-  document.getElementById('allGrid').innerHTML='';
-}
+function hideLoadingState() { document.getElementById('allGrid').innerHTML = ''; }
 
-function isPQ(ins){
-  // Check multiple ways to identify PixelQuote inscriptions
-  if(ins.isPQ) return true;
-  if(ins.collection_id && (ins.collection_id.includes('pixel-quote') || ins.collection_id.includes('pixelquote'))) return true;
-  if(ins.name && (ins.name.toLowerCase().includes('pixelquote') || ins.name.toLowerCase().includes('pixel quote'))) return true;
-  // Check known PixelQuote inscription IDs (first chars)
-  const pqPrefixes = ['815f699b','e683703e','b846639b','354526c9','427b1fc6','0deb5aa3'];
-  if(ins.id && pqPrefixes.some(p => ins.id.startsWith(p))) return true;
+function isPQ(ins) {
+  if (ins.isPQ) return true;
+  const cid = (ins.collection_id || ins.collection_slug || '').toLowerCase();
+  if (cid.includes('pixel-quote') || cid.includes('pixelquote')) return true;
+  const name = (ins.name || '').toLowerCase();
+  if (name.includes('pixelquote') || name.includes('pixel quote')) return true;
+  const pqPrefixes = ['815f699b','e683703e','b846639b','354526c9','427b1fc6'];
+  if (ins.id && pqPrefixes.some(function(p){ return ins.id.startsWith(p); })) return true;
   return false;
 }
 
-function renderDash(inscriptions){
-  const pq=inscriptions.filter(i=>isPQ(i));
-  const others=inscriptions.filter(i=>!isPQ(i));
-  document.getElementById('sumPQ').textContent=pq.length;
-  document.getElementById('sumOther').textContent=others.length;
-  document.getElementById('sumTotal').textContent=inscriptions.length;
-  document.getElementById('sbPQ').textContent=pq.length;
-  document.getElementById('sbOther').textContent=others.length;
-  document.getElementById('sbTotal').textContent=inscriptions.length;
-  document.getElementById('pqCount').textContent=pq.length+' INSCRIPTIONS';
-  if(pq.length===0){
-    document.getElementById('pqEmpty').style.display='block';
-    document.getElementById('pqGrid').style.display='none';
+function renderDash(inscriptions) {
+  const pq = inscriptions.filter(isPQ);
+  const others = inscriptions.filter(function(i){ return !isPQ(i); });
+  document.getElementById('sumPQ').textContent = pq.length;
+  document.getElementById('sumOther').textContent = others.length;
+  document.getElementById('sumTotal').textContent = inscriptions.length;
+  document.getElementById('sbPQ').textContent = pq.length;
+  document.getElementById('sbOther').textContent = others.length;
+  document.getElementById('sbTotal').textContent = inscriptions.length;
+  document.getElementById('pqCount').textContent = pq.length + ' INSCRIPTIONS';
+  if (pq.length === 0) {
+    document.getElementById('pqEmpty').style.display = 'block';
+    document.getElementById('pqGrid').style.display = 'none';
   } else {
-    document.getElementById('pqEmpty').style.display='none';
-    document.getElementById('pqGrid').style.display='grid';
-    document.getElementById('pqGrid').innerHTML=pq.map(i=>ordCard(i,true)).join('');
+    document.getElementById('pqEmpty').style.display = 'none';
+    document.getElementById('pqGrid').style.display = 'grid';
+    document.getElementById('pqGrid').innerHTML = pq.map(function(i){ return ordCard(i,true); }).join('');
   }
-  document.getElementById('allCount').textContent=inscriptions.length+' TOTAL';
-  document.getElementById('allGrid').innerHTML=[...pq,...others].map(i=>ordCard(i,isPQ(i))).join('');
-  document.getElementById('actBody').innerHTML=inscriptions.slice(0,10).map((ins,idx)=>{
-    const t=idx%3===0?'send':'recv';
-    return `<tr>
-      <td><span class="td-badge ${t}">${t==='recv'?'RECEIVED':'SENT'}</span></td>
-      <td style="font-family:'Silkscreen',monospace;font-size:12px;">${(ins.name||'Inscription').slice(0,24)}</td>
-      <td style="font-family:'Silkscreen',monospace;font-size:11px;color:var(--muted);">bc1p...${Math.random().toString(36).substr(2,6)}</td>
-      <td style="font-size:15px;">${new Date(Date.now()-idx*86400000*3).toLocaleDateString()}</td>
-      <td><a href="https://mempool.space" target="_blank" style="color:var(--orange2);font-family:'Silkscreen',monospace;font-size:11px;">VIEW ↗</a></td>
-    </tr>`;
+  document.getElementById('allCount').textContent = inscriptions.length + ' TOTAL';
+  document.getElementById('allGrid').innerHTML = inscriptions.map(function(i){ return ordCard(i,isPQ(i)); }).join('');
+  document.getElementById('actBody').innerHTML = inscriptions.slice(0,10).map(function(ins,idx){
+    const t = idx%3===0 ? 'send' : 'recv';
+    return '<tr><td><span class="td-badge '+t+'">'+(t==='recv'?'RECEIVED':'SENT')+'</span></td><td style="font-family:'Silkscreen',monospace;font-size:12px;">'+(ins.name||'Inscription').slice(0,24)+'</td><td style="font-family:'Silkscreen',monospace;font-size:11px;color:var(--muted);">bc1p...'+Math.random().toString(36).substr(2,6)+'</td><td style="font-size:15px;">'+new Date(Date.now()-idx*86400000*3).toLocaleDateString()+'</td><td><a href="https://mempool.space" target="_blank" style="color:var(--orange2);font-family:'Silkscreen',monospace;font-size:11px;">VIEW ↗</a></td></tr>';
   }).join('');
 }
 
-function ordCard(ins,pq){
-  const id=ins.id||'';
-  const previewUrl=id.length>20?ORD_PRV+id:'';
-  const media=previewUrl
-    ?`<iframe src="${previewUrl}" loading="lazy" sandbox="allow-scripts allow-same-origin" style="width:100%;height:100%;border:none;pointer-events:none;"></iframe>`
-    :`<div style="display:flex;align-items:center;justify-content:center;width:100%;height:100%;font-size:32px;opacity:.3;">₿</div>`;
-  const pqTag=pq?'<span class="ord-pq-tag">PIXELQUOTE</span>':'';
-  return `<div class="ord-card" onclick="window.open('https://ordinals.com/inscription/${id}','_blank')">
-    <div class="ord-media">${media}${pqTag}</div>
-    <div class="ord-body">
-      <span class="ord-num">${id.slice(0,10)}...</span>
-      <div class="ord-name" style="${pq?'color:var(--orange)':'color:var(--muted)'}">${(ins.name||'Inscription').slice(0,20)}</div>
-    </div>
-  </div>`;
+function ordCard(ins, pq) {
+  const id = ins.id || '';
+  const previewUrl = id.length > 20 ? ORD_PRV + id : '';
+  const media = previewUrl ? '<iframe src="'+previewUrl+'" loading="lazy" sandbox="allow-scripts allow-same-origin" style="width:100%;height:100%;border:none;pointer-events:none;"></iframe>' : '<div style="display:flex;align-items:center;justify-content:center;width:100%;height:100%;font-size:32px;opacity:.3;">₿</div>';
+  const pqTag = pq ? '<span class="ord-pq-tag">PIXELQUOTE</span>' : '';
+  return '<div class="ord-card" onclick="window.open('https://ordinals.com/inscription/'+id+'','_blank')"><div class="ord-media">'+media+pqTag+'</div><div class="ord-body"><span class="ord-num">'+id.slice(0,10)+'...</span><div class="ord-name" style="'+(pq?'color:var(--orange)':'color:var(--muted)')+'">'+(ins.name||'Inscription').slice(0,20)+'</div></div></div>';
 }
 
-function tab(t,btn){
-  document.querySelectorAll('.dash-tab').forEach(b=>b.classList.remove('active'));
+function tab(t, btn) {
+  document.querySelectorAll('.dash-tab').forEach(function(b){ b.classList.remove('active'); });
   btn.classList.add('active');
-  ['pq','all','activity'].forEach(id=>{document.getElementById('tab-'+id).style.display=id===t?'block':'none';});
+  ['pq','all','activity'].forEach(function(id){ document.getElementById('tab-'+id).style.display = id===t?'block':'none'; });
 }
-
-function toggleTheme(){
-  const h = document.documentElement;
-  const btn = document.getElementById('themeBtn');
-  const current = h.getAttribute('data-theme');
-  const next = current === 'dark' ? 'light' : 'dark';
-  h.setAttribute('data-theme', next);
-  btn.textContent = next === 'dark' ? '☀ LIGHT' : '☾ DARK';
-  localStorage.setItem('pq-theme', next);
-}
-// Restore saved theme on load
-(function(){
-  const saved = localStorage.getItem('pq-theme');
-  if (saved) {
-    document.documentElement.setAttribute('data-theme', saved);
-    const btn = document.getElementById('themeBtn');
-    if (btn) btn.textContent = saved === 'dark' ? '☀ LIGHT' : '☾ DARK';
-  }
-})();
 </script>
 </body>
-</html>

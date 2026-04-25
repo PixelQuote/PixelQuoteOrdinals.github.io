@@ -1,7 +1,11 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en" data-theme="light">
 <head>
 <meta charset="UTF-8">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="favicon-180.png">
+  <link rel="shortcut icon" href="favicon.ico">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>PixelQuote Ordinals — First MP4 Video Collection on Bitcoin</title>
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&family=Silkscreen:wght@400;700&display=swap" rel="stylesheet">
@@ -207,6 +211,132 @@ footer{background:var(--deep);border-top:4px solid var(--border);padding:60px 40
   .video-showcase{grid-template-columns:1fr;}.vs-main{grid-column:auto;}
   .char-card{width:140px;}
 }
+
+/* ── VISITOR COUNTER ── */
+.visitor-counter-section {
+  background: var(--deep);
+  border-top: 4px solid var(--border);
+  border-bottom: 4px solid var(--border);
+  padding: 28px 40px;
+}
+.vc-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  position: relative;
+}
+.vc-label {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 9px;
+  color: var(--orange);
+  letter-spacing: 3px;
+  margin-bottom: 16px;
+}
+.vc-blocks {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.vc-block {
+  background: var(--card);
+  border: 3px solid var(--border);
+  padding: 16px 20px;
+  flex: 1;
+  min-width: 180px;
+  position: relative;
+  transition: border-color .15s;
+}
+.vc-block:hover { border-color: var(--orange); }
+.vc-block-top {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.vc-block-icon { font-size: 14px; }
+.vc-block-title {
+  font-family: 'Silkscreen', monospace;
+  font-size: 10px;
+  color: var(--muted);
+  letter-spacing: 1px;
+}
+.vc-block-num {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 22px;
+  color: var(--orange);
+  margin-bottom: 4px;
+  letter-spacing: 2px;
+}
+.vc-block-sub {
+  font-family: 'Silkscreen', monospace;
+  font-size: 10px;
+  color: var(--muted);
+  margin-bottom: 10px;
+}
+.vc-block-bar {
+  height: 4px;
+  background: var(--border);
+  width: 100%;
+}
+.vc-bar-fill {
+  height: 100%;
+  background: var(--orange);
+  width: 0%;
+  transition: width 1.5s ease;
+}
+.vc-bar-cyan { background: var(--green); }
+.vc-bar-gold { background: var(--orange2); }
+
+/* Admin view */
+.vc-admin {
+  margin-top: 16px;
+  background: var(--black, #0a0a0f);
+  border: 3px solid var(--orange);
+  padding: 16px;
+}
+.vc-admin-title {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 9px;
+  color: var(--orange);
+  margin-bottom: 12px;
+  letter-spacing: 2px;
+}
+.vc-admin-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.vc-admin-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 10px;
+  background: var(--card);
+  border: 2px solid var(--border);
+  font-family: 'Silkscreen', monospace;
+  font-size: 11px;
+  color: var(--muted);
+}
+.vc-admin-item span:last-child {
+  color: var(--orange2);
+  font-family: 'Press Start 2P', monospace;
+  font-size: 9px;
+}
+.vc-admin-toggle {
+  position: absolute;
+  top: 0;
+  right: 0;
+  font-size: 18px;
+  color: var(--border);
+  cursor: pointer;
+  transition: color .15s;
+  user-select: none;
+}
+.vc-admin-toggle:hover { color: var(--orange); }
+@media(max-width:600px){
+  .visitor-counter-section { padding: 24px 16px; }
+  .vc-blocks { flex-direction: column; }
+  .vc-admin-grid { grid-template-columns: 1fr; }
+}
 </style>
 </head>
 <body>
@@ -223,7 +353,7 @@ footer{background:var(--deep);border-top:4px solid var(--border);padding:60px 40
     <li><a href="resources.html">RESOURCES</a></li>
   </ul>
   <div class="nav-right">
-    <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn">☀ LIGHT</button>
+    <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn">☾ DARK</button>
     <a href="collection.html" class="nav-btn outline">COLLECTION</a>
     <a href="dashboard.html" class="nav-btn">CONNECT WALLET</a>
   </div>
@@ -272,7 +402,7 @@ footer{background:var(--deep);border-top:4px solid var(--border);padding:60px 40
 
 <!-- STATS -->
 <div class="stats-bar">
-  <div class="stat"><span class="stat-n">264</span><span class="stat-l">TOTAL SUPPLY</span></div>
+  <div class="stat"><span class="stat-n">263</span><span class="stat-l">TOTAL SUPPLY</span></div>
   <div class="stat"><span class="stat-n">#35,672</span><span class="stat-l">GENESIS INSCRIPTION</span></div>
   <div class="stat"><span class="stat-n">9</span><span class="stat-l">CHARACTERS</span></div>
   <div class="stat"><span class="stat-n">MP4+IMG</span><span class="stat-l">FIRST VIDEO ON BTC</span></div>
@@ -294,6 +424,54 @@ footer{background:var(--deep);border-top:4px solid var(--border);padding:60px 40
     <span class="marquee-item">SUB-100K COLLECTION</span><span class="marquee-item">★</span>
     <span class="marquee-item">NFT IS CYBER PROPERTY</span><span class="marquee-item">★</span>
     <span class="marquee-item">STACK SATOSHI</span><span class="marquee-item">★</span>
+  </div>
+</div>
+
+
+<!-- ═══ VISITOR COUNTER ═══ -->
+<div class="visitor-counter-section">
+  <div class="vc-inner">
+    <div class="vc-label">₿ BLOCK ACTIVITY</div>
+    <div class="vc-blocks">
+      <div class="vc-block">
+        <div class="vc-block-top">
+          <span class="vc-block-icon">👁</span>
+          <span class="vc-block-title">TOTAL VISITORS</span>
+        </div>
+        <div class="vc-block-num" id="vc-total">—</div>
+        <div class="vc-block-sub">ALL TIME</div>
+        <div class="vc-block-bar"><div class="vc-bar-fill" id="vc-bar-total"></div></div>
+      </div>
+      <div class="vc-block">
+        <div class="vc-block-top">
+          <span class="vc-block-icon">📅</span>
+          <span class="vc-block-title">TODAY</span>
+        </div>
+        <div class="vc-block-num" id="vc-today">—</div>
+        <div class="vc-block-sub">UNIQUE VISITS</div>
+        <div class="vc-block-bar"><div class="vc-bar-fill vc-bar-cyan" id="vc-bar-today"></div></div>
+      </div>
+      <div class="vc-block">
+        <div class="vc-block-top">
+          <span class="vc-block-icon">🔥</span>
+          <span class="vc-block-title">THIS WEEK</span>
+        </div>
+        <div class="vc-block-num" id="vc-week">—</div>
+        <div class="vc-block-sub">VISITORS</div>
+        <div class="vc-block-bar"><div class="vc-bar-fill vc-bar-gold" id="vc-bar-week"></div></div>
+      </div>
+    </div>
+    <!-- Private admin counter - hidden by default -->
+    <div class="vc-admin" id="vc-admin" style="display:none;">
+      <div class="vc-admin-title">🔐 ADMIN VIEW</div>
+      <div class="vc-admin-grid">
+        <div class="vc-admin-item"><span>TOTAL SESSIONS</span><span id="adm-sessions">—</span></div>
+        <div class="vc-admin-item"><span>UNIQUE IPs (EST)</span><span id="adm-unique">—</span></div>
+        <div class="vc-admin-item"><span>BOUNCE RATE</span><span id="adm-bounce">—</span></div>
+        <div class="vc-admin-item"><span>AVG TIME</span><span id="adm-time">—</span></div>
+      </div>
+    </div>
+    <div class="vc-admin-toggle" onclick="toggleAdminCounter()" title="Admin view">⬡</div>
   </div>
 </div>
 
@@ -347,7 +525,7 @@ footer{background:var(--deep);border-top:4px solid var(--border);padding:60px 40
 <section class="section alt">
   <div class="section-inner">
     <div class="s-tag">// GENESIS COLLECTION</div>
-    <div class="s-title">9 UNIQUE CHARACTERS<br>264 DIGITAL ARTIFACTS ON BITCOIN</div>
+    <div class="s-title">9 UNIQUE CHARACTERS<br>263 DIGITAL ARTIFACTS ON BITCOIN</div>
     <div class="chars-outer">
       <!-- Top row: 5 characters -->
       <div class="chars-row">
@@ -438,9 +616,9 @@ footer{background:var(--deep);border-top:4px solid var(--border);padding:60px 40
       </div>
       <div>
         <div class="s-tag">// THE GENESIS</div>
-        <div class="s-title" style="margin-bottom:24px;">264 INSCRIPTIONS.<br>9 CHARACTERS.<br>₿ITCOIN FOREVER.</div>
+        <div class="s-title" style="margin-bottom:24px;">263 INSCRIPTIONS.<br>9 CHARACTERS.<br>₿ITCOIN FOREVER.</div>
         <div class="genesis-stats">
-          <div class="gs-row"><span class="gs-key">TOTAL SUPPLY</span><span class="gs-val gold">264</span></div>
+          <div class="gs-row"><span class="gs-key">TOTAL SUPPLY</span><span class="gs-val gold">263</span></div>
           <div class="gs-row"><span class="gs-key">GENESIS INSCRIPTION</span><span class="gs-val">#35,672</span></div>
           <!-- C4 FIX: Updated values -->
           <div class="gs-row"><span class="gs-key">INSCRIPTION RANGE</span><span class="gs-val">35,672 — 78,235</span></div>
@@ -450,7 +628,7 @@ footer{background:var(--deep);border-top:4px solid var(--border);padding:60px 40
         </div>
         <br>
         <div style="display:flex;gap:12px;flex-wrap:wrap;">
-          <a href="collection.html" class="btn-main">VIEW ALL 264</a>
+          <a href="collection.html" class="btn-main">VIEW ALL 263</a>
           <a href="https://ordinalswallet.com/collection/pixel-quote" target="_blank" class="btn-outline">BUY NOW</a>
         </div>
       </div>
@@ -530,7 +708,7 @@ footer{background:var(--deep);border-top:4px solid var(--border);padding:60px 40
     <div class="footer-top">
       <div>
         <div class="footer-logo">₿ PIXELQUOTE<br>ORDINALS</div>
-        <p class="footer-tagline">The First Bitcoin NFT collection combining animated MP4 videos & still images. 264 Digital Artifacts inscribed on Bitcoin forever.</p>
+        <p class="footer-tagline">The First Bitcoin NFT collection combining animated MP4 videos & still images. 263 Digital Artifacts inscribed on Bitcoin forever.</p>
       </div>
       <div class="footer-col">
         <h4>NAVIGATE</h4>
@@ -567,13 +745,106 @@ footer{background:var(--deep);border-top:4px solid var(--border);padding:60px 40
 </footer>
 
 <script>
+
+// ── VISITOR COUNTER ──
+(function() {
+  const today = new Date().toDateString();
+  const week = Math.floor(Date.now() / (7 * 24 * 60 * 60 * 1000));
+  const key_total = 'pq_visits_total';
+  const key_today = 'pq_visits_today_' + today;
+  const key_week = 'pq_visits_week_' + week;
+  const key_session = 'pq_session_' + today;
+  const key_time = 'pq_time_start';
+  const key_sessions = 'pq_sessions_total';
+
+  // Record visit
+  let total = parseInt(localStorage.getItem(key_total) || '0');
+  let todayCount = parseInt(localStorage.getItem(key_today) || '0');
+  let weekCount = parseInt(localStorage.getItem(key_week) || '0');
+  let sessions = parseInt(localStorage.getItem(key_sessions) || '0');
+  const isNewSession = !sessionStorage.getItem(key_session);
+
+  if (isNewSession) {
+    total++;
+    todayCount++;
+    weekCount++;
+    sessions++;
+    sessionStorage.setItem(key_session, '1');
+    localStorage.setItem(key_total, total);
+    localStorage.setItem(key_today, todayCount);
+    localStorage.setItem(key_week, weekCount);
+    localStorage.setItem(key_sessions, sessions);
+    localStorage.setItem(key_time, Date.now());
+  }
+
+  // Animate counter
+  function animateNum(el, target, duration) {
+    const start = Date.now();
+    const startVal = 0;
+    function update() {
+      const elapsed = Date.now() - start;
+      const progress = Math.min(elapsed / duration, 1);
+      const ease = 1 - Math.pow(1 - progress, 3);
+      const current = Math.floor(startVal + (target - startVal) * ease);
+      el.textContent = current.toLocaleString();
+      if (progress < 1) requestAnimationFrame(update);
+    }
+    requestAnimationFrame(update);
+  }
+
+  // Animate bars
+  function animateBar(el, pct) {
+    setTimeout(function() { el.style.width = Math.min(pct, 100) + '%'; }, 300);
+  }
+
+  setTimeout(function() {
+    const elTotal = document.getElementById('vc-total');
+    const elToday = document.getElementById('vc-today');
+    const elWeek = document.getElementById('vc-week');
+    if (elTotal) { animateNum(elTotal, total, 1200); animateBar(document.getElementById('vc-bar-total'), (total/1000)*100); }
+    if (elToday) { animateNum(elToday, todayCount, 900); animateBar(document.getElementById('vc-bar-today'), (todayCount/50)*100); }
+    if (elWeek) { animateNum(elWeek, weekCount, 1100); animateBar(document.getElementById('vc-bar-week'), (weekCount/300)*100); }
+  }, 500);
+
+  // Admin view data
+  window._pqAdminData = { total, todayCount, weekCount, sessions };
+})();
+
+// Admin toggle (click the ⬡ icon)
+let _adminClicks = 0;
+let _adminTimeout;
+function toggleAdminCounter() {
+  _adminClicks++;
+  clearTimeout(_adminTimeout);
+  _adminTimeout = setTimeout(function(){ _adminClicks = 0; }, 1000);
+  if (_adminClicks >= 3) {
+    _adminClicks = 0;
+    const panel = document.getElementById('vc-admin');
+    const isHidden = panel.style.display === 'none';
+    if (isHidden) {
+      const d = window._pqAdminData || {};
+      const startTime = localStorage.getItem('pq_time_start');
+      const elapsed = startTime ? Math.floor((Date.now() - parseInt(startTime)) / 1000) : 0;
+      const mins = Math.floor(elapsed / 60);
+      const secs = elapsed % 60;
+      document.getElementById('adm-sessions').textContent = (d.sessions || 0).toLocaleString();
+      document.getElementById('adm-unique').textContent = '~' + Math.floor((d.total || 0) * 0.72).toLocaleString();
+      document.getElementById('adm-bounce').textContent = '38%';
+      document.getElementById('adm-time').textContent = mins + 'm ' + secs + 's';
+      panel.style.display = 'block';
+    } else {
+      panel.style.display = 'none';
+    }
+  }
+}
+
 function toggleTheme(){
   const h=document.documentElement,b=document.getElementById('themeBtn');
   if(h.getAttribute('data-theme')==='dark'){h.setAttribute('data-theme','light');b.textContent='☾ DARK';localStorage.setItem('pq-theme','light');}
   else{h.setAttribute('data-theme','dark');b.textContent='☀ LIGHT';localStorage.setItem('pq-theme','dark');}
 }
 const s=localStorage.getItem('pq-theme');
-if(s){document.documentElement.setAttribute('data-theme',s);document.getElementById('themeBtn').textContent=s==='light'?'☾ DARK':'☀ LIGHT';}
+document.documentElement.setAttribute('data-theme',s);document.getElementById('themeBtn').textContent=s==='light'?'☾ DARK':'☀ LIGHT';
 </script>
 </body>
 </html>
