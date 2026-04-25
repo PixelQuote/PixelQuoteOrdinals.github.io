@@ -499,22 +499,123 @@ function disconnect() {
   document.getElementById('navAddr').style.color = 'var(--muted)';
 }
 
-/* FETCH ORDINALS */
+/* FETCH ORDINALS - Uses wallet native APIs to avoid CORS */
 function fetchOrdinals(addr) {
   var g = document.getElementById('allGrid');
-  if (g) g.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;font-family:\'Press Start 2P\',monospace;font-size:10px;color:var(--orange);">LOADING INSCRIPTIONS...</div>';
+  if (g) g.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;font-family:'Press Start 2P',monospace;font-size:10px;color:var(--orange);">LOADING INSCRIPTIONS...</div>';
+  getInscriptionsFromWallet(addr);
+}
 
-  var url = 'https://api.hiro.so/ordinals/v1/inscriptions?address=' + encodeURIComponent(addr) + '&limit=60';
-  fetch(url).then(function(r) {
-    if (!r.ok) throw new Error('HTTP ' + r.status);
-    return r.json();
-  }).then(function(d) {
-    renderDash(d.results || []);
-  }).catch(function(e) {
-    console.warn('Hiro API failed:', e);
-    renderDash([]);
+function getInscriptionsFromWallet(addr) {
+  var type = connectedWallet;
+
+  /* UniSat - native getInscriptions API */
+  if (type === 'unisat' && window.unisat && window.unisat.getInscriptions) {
+    window.unisat.getInscriptions(0, 100).then(function(res) {
+      var list = res && (res.list || res.inscriptions || res) || [];
+      renderDash(normalizeList(list, 'unisat'));
+    }).catch(function(e) { console.warn('UniSat inscriptions:', e); tryAPIs(addr); });
+    return;
+  }
+
+  /* Xverse - via XverseProviders getInscriptions */
+  if (type === 'xverse') {
+    if (window.XverseProviders && window.XverseProviders.BitcoinProvider) {
+      window.XverseProviders.BitcoinProvider.request('getInscriptions', { offset: 0, limit: 60 })
+        .then(function(res) {
+          var list = res && res.result && (res.result.list || res.result.inscriptions || []);
+          if (list && list.length) { renderDash(normalizeList(list, 'xverse')); }
+          else { tryAPIs(addr); }
+        })
+        .catch(function(e) { console.warn('Xverse inscriptions:', e); tryAPIs(addr); });
+      return;
+    }
+    /* Xverse via SatsConnect getInscriptions */
+    var sc = window.SatsConnect || window.satsConnect;
+    if (sc && sc.getInscriptions) {
+      sc.getInscriptions({
+        payload: { network: { type: 'Mainnet' } },
+        onFinish: function(res) {
+          var list = res && (res.inscriptions || []);
+          if (list.length) renderDash(normalizeList(list, 'xverse'));
+          else tryAPIs(addr);
+        },
+        onCancel: function() { tryAPIs(addr); }
+      });
+      return;
+    }
+  }
+
+  /* OKX - native getInscriptions */
+  if (type === 'okx' && window.okxwallet && window.okxwallet.bitcoin && window.okxwallet.bitcoin.getInscriptions) {
+    window.okxwallet.bitcoin.getInscriptions(0, 100).then(function(res) {
+      var list = res && (res.list || res.inscriptions || res) || [];
+      renderDash(normalizeList(list, 'okx'));
+    }).catch(function(e) { console.warn('OKX inscriptions:', e); tryAPIs(addr); });
+    return;
+  }
+
+  /* TAP / Leather - fall to APIs */
+  tryAPIs(addr);
+}
+
+/* Normalize different wallet response formats */
+function normalizeList(list, source) {
+  return list.map(function(i) {
+    var id = i.inscriptionId || i.inscription_id || i.id || '';
+    var name = i.inscriptionName || i.name || (i.meta && i.meta.name) || ('Inscription #' + (i.inscriptionNumber || i.number || ''));
+    var cid = (i.collectionId || i.collection_id || i.collection_slug || i.collectionName || '').toLowerCase();
+    var num = i.inscriptionNumber || i.number || i.inscription_number || 0;
+    return { id: id, name: name, collection_id: cid, inscription_number: num };
   });
 }
+
+/* Try external APIs as fallback */
+function tryAPIs(addr) {
+  var apis = [
+    { url: 'https://api.hiro.so/ordinals/v1/inscriptions?address=' + encodeURIComponent(addr) + '&limit=60', key: 'results' },
+    { url: 'https://turbo.ordinalswallet.com/wallet/inscriptions?address=' + encodeURIComponent(addr), key: 'inscriptions' }
+  ];
+  var tried = 0;
+  function next() {
+    if (tried >= apis.length) { showLinks(addr); return; }
+    var api = apis[tried++];
+    fetch(api.url, { headers: { 'Accept': 'application/json' } })
+      .then(function(r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+      .then(function(d) {
+        var list = d[api.key] || d.data || d.list || [];
+        if (list.length) renderDash(normalizeList(list, 'api'));
+        else next();
+      })
+      .catch(function() { next(); });
+  }
+  next();
+}
+
+/* Show external links if all APIs blocked by CORS */
+function showLinks(addr) {
+  var short = addr.slice(0, 14) + '...' + addr.slice(-6);
+  document.getElementById('pqCount').textContent = '0 INSCRIPTIONS';
+  document.getElementById('pqEmpty').style.display = 'none';
+  document.getElementById('pqGrid').style.display = 'none';
+  document.getElementById('allCount').textContent = 'VIEW EXTERNALLY';
+  document.getElementById('allGrid').innerHTML =
+    '<div style="grid-column:1/-1;padding:28px;border:3px solid var(--orange);background:var(--card);">' +
+    '<div style="font-family:'Press Start 2P',monospace;font-size:9px;color:var(--orange);margin-bottom:16px;">CONNECTED: ' + short + '</div>' +
+    '<div style="font-family:Silkscreen,monospace;font-size:13px;color:var(--muted);margin-bottom:20px;line-height:1.6;">Your wallet is connected. Browser security (CORS) blocks the inscription API from loading here. View your inscriptions directly:</div>' +
+    '<div style="display:flex;flex-wrap:wrap;gap:10px;">' +
+    lnk('ORD.IO', 'https://www.ord.io/' + addr) +
+    lnk('ORDINALS WALLET', 'https://ordinalswallet.com/address/' + addr) +
+    lnk('ORDINALS.COM', 'https://ordinals.com/inscriptions/' + addr) +
+    lnk('BEST IN SLOT', 'https://bestinslot.xyz/ordinals/wallet/' + addr) +
+    '</div></div>';
+  document.getElementById('actBody').innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--muted);padding:20px;font-family:Silkscreen,monospace;">Visit the links above to view activity</td></tr>';
+}
+
+function lnk(label, url) {
+  return '<a href="' + url + '" target="_blank" style="font-family:'Press Start 2P',monospace;font-size:8px;color:#000;background:var(--orange);padding:10px 14px;text-decoration:none;display:inline-block;box-shadow:3px 3px 0 var(--os);">' + label + '</a>';
+}
+
 
 /* RENDER */
 function isPQ(ins) {
