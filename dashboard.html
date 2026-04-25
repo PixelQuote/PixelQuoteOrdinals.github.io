@@ -130,6 +130,8 @@ nav{position:fixed;top:0;left:0;right:0;z-index:500;background:var(--nav);border
 }
 </style>
 
+  <!-- SatsConnect for Xverse ord_getInscriptions -->
+  <script src="https://cdn.jsdelivr.net/npm/sats-connect@2/dist/sats-connect.iife.js" defer></script>
 </head>
 <body>
 <nav>
@@ -513,11 +515,18 @@ function fetchInscriptions(type, addr) {
       .then(function(res) {
         var items = (res && res.list) || [];
         var mapped = items.map(function(i) {
+          /* UniSat returns: inscriptionId, inscriptionNumber, preview - NO collectionName */
+          var collectionStr = (i.collectionId || '') + ' ' + (i.collectionName || '');
           return {
-            id: i.inscriptionId || '',
+            id: i.inscriptionId || i.id || '',
+            inscriptionId: i.inscriptionId || i.id || '',
             name: i.inscriptionName || ('Inscription #' + i.inscriptionNumber),
-            collection_id: (i.collectionId || '').toLowerCase(),
-            preview: i.preview || ''
+            collection_id: collectionStr.toLowerCase(),
+            collection_name: (i.collectionName || '').toLowerCase(),
+            collectionName: (i.collectionName || '').toLowerCase(),
+            inscriptionNumber: i.inscriptionNumber || 0,
+            number: i.inscriptionNumber || 0,
+            preview: i.preview || i.contentUrl || ''
           };
         });
         renderDash(mapped);
@@ -535,11 +544,18 @@ function fetchInscriptions(type, addr) {
       .then(function(res) {
         var items = (res && res.list) || [];
         var mapped = items.map(function(i) {
+          /* OKX returns: inscriptionId, inscriptionName, collectionId, collectionName */
+          var collectionStr = (i.collectionId || '') + ' ' + (i.collectionName || '') + ' ' + (i.slug || '');
           return {
-            id: i.inscriptionId || '',
-            name: i.inscriptionName || 'Inscription',
-            collection_id: (i.collectionId || '').toLowerCase(),
-            preview: ''
+            id: i.inscriptionId || i.id || '',
+            inscriptionId: i.inscriptionId || i.id || '',
+            name: i.inscriptionName || i.collectionItemName || i.name || 'Inscription',
+            collection_id: collectionStr.toLowerCase(),
+            collection_name: (i.collectionName || '').toLowerCase(),
+            collectionName: (i.collectionName || '').toLowerCase(),
+            inscriptionNumber: i.inscriptionNumber || 0,
+            number: i.inscriptionNumber || 0,
+            preview: i.preview || ''
           };
         });
         renderDash(mapped);
@@ -548,28 +564,139 @@ function fetchInscriptions(type, addr) {
     return;
   }
 
-  /* Xverse: request getInscriptions via XverseProviders */
-  if (type === 'xverse' && window.XverseProviders && window.XverseProviders.BitcoinProvider) {
-    window.XverseProviders.BitcoinProvider.request('getInscriptions', { offset: 0, limit: 60 })
-      .then(function(res) {
-        var items = (res && res.result && res.result.list) || [];
-        var mapped = items.map(function(i) {
-          return {
-            id: i.inscriptionId || i.id || '',
-            name: i.inscriptionName || i.name || 'Inscription',
-            collection_id: (i.collectionId || '').toLowerCase(),
-            preview: ''
-          };
+  /* Xverse: use ord_getInscriptions via SatsConnect request() - official API */
+  if (type === 'xverse') {
+    var sc = window.SatsConnect;
+    if (sc && sc.request) {
+      sc.request('ord_getInscriptions', { limit: 100, offset: 0 })
+        .then(function(res) {
+          if (res && res.status === 'success') {
+            var items = (res.result && res.result.inscriptions) || [];
+            var mapped = items.map(function(i) {
+              return {
+                id: i.inscriptionId || '',
+                name: i.collectionName ? i.collectionName + ' #' + i.inscriptionNumber : ('Inscription #' + i.inscriptionNumber),
+                collection_id: (i.collectionName || '').toLowerCase(),
+                collectionName: (i.collectionName || '').toLowerCase(),
+                inscription_number: i.inscriptionNumber || 0,
+                preview: 'https://ordinals.com/preview/' + (i.inscriptionId || '')
+              };
+            });
+            renderDash(mapped);
+          } else {
+            showToast('Xverse: ' + (res && res.error && res.error.message || 'Could not load inscriptions'));
+            showExternalLinks(addr);
+          }
+        })
+        .catch(function(e) {
+          showToast('Xverse inscriptions error: ' + e.message);
+          showExternalLinks(addr);
         });
-        if (mapped.length) renderDash(mapped);
-        else showExternalLinks(addr);
-      })
-      .catch(function(e) { showExternalLinks(addr); });
+      return;
+    }
+    /* Fallback: XverseProviders */
+    if (window.XverseProviders && window.XverseProviders.BitcoinProvider) {
+      window.XverseProviders.BitcoinProvider.request('ord_getInscriptions', { limit: 100, offset: 0 })
+        .then(function(res) {
+          var items = (res && res.result && res.result.inscriptions) || [];
+          var mapped = items.map(function(i) {
+            return {
+              id: i.inscriptionId || '',
+              name: i.collectionName ? i.collectionName + ' #' + i.inscriptionNumber : ('Inscription #' + i.inscriptionNumber),
+              collection_id: (i.collectionName || '').toLowerCase(),
+              collectionName: (i.collectionName || '').toLowerCase(),
+              preview: 'https://ordinals.com/preview/' + (i.inscriptionId || '')
+            };
+          });
+          if (mapped.length) renderDash(mapped);
+          else showExternalLinks(addr);
+        })
+        .catch(function(e) { showExternalLinks(addr); });
+      return;
+    }
+    showExternalLinks(addr);
     return;
   }
 
-  /* All others: show external links with wallet address */
-  showExternalLinks(addr);
+  /* Leather and TAP: no native inscription API, but we have the address.
+     Try multiple CORS-friendly approaches to load inscriptions */
+  fetchByAddress(addr);
+}
+
+function fetchByAddress(addr) {
+  /* Try APIs in sequence - some allow CORS from GitHub Pages */
+  var attempts = [
+    function(cb) {
+      /* Hiro API - most reliable, supports taproot bc1p addresses */
+      fetch('https://api.hiro.so/ordinals/v1/inscriptions?address=' + encodeURIComponent(addr) + '&limit=60', {
+        method: 'GET',
+        headers: { 'Accept': 'application/json' },
+        mode: 'cors'
+      }).then(function(r) {
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        return r.json();
+      }).then(function(d) {
+        var list = d.results || [];
+        cb(null, list.map(function(i) {
+          return {
+            id: i.id || '',
+            inscriptionId: i.id || '',
+            name: (i.meta && i.meta.name) || ('Inscription #' + i.number),
+            collection_id: (i.collection_id || '').toLowerCase(),
+            collectionName: (i.collection_id || '').toLowerCase(),
+            inscriptionNumber: i.number || 0,
+            number: i.number || 0,
+            preview: 'https://ordinals.com/preview/' + (i.id || '')
+          };
+        }));
+      }).catch(function(e) { cb(e); });
+    },
+    function(cb) {
+      /* Ordinals Wallet turbo API */
+      fetch('https://turbo.ordinalswallet.com/wallet/inscriptions?address=' + encodeURIComponent(addr), {
+        mode: 'cors'
+      }).then(function(r) {
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        return r.json();
+      }).then(function(d) {
+        var list = d.inscriptions || d || [];
+        cb(null, list.map(function(i) {
+          return {
+            id: i.id || '',
+            inscriptionId: i.id || '',
+            name: (i.meta && i.meta.name) || 'Inscription',
+            collection_id: (i.collection_slug || '').toLowerCase(),
+            collectionName: (i.collection_slug || '').toLowerCase(),
+            inscriptionNumber: i.num || 0,
+            number: i.num || 0,
+            preview: 'https://ordinals.com/preview/' + (i.id || '')
+          };
+        }));
+      }).catch(function(e) { cb(e); });
+    }
+  ];
+
+  var idx = 0;
+  function tryNext(err) {
+    if (idx >= attempts.length) {
+      /* All APIs failed - show helpful links */
+      showToast('Could not load via API - showing external links');
+      showExternalLinks(addr);
+      return;
+    }
+    var attempt = attempts[idx++];
+    attempt(function(err2, results) {
+      if (err2 || !results) {
+        tryNext(err2);
+      } else if (results.length === 0) {
+        /* Empty result - could be valid (empty wallet) or API blocked */
+        tryNext(null);
+      } else {
+        renderDash(results);
+      }
+    });
+  }
+  tryNext(null);
 }
 
 function setLoading(on) {
@@ -577,12 +704,41 @@ function setLoading(on) {
   if (g && on) g.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;font-family:\'Press Start 2P\',monospace;font-size:10px;color:var(--orange);">LOADING INSCRIPTIONS...</div>';
 }
 
+/* PixelQuote known inscription numbers and ID prefixes for detection */
+var PQ_NUMS = [35672,35958,35959,35960,35961,35962,35963,35964,35965,35966,35967,35968,35969,35970,35971,35972,35973,35974,35975,35976,54246,54247,54248,54249,54250,54253,54254,54255,54256,54266,54267,54278,54288,54290,54291,54292,54293,54294,54295,54296,54297,54298,54299,54300,54433,54434,54435,54436,54437,54438,54439,54440,54441,54442,54443,54444,54445,54446,54447,54448,54449,54450,54451,54452,54453,54454,54455,54457,54458,54608,54609,54610,54611,54612,54613,54614,54615,54616,54617,54618,54619,54620,54621,54622,54623,54624,54625,54626,54637,54638,54639,54640,54641,54642,54643,54644,54645,54646,54647,54648,54649,54650,54651,54652,54653,54897,54898,54899,54900,54901,54902,54903,54904,54905,54906,54907,54908,54909,54910,54911,54912,54913,54914,54997,54998,54999,55000,55001,55002,55003,55004,55005,55006,55007,55008,55009,55010,55011,55012,55013,55014,55134,55135,55136,55137,55138,55139,55140,55141,55142,55143,55144,55145,55146,55147,55208,55209,55210,55211,55212,55213,55214,55215,55254,55386,55387,55388,55395,55396,55397,55398,55399,56270,56271,56272,56273,56274,56275,56276,56277,56278,56279,56280,56281,56282,56364,56365,56366,56367,56368,56369,56370,56371,56372,56448,56449,56450,56451,56452,56453,56454,56455,56456,56457,56458,56504,56505,56506,56507,56615,56616,56617,56618,56619,56620,56621,56622,56623,56624,56625,56626,56627,56628,56629,56630,56631,56632,56633,57238,57239,57240,57241,57242,57243,57244,57245,57246,57247,57248,62315,62316,62317,62318,62319,62320,62321,62322,62323,64708,64709,64710,64711,64712,64713,65160,65161,65162,65163,65269,66270,78233,78234,78235];
+var PQ_ID_PREFIXES = ["815f699bbfcf2759","e683703e623ada80","b846639b36b07998","354526c9678bf350","427b1fc6020c7d57","0deb5aa34f9a2462","d7cc93c549be6523","940749f7659f1111","10c0ad7526d9f770","213d001501b94d28","e442d208e3e2df0f","cf90362f6cbbf945","df21fa2cfaa3ac12","c0ec9a5680aa531c","888414046266e359","28f5552fc1cc4bdd","248883ee3b03e8d0","eb0f78a4cd0c95c8","1c0ca1c8f2c8a597","28be6053fdaa19fe","c6bf41997ea40b53","d0e9baea6057e569","cc98501a637f5cbd","2d968f253aca6a77","12eef20fea7b6419","45cd250d02c6d8e8","91d6bc87a3ad62b6","bee180a214a25bf3","d559d1737109fa47","586209a39eddd772","de1b4a37ec9f9272","c06958e53013864a","f18049ced9db81f3","e7753a8a580639e0","0bb0acf82ffc37d9","ba7bfd02493a91ca","68a7c8ca7c62e6de","aa39d2caf89ececa","5628e6dab8395cf7","8f9b610d85507379","7830220fd910e6ce","064ab217525ec98f","c31df70ea56a2c9a","a897aeabfca9d048","7857ba6811510f33","1f8308113d2c7a13","eb577d6a88fc9010","a59e1587db132573","7460a43fd0be3e29","03b47cebeb2b9731","97a1a247158ac733","bc3b38906f01a021","a4e0890a1c1bba05","e6e121977e3f6b92","396ea02cd8a370b4","12507c5629fb0cfe","f0848a637ee9646b","6f40224bfc8c69d1","ad1224221d366837","2c4cac22e933c420","c11ee58118f6e051","ca735603d2bb3240","6beda2159e3d90c8","732976eaaf93537d","a66692277a078ea6","f6b503b7cf3b18a0","1d5b2b6c3fa8dcd5","7f9b78826a1c14c4","390aa9bd1d4c127f","6696e18769bc6d33","48e3842d9e1b223f","431e6d43e4b08466","663cd168f74f2806","a4d7881cc31450e8","2c3981ff862a7f2c","319f1f7662e89eb8","7fd18c26c51b6afd","aa4195ee3ff10333","ec89aacedb8a4ff1","2a949e6e9dd14fee","55ff0edac8faaee4","d0bb8a46395cc560","0f9c3824f139a997","c4e857367ed6fff1","fd5d8069cc565eba","3348e4806db261b2","24ee081689aa444c","2627ccd4ea2421d5","71fc566bf0f293b4","8dc71b1e6487fed5","7bcb5339a6157164","fe57740dbd27862a","aba5d84e6817daca","0ad4c41039982622","3edcd20b96318a27","1aef164eea1b0577","e74b62348f43a7ce","6994bbe2c59f4761","a3f14ed1ff110a80","f71bf7c292e74e2e","36e28637ef839ed1","625233ac790860e1","fbbb48d7a57a26aa","f7187153f9a91b16","ea1ceb49e5fa622a","a80c1c63f3fec253","91678bbfdfa8f832","2566eeffd99b8cb6","c1e1e5a4542ef0cc","f066d3ca4982d244","0a3b659b2ac3befa","782c104c92c67c9f","5d30084c727d8019","67e05096fb8c94e1","1c7f9a53b6c6a969","91cdb8b2b61767d6","ce382dd927113729","8d6358629861726f","07860a184409180d","e9afae32d7e40c83","95d88c6e3e582260","e3f1ec57ec59d27b","c9d4b0d078f198a0","8d5db1c0d0ce556a","74454dff93c20d5f","81383a86ecfcecbd","6a48e13c24c71048","8e591f02f0dfe4e8","89308fc2712b12d2","2b0d156f39144287","1a94ef5e07afdf8c","c7324c804f60668a","4457530bb182971c","36e7e702a0399245","a0851db8ffe6bae3","f056d2b029ba2663","db8b335f1f202ce6","ed08b6ec131281da","518798e8976c7d73","aa63d1a80c4e9dec","ae6d7871fee4dab4","63f6fe126b1c691e","45f790c4df2c5fb1","e9e24bb85322910e","94eff47ac38f1aee","043b9513e2eafbbd","68754d67184153dc","a4cac3de01d439d2","a8f3a33fee7ff63c","6ca5fe1c30002b37","1f5ebdc21dda6013","40c3b8d63d79e575","ef22d5424e8e533c","269ea9ef22b8652f","6c0a086d2f1a309b","411368ddfe676c90","6dd5c8910894634b","92384a9222982ef5","54967d5fdd84f014","2480b6d8c8221536","935b90f963707412","95447258c0d21512","ad0cce88de25b75f","59edc68968341190","baa29924fda02a91","93128fef74408133","c7f52340de355c8e","f08fde44d97c1e7a","f565cae875bf13c5","65d2f176f9489f40","2c4eaecde15f3e72","32688d125cb80fc3","4abc7071ae233339","b82ba4432a31ad45","951de4a476d4776f","379f02812b654a7f","467a78850e997f47","20a66637d57fbeeb","b9850e7864930b9c","bb3d2cb425c5a951","3b836b2f32879009","d34e85a90c6c1cf7","9982eb5677ce3f94","025042ee501f4fcf","5f890ff3693d1ee2","4c25b0db17597fb7","ab74615fa09e463c","293d0570c4e358ea","abab94ac63d75768","91f518a9c4ca19ea","d92089b85e4e2a4b","a2f93bd7936d8633","579b4913039a3671","857087c4d4b35c4b","5b5023a09c046396","168713739847e899","326adb14010188d3","8658362a6940f093","bdaf7cda1c1f3522","7c2a1776332f687e","3ea6b44287629cee","ca21da5f4339ddb0","9cef1151c32017f1","cc4d8b806574d5f3","0a69e9aa3cb4148e","0f4f4a28439a3ac5","f17bc997b0448a26","0928af1782d3c2d0","e5ea3a2497be8f38","133427a211b4b6bc","e1bbf0d24b0b4491","ef430e5994b5c8a8","269021b2df0bd839","1553c9cbbdc3f6ca","604d1b27de9ce4b0","b082d3ec6782e6a3","604ce9d2d614f1a1","64b6d3d707bb23b7","31c60446bfa36bcd","ec9fc8b71e61c4b3","33c8881160d90f7b","28580442830eb638","41e1db33d1d77ff6","291dc6b77e57c5b3","f3f873d2634b1cbb","406f248d6f00ecfe","95f05d28825680d0","b12783c25a54dc32","402c71b739f1ed5c","fabaa66eac7f66e7","e4c698b466552aa3","169e1137929b3819","4a533132c241acea","83431f46aecc5026","f517eac1b69f0747","6384836ee8ebf0a3","7e3a7324490085d5","955e1bfe8b7e891c","6903c266a83b5a71","9fcd7a6a7e28acd2","ad6ad54e5d977aad","b74a1578401d776f","9b8a6120c03e0e5c","f91260238a3bcdee","67afabfa3eeaddf2","95d81e028cd6e6d9","241f4e35c7904d7a","8ec12afe0be67c34","8e90ebf957fd693a","46b7cbabc38ac693","af343bffad9695ba","bc631ada9c63128f","d4b8ddc1cc973e8f","5245b79dd4cf5af8","d31ab1a9fba85a7a","f3c1f44641c97b0a","052698cfe6e348c1","f325466005bfcd3f","3df9cf0edb75bae3","8604e8830c3620ac","98260a95311f0c87","33595f98b743b17d","a29b57963cc8381d"];
+
 function isPQ(ins) {
-  var cid = (ins.collection_id || '').toLowerCase();
-  if (cid.indexOf('pixel-quote') >= 0 || cid.indexOf('pixelquote') >= 0) return true;
-  var name = (ins.name || '').toLowerCase();
-  if (name.indexOf('pixelquote') >= 0 || name.indexOf('pixel quote') >= 0) return true;
-  if (name.indexOf('pixelquote') >= 0) return true;
+  /* Method 1: Check collectionName / collection_id fields (OKX, Xverse) */
+  var fields = [
+    ins.collection_id || '',
+    ins.collection_name || '',
+    ins.collectionId || '',
+    ins.collectionName || '',
+    ins.collectionSlug || '',
+    ins.slug || '',
+    ins.name || '',
+    ins.inscriptionName || ''
+  ];
+  var keywords = ['pixel-quote','pixelquote','pixel quote','pixelquote nft'];
+  for (var f = 0; f < fields.length; f++) {
+    var field = fields[f].toLowerCase();
+    for (var k = 0; k < keywords.length; k++) {
+      if (field && field.indexOf(keywords[k]) >= 0) return true;
+    }
+  }
+
+  /* Method 2: Check inscription number against known PixelQuote numbers (UniSat) */
+  var num = ins.inscriptionNumber || ins.inscription_number || ins.number || 0;
+  if (num && PQ_NUMS.indexOf(num) >= 0) return true;
+
+  /* Method 3: Check inscription ID prefix against known PixelQuote IDs */
+  var id = ins.inscriptionId || ins.inscription_id || ins.id || '';
+  if (id && id.length >= 16) {
+    var prefix = id.slice(0, 16);
+    if (PQ_ID_PREFIXES.indexOf(prefix) >= 0) return true;
+  }
+
   return false;
 }
 
