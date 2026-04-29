@@ -175,6 +175,28 @@ footer p{font-family:'Share Tech Mono',monospace;font-size:0.6rem;color:var(--mu
   .how-grid{grid-template-columns:1fr}
 }
 </style>
+<script src="wallet.js"></script>
+<script>
+(function() {
+  let realConnect = null;
+  window.connectWallet = function() {
+    console.log('[SBA] connectWallet called - waiting for full load...');
+    if (realConnect) return realConnect.apply(this, arguments);
+    let attempts = 0;
+    const tryRealConnect = function() {
+      attempts++;
+      if (window._realConnectWallet) {
+        realConnect = window._realConnectWallet;
+        return realConnect();
+      }
+      if (attempts < 50) setTimeout(tryRealConnect, 100);
+      else alert('Connection system loading. Please wait and try again.');
+    };
+    tryRealConnect();
+  };
+})();
+</script>
+
 </head>
 <body>
 
@@ -606,106 +628,22 @@ function getRank(pts){
 }
 
 
-// ROBUST WALLET CONNECTION
-async function connectWallet(){
-  const btn = document.getElementById('connect-btn');
-  if(btn){ btn.textContent='Connecting...'; btn.disabled=true; }
-  showLoad('Looking for Nintondo Wallet...');
-  
-  // Wait for wallet extension to inject (up to 3 seconds)
-  let attempts = 0;
-  while(!window.nintondo && attempts < 30){
-    await new Promise(r=>setTimeout(r,100));
-    attempts++;
-  }
-  
-  if(!window.nintondo){
-    hideLoad();
-    if(btn){ btn.textContent='Connect Nintondo Wallet'; btn.disabled=false; }
-    alert('Nintondo Wallet not detected.
 
-Please make sure:
-1. Nintondo Wallet Chrome extension is installed
-2. The extension is enabled
-3. Refresh this page and try again
 
-Install at: nintondo.io');
-    return;
-  }
-  
-  showLoad('Connecting to Nintondo Wallet...');
-  
-  try{
-    let addr = null;
-    
-    // Try all known Nintondo connection methods
-    if(typeof window.nintondo.requestAccounts === 'function'){
-      const accounts = await window.nintondo.requestAccounts();
-      addr = Array.isArray(accounts) ? accounts[0] : accounts;
-    } else if(typeof window.nintondo.connect === 'function'){
-      try{ addr = await window.nintondo.connect('bells'); } catch(e1){
-        try{ addr = await window.nintondo.connect(); } catch(e2){
-          addr = await window.nintondo.connect('bellsMainnet');
-        }
-      }
-    } else if(typeof window.nintondo.getAccounts === 'function'){
-      const accs = await window.nintondo.getAccounts();
-      addr = Array.isArray(accs) ? accs[0] : accs;
-    } else {
-      // Last resort: check if already connected
-      const keys = Object.keys(window.nintondo);
-      console.log('Available nintondo methods:', keys);
-      throw new Error('No compatible connection method found. Available: ' + keys.join(', '));
-    }
-    
-    if(!addr) throw new Error('Wallet returned no address. Please unlock your wallet and try again.');
-    
-    walletAddr = addr;
-    await loadHeroes(addr);
-    
-  } catch(e){
-    hideLoad();
-    if(btn){ btn.textContent='Connect Nintondo Wallet'; btn.disabled=false; }
-    console.error('Wallet connection error:', e);
-    alert('Connection failed: ' + (e.message || String(e)) + '
 
-Tips:
-1. Make sure Nintondo wallet is unlocked
-2. Check wallet permissions for this site
-3. Try refreshing the page');
-  }
-}
+// ============================================================
+// NINTONDO WALLET CONNECTION - CORRECT VERSION
+// Works with both old and new Nintondo wallet extension
+// ============================================================
 
-async function loadHeroes(addr){
-  showLoad('Fetching your heroes...');
-  try{
-    const res = await fetch(ORD_ADDR + addr, {headers:{'Accept':'application/json'}});
-    if(!res.ok) throw new Error('API error '+res.status);
-    const data = await res.json();
-    const ids = data.inscriptions || (Array.isArray(data)?data.map(i=>i.id||i):[]);
-    processHeroes(ids, addr);
-  }catch(e){
-    // Try paginated API
-    try{
-      showLoad('Trying alternative endpoint...');
-      let all=[],page=0,more=true;
-      while(more){
-        const r = await fetch(`https://ord.nintondo.io/api/v1/address/${addr}/inscriptions?page=${page}&limit=100`);
-        if(!r.ok) throw new Error('API '+r.status);
-        const d = await r.json();
-        if(!d||!d.length){more=false;break;}
-        all=all.concat(d);page++;
-        showLoad(`Fetching heroes... ${all.length} found`);
-        await new Promise(r=>setTimeout(r,200));
-      }
-      processHeroes(all.map(i=>i.id||i.inscription_id||i), addr);
-    }catch(e2){
-      hideLoad();
-      // Show offline message
-      processHeroes([], addr, true);
-    }
-  }
-}
+
+
+
+
+
+
+
+
 
 function processHeroes(ids, addr, offline=false){
   myHeroes = [];
@@ -857,6 +795,45 @@ function hideLoad(){ document.getElementById('loading').classList.remove('show')
       if(el&&d&&d.value)el.textContent=d.value.toLocaleString();
     }).catch(()=>{});
 })();
+
+
+
+window._realConnectWallet = async function(){
+  const btn = document.getElementById('connect-btn');
+  if(btn){ btn.textContent='Connecting...'; btn.disabled=true; }
+  
+  const addr = await window.SBAWallet.connect();
+  
+  if(!addr){
+    if(btn){ btn.textContent='⬡ Connect Nintondo Wallet'; btn.disabled=false; }
+    return;
+  }
+  
+  walletAddr = addr;
+  
+  document.getElementById('connect-screen').style.display='none';
+  document.getElementById('assemble-dash').classList.add('show');
+  
+  const short = addr.slice(0,8)+'...'+addr.slice(-6);
+  const crewAddr = document.getElementById('crew-addr');
+  const crewName = document.getElementById('crew-name');
+  if(crewAddr) crewAddr.textContent = addr;
+  if(crewName) crewName.textContent = short+"'s Crew";
+  
+  showLoad('Loading your heroes...');
+  await loadHeroes(addr);
+}
+
+async function loadHeroes(addr){
+  try {
+    const inscriptionIds = await window.SBAWallet.fetchInscriptions(addr);
+    processHeroes(inscriptionIds, addr);
+  } catch(e) {
+    console.error('Failed to load heroes:', e);
+    hideLoad();
+    processHeroes([], addr, true);
+  }
+}
 </script>
 </body>
 </html>
