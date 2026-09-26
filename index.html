@@ -212,131 +212,6 @@ footer{background:var(--deep);border-top:4px solid var(--border);padding:60px 40
   .char-card{width:140px;}
 }
 
-/* ── VISITOR COUNTER ── */
-.visitor-counter-section {
-  background: var(--deep);
-  border-top: 4px solid var(--border);
-  border-bottom: 4px solid var(--border);
-  padding: 28px 40px;
-}
-.vc-inner {
-  max-width: 1200px;
-  margin: 0 auto;
-  position: relative;
-}
-.vc-label {
-  font-family: 'Press Start 2P', monospace;
-  font-size: 9px;
-  color: var(--orange);
-  letter-spacing: 3px;
-  margin-bottom: 16px;
-}
-.vc-blocks {
-  display: flex;
-  gap: 16px;
-  flex-wrap: wrap;
-}
-.vc-block {
-  background: var(--card);
-  border: 3px solid var(--border);
-  padding: 16px 20px;
-  flex: 1;
-  min-width: 180px;
-  position: relative;
-  transition: border-color .15s;
-}
-.vc-block:hover { border-color: var(--orange); }
-.vc-block-top {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 8px;
-}
-.vc-block-icon { font-size: 14px; }
-.vc-block-title {
-  font-family: 'Silkscreen', monospace;
-  font-size: 10px;
-  color: var(--muted);
-  letter-spacing: 1px;
-}
-.vc-block-num {
-  font-family: 'Press Start 2P', monospace;
-  font-size: 22px;
-  color: var(--orange);
-  margin-bottom: 4px;
-  letter-spacing: 2px;
-}
-.vc-block-sub {
-  font-family: 'Silkscreen', monospace;
-  font-size: 10px;
-  color: var(--muted);
-  margin-bottom: 10px;
-}
-.vc-block-bar {
-  height: 4px;
-  background: var(--border);
-  width: 100%;
-}
-.vc-bar-fill {
-  height: 100%;
-  background: var(--orange);
-  width: 0%;
-  transition: width 1.5s ease;
-}
-.vc-bar-cyan { background: var(--green); }
-.vc-bar-gold { background: var(--orange2); }
-
-/* Admin view */
-.vc-admin {
-  margin-top: 16px;
-  background: var(--black, #0a0a0f);
-  border: 3px solid var(--orange);
-  padding: 16px;
-}
-.vc-admin-title {
-  font-family: 'Press Start 2P', monospace;
-  font-size: 9px;
-  color: var(--orange);
-  margin-bottom: 12px;
-  letter-spacing: 2px;
-}
-.vc-admin-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-}
-.vc-admin-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 8px 10px;
-  background: var(--card);
-  border: 2px solid var(--border);
-  font-family: 'Silkscreen', monospace;
-  font-size: 11px;
-  color: var(--muted);
-}
-.vc-admin-item span:last-child {
-  color: var(--orange2);
-  font-family: 'Press Start 2P', monospace;
-  font-size: 9px;
-}
-.vc-admin-toggle {
-  position: absolute;
-  top: 0;
-  right: 0;
-  font-size: 18px;
-  color: var(--border);
-  cursor: pointer;
-  transition: color .15s;
-  user-select: none;
-}
-.vc-admin-toggle:hover { color: var(--orange); }
-@media(max-width:600px){
-  .visitor-counter-section { padding: 24px 16px; }
-  .vc-blocks { flex-direction: column; }
-  .vc-admin-grid { grid-template-columns: 1fr; }
-}
 </style>
 </head>
 <body>
@@ -414,66 +289,20 @@ footer{background:var(--deep);border-top:4px solid var(--border);padding:60px 40
   <div class="marquee-track">
     <span class="marquee-item">₿ PIXELQUOTE ORDINALS</span><span class="marquee-item">★</span>
     <span class="marquee-item">FIRST MP4 ON BITCOIN</span><span class="marquee-item">★</span>
-    <span class="marquee-item">264 DIGITAL ARTIFACTS</span><span class="marquee-item">★</span>
+    <span class="marquee-item">263 DIGITAL ARTIFACTS</span><span class="marquee-item">★</span>
     <span class="marquee-item">SUB-100K COLLECTION</span><span class="marquee-item">★</span>
-    <span class="marquee-item">NFT IS CYBER PROPERTY</span><span class="marquee-item">★</span>
+    <span class="marquee-item">ONCHAIN COLLECTIBLES IN BITCOIN</span><span class="marquee-item">★</span>
     <span class="marquee-item">STACK SATOSHI</span><span class="marquee-item">★</span>
     <span class="marquee-item">₿ PIXELQUOTE ORDINALS</span><span class="marquee-item">★</span>
     <span class="marquee-item">FIRST MP4 ON BITCOIN</span><span class="marquee-item">★</span>
-    <span class="marquee-item">264 DIGITAL ARTIFACTS</span><span class="marquee-item">★</span>
+    <span class="marquee-item">263 DIGITAL ARTIFACTS</span><span class="marquee-item">★</span>
     <span class="marquee-item">SUB-100K COLLECTION</span><span class="marquee-item">★</span>
-    <span class="marquee-item">NFT IS CYBER PROPERTY</span><span class="marquee-item">★</span>
+    <span class="marquee-item">ONCHAIN COLLECTIBLES IN BITCOIN</span><span class="marquee-item">★</span>
     <span class="marquee-item">STACK SATOSHI</span><span class="marquee-item">★</span>
   </div>
 </div>
 
 
-<!-- ═══ VISITOR COUNTER ═══ -->
-<div class="visitor-counter-section">
-  <div class="vc-inner">
-    <div class="vc-label">₿ BLOCK ACTIVITY</div>
-    <div class="vc-blocks">
-      <div class="vc-block">
-        <div class="vc-block-top">
-          <span class="vc-block-icon">👁</span>
-          <span class="vc-block-title">TOTAL VISITORS</span>
-        </div>
-        <div class="vc-block-num" id="vc-total">—</div>
-        <div class="vc-block-sub">ALL TIME</div>
-        <div class="vc-block-bar"><div class="vc-bar-fill" id="vc-bar-total"></div></div>
-      </div>
-      <div class="vc-block">
-        <div class="vc-block-top">
-          <span class="vc-block-icon">📅</span>
-          <span class="vc-block-title">TODAY</span>
-        </div>
-        <div class="vc-block-num" id="vc-today">—</div>
-        <div class="vc-block-sub">UNIQUE VISITS</div>
-        <div class="vc-block-bar"><div class="vc-bar-fill vc-bar-cyan" id="vc-bar-today"></div></div>
-      </div>
-      <div class="vc-block">
-        <div class="vc-block-top">
-          <span class="vc-block-icon">🔥</span>
-          <span class="vc-block-title">THIS WEEK</span>
-        </div>
-        <div class="vc-block-num" id="vc-week">—</div>
-        <div class="vc-block-sub">VISITORS</div>
-        <div class="vc-block-bar"><div class="vc-bar-fill vc-bar-gold" id="vc-bar-week"></div></div>
-      </div>
-    </div>
-    <!-- Private admin counter - hidden by default -->
-    <div class="vc-admin" id="vc-admin" style="display:none;">
-      <div class="vc-admin-title">🔐 ADMIN VIEW</div>
-      <div class="vc-admin-grid">
-        <div class="vc-admin-item"><span>TOTAL SESSIONS</span><span id="adm-sessions">—</span></div>
-        <div class="vc-admin-item"><span>UNIQUE IPs (EST)</span><span id="adm-unique">—</span></div>
-        <div class="vc-admin-item"><span>BOUNCE RATE</span><span id="adm-bounce">—</span></div>
-        <div class="vc-admin-item"><span>AVG TIME</span><span id="adm-time">—</span></div>
-      </div>
-    </div>
-    <div class="vc-admin-toggle" onclick="toggleAdminCounter()" title="Admin view">⬡</div>
-  </div>
-</div>
 
 <!-- C1 FIX: VIDEO SHOWCASE — Wizard as main, replaced top-right, fixed bottom 2 -->
 <section class="section">
@@ -600,7 +429,7 @@ footer{background:var(--deep);border-top:4px solid var(--border);padding:60px 40
         <div class="btc-row"><span class="btc-row-icon">⛓️</span><div><span class="btc-row-title">FULLY ON-CHAIN</span><span class="btc-row-text">Every PixelQuote inscription lives directly on Bitcoin — no IPFS, no servers, no central storage. Pure Bitcoin permanence.</span></div></div>
         <div class="btc-row"><span class="btc-row-icon">🎬</span><div><span class="btc-row-title">FIRST MP4 VIDEO COLLECTION</span><span class="btc-row-text">Inscription #35,672 is the first animated MP4 video ever inscribed on the Bitcoin blockchain. A historic milestone.</span></div></div>
         <div class="btc-row"><span class="btc-row-icon">💎</span><div><span class="btc-row-title">SUB-100K INSCRIPTION RANGE</span><span class="btc-row-text">All 264 PixelQuote ordinals are among the earliest Bitcoin inscriptions ever made — true digital scarcity.</span></div></div>
-        <div class="btc-row"><span class="btc-row-icon">🔒</span><div><span class="btc-row-title">NFT IS CYBER PROPERTY</span><span class="btc-row-text">Your inscription is your property. Secured by Bitcoin's proof-of-work — the most secure blockchain on Earth.</span></div></div>
+        <div class="btc-row"><span class="btc-row-icon">🔒</span><div><span class="btc-row-title">ONCHAIN COLLECTIBLES IN BITCOIN</span><span class="btc-row-text">Your inscription is your property. Secured by Bitcoin's proof-of-work — the most secure blockchain on Earth.</span></div></div>
       </div>
     </div>
   </div>
@@ -641,7 +470,7 @@ footer{background:var(--deep);border-top:4px solid var(--border);padding:60px 40
   <div class="section-inner">
     <div class="community-grid">
       <div>
-        <div class="s-tag">// NFT IS CYBER PROPERTY</div>
+        <div class="s-tag">// ONCHAIN COLLECTIBLES IN BITCOIN</div>
         <div class="s-title" style="margin-bottom:20px;">YOUR DIGITAL PROPERTY<br>ON BITCOIN</div>
         <p style="font-size:20px;color:var(--muted);line-height:1.6;margin-bottom:20px;">PixelQuote Ordinals are permanently inscribed Digital Artifacts on Bitcoin. True ownership, true permanence, true scarcity.</p>
         <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:28px;">
@@ -694,14 +523,15 @@ footer{background:var(--deep);border-top:4px solid var(--border);padding:60px 40
       <div>
         <div class="links-col-title explorer">🔍 EXPLORER</div>
         <div class="market-list">
-          <a href="https://www.ord.io/collection/pixel-quote" target="_blank" class="market-link exp"><span class="ml-icon">🔍</span><div class="ml-info"><span class="ml-name e">Ord.io</span><span class="ml-url">Explore all 264 inscriptions on Bitcoin</span></div><span class="ml-arrow">→</span></a>
+          <a href="https://www.ord.io/collection/pixel-quote" target="_blank" class="market-link exp"><span class="ml-icon">🔍</span><div class="ml-info"><span class="ml-name e">Ord.io</span><span class="ml-url">Explore all 263 inscriptions on Bitcoin</span></div><span class="ml-arrow">→</span></a>
         </div>
         <br>
-        <div style="background:var(--card);border:3px solid var(--border);padding:20px;font-family:'Silkscreen',monospace;font-size:12px;color:var(--muted);line-height:1.6;">Ord.io is a Bitcoin Ordinals explorer — browse, search and verify all 264 PixelQuote inscriptions directly on-chain.</div>
+        <div style="background:var(--card);border:3px solid var(--border);padding:20px;font-family:'Silkscreen',monospace;font-size:12px;color:var(--muted);line-height:1.6;">Ord.io is a Bitcoin Ordinals explorer — browse, search and verify all 263 PixelQuote inscriptions directly on-chain.</div>
       </div>
     </div>
   </div>
 </section>
+
 
 <footer>
   <div class="footer-inner">
@@ -746,95 +576,6 @@ footer{background:var(--deep);border-top:4px solid var(--border);padding:60px 40
 
 <script>
 
-// ── VISITOR COUNTER ──
-(function() {
-  const today = new Date().toDateString();
-  const week = Math.floor(Date.now() / (7 * 24 * 60 * 60 * 1000));
-  const key_total = 'pq_visits_total';
-  const key_today = 'pq_visits_today_' + today;
-  const key_week = 'pq_visits_week_' + week;
-  const key_session = 'pq_session_' + today;
-  const key_time = 'pq_time_start';
-  const key_sessions = 'pq_sessions_total';
-
-  // Record visit
-  let total = parseInt(localStorage.getItem(key_total) || '0');
-  let todayCount = parseInt(localStorage.getItem(key_today) || '0');
-  let weekCount = parseInt(localStorage.getItem(key_week) || '0');
-  let sessions = parseInt(localStorage.getItem(key_sessions) || '0');
-  const isNewSession = !sessionStorage.getItem(key_session);
-
-  if (isNewSession) {
-    total++;
-    todayCount++;
-    weekCount++;
-    sessions++;
-    sessionStorage.setItem(key_session, '1');
-    localStorage.setItem(key_total, total);
-    localStorage.setItem(key_today, todayCount);
-    localStorage.setItem(key_week, weekCount);
-    localStorage.setItem(key_sessions, sessions);
-    localStorage.setItem(key_time, Date.now());
-  }
-
-  // Animate counter
-  function animateNum(el, target, duration) {
-    const start = Date.now();
-    const startVal = 0;
-    function update() {
-      const elapsed = Date.now() - start;
-      const progress = Math.min(elapsed / duration, 1);
-      const ease = 1 - Math.pow(1 - progress, 3);
-      const current = Math.floor(startVal + (target - startVal) * ease);
-      el.textContent = current.toLocaleString();
-      if (progress < 1) requestAnimationFrame(update);
-    }
-    requestAnimationFrame(update);
-  }
-
-  // Animate bars
-  function animateBar(el, pct) {
-    setTimeout(function() { el.style.width = Math.min(pct, 100) + '%'; }, 300);
-  }
-
-  setTimeout(function() {
-    const elTotal = document.getElementById('vc-total');
-    const elToday = document.getElementById('vc-today');
-    const elWeek = document.getElementById('vc-week');
-    if (elTotal) { animateNum(elTotal, total, 1200); animateBar(document.getElementById('vc-bar-total'), (total/1000)*100); }
-    if (elToday) { animateNum(elToday, todayCount, 900); animateBar(document.getElementById('vc-bar-today'), (todayCount/50)*100); }
-    if (elWeek) { animateNum(elWeek, weekCount, 1100); animateBar(document.getElementById('vc-bar-week'), (weekCount/300)*100); }
-  }, 500);
-
-  // Admin view data
-  window._pqAdminData = { total, todayCount, weekCount, sessions };
-})();
-
-// Admin toggle (click the ⬡ icon)
-let _adminClicks = 0;
-let _adminTimeout;
-function toggleAdminCounter() {
-  _adminClicks++;
-  clearTimeout(_adminTimeout);
-  _adminTimeout = setTimeout(function(){ _adminClicks = 0; }, 1000);
-  if (_adminClicks >= 3) {
-    _adminClicks = 0;
-    const panel = document.getElementById('vc-admin');
-    const isHidden = panel.style.display === 'none';
-    if (isHidden) {
-      const d = window._pqAdminData || {};
-      const startTime = localStorage.getItem('pq_time_start');
-      const elapsed = startTime ? Math.floor((Date.now() - parseInt(startTime)) / 1000) : 0;
-      const mins = Math.floor(elapsed / 60);
-      const secs = elapsed % 60;
-      document.getElementById('adm-sessions').textContent = (d.sessions || 0).toLocaleString();
-      document.getElementById('adm-unique').textContent = '~' + Math.floor((d.total || 0) * 0.72).toLocaleString();
-      document.getElementById('adm-bounce').textContent = '38%';
-      document.getElementById('adm-time').textContent = mins + 'm ' + secs + 's';
-      panel.style.display = 'block';
-    } else {
-      panel.style.display = 'none';
-    }
   }
 }
 
