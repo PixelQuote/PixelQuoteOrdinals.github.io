@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="en" data-theme="dark">
 <head>
 <meta charset="UTF-8">
   <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
@@ -228,7 +228,7 @@ footer{background:var(--deep);border-top:4px solid var(--border);padding:60px 40
     <li><a href="resources.html">ORD RESOURCES</a></li>
   </ul>
   <div class="nav-right">
-    <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn">&#9790; DARK</button>
+    <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn">☀ LIGHT</button>
     <a href="collection.html" class="nav-btn outline">COLLECTION</a>
     <a href="dashboard.html" class="nav-btn">CONNECT WALLET</a>
   </div>
@@ -514,19 +514,10 @@ footer{background:var(--deep);border-top:4px solid var(--border);padding:60px 40
           <a href="https://www.satflow.com/ordinals/pixel-quote" target="_blank" class="market-link"><span class="ml-icon">🌊</span><div class="ml-info"><span class="ml-name">Satflow</span><span class="ml-url">satflow.com</span></div><span class="ml-arrow">→</span></a>
           <a href="https://web3.okx.com/nft/collection/btc/pixelquote-nft" target="_blank" class="market-link"><span class="ml-icon">⚫</span><div class="ml-info"><span class="ml-name">OKX NFT</span><span class="ml-url">web3.okx.com</span></div><span class="ml-arrow">→</span></a>
           <a href="https://unisat.io/market/collection?collectionId=pixel-quote" target="_blank" class="market-link"><span class="ml-icon">🟠</span><div class="ml-info"><span class="ml-name">UniSat Market</span><span class="ml-url">unisat.io</span></div><span class="ml-arrow">→</span></a>
-          <a href="https://www.trio.xyz/collections/pixel-quote" target="_blank" class="market-link"><span class="ml-icon">🔺</span><div class="ml-info"><span class="ml-name">Trio</span><span class="ml-url">trio.xyz</span></div><span class="ml-arrow">→</span></a>
           <a href="https://bestinslot.xyz/ordinals/collections/pixel-quote" target="_blank" class="market-link"><span class="ml-icon">🏆</span><div class="ml-info"><span class="ml-name">Best in Slot</span><span class="ml-url">bestinslot.xyz</span></div><span class="ml-arrow">→</span></a>
           <!-- C6: Magisat replaces Ordinal Hive -->
           <a href="https://magisat.io/collection/pixel-quote" target="_blank" class="market-link"><span class="ml-icon">🔮</span><div class="ml-info"><span class="ml-name">Magisat</span><span class="ml-url">magisat.io</span></div><span class="ml-arrow">→</span></a>
         </div>
-      </div>
-      <div>
-        <div class="links-col-title explorer">🔍 EXPLORER</div>
-        <div class="market-list">
-          <a href="https://www.ord.io/collection/pixel-quote" target="_blank" class="market-link exp"><span class="ml-icon">🔍</span><div class="ml-info"><span class="ml-name e">Ord.io</span><span class="ml-url">Explore all 263 inscriptions on Bitcoin</span></div><span class="ml-arrow">→</span></a>
-        </div>
-        <br>
-        <div style="background:var(--card);border:3px solid var(--border);padding:20px;font-family:'Silkscreen',monospace;font-size:12px;color:var(--muted);line-height:1.6;">Ord.io is a Bitcoin Ordinals explorer — browse, search and verify all 263 PixelQuote inscriptions directly on-chain.</div>
       </div>
     </div>
   </div>
@@ -555,7 +546,7 @@ footer{background:var(--deep);border-top:4px solid var(--border);padding:60px 40
           <li><a href="https://www.satflow.com/ordinals/pixel-quote" target="_blank">Satflow</a></li>
           <li><a href="https://web3.okx.com/nft/collection/btc/pixelquote-nft" target="_blank">OKX NFT</a></li>
           <li><a href="https://unisat.io/market/collection?collectionId=pixel-quote" target="_blank">UniSat</a></li>
-          <li><a href="https://www.trio.xyz/collections/pixel-quote" target="_blank">Trio</a></li>
+          <li></li>
           <li><a href="https://bestinslot.xyz/ordinals/collections/pixel-quote" target="_blank">Best in Slot</a></li>
           <li><a href="https://magisat.io/collection/pixel-quote" target="_blank">Magisat</a></li>
         </ul>
@@ -584,7 +575,7 @@ function toggleTheme(){
   if(h.getAttribute('data-theme')==='dark'){h.setAttribute('data-theme','light');b.textContent='\u263e DARK';localStorage.setItem('pq-theme','light');}
   else{h.setAttribute('data-theme','dark');b.textContent='\u2600 LIGHT';localStorage.setItem('pq-theme','dark');}
 }
-const s=localStorage.getItem('pq-theme')||'light';
+const s=localStorage.getItem('pq-theme')||'dark';
 document.documentElement.setAttribute('data-theme',s);document.getElementById('themeBtn').textContent=s==='light'?'\u263e DARK':'\u2600 LIGHT';
 </script>
 </body>
