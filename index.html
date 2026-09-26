@@ -228,7 +228,7 @@ footer{background:var(--deep);border-top:4px solid var(--border);padding:60px 40
     <li><a href="resources.html">ORD RESOURCES</a></li>
   </ul>
   <div class="nav-right">
-    <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn">☾ DARK</button>
+    <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn">&#9790; DARK</button>
     <a href="collection.html" class="nav-btn outline">COLLECTION</a>
     <a href="dashboard.html" class="nav-btn">CONNECT WALLET</a>
   </div>
@@ -581,11 +581,11 @@ footer{background:var(--deep);border-top:4px solid var(--border);padding:60px 40
 
 function toggleTheme(){
   const h=document.documentElement,b=document.getElementById('themeBtn');
-  if(h.getAttribute('data-theme')==='dark'){h.setAttribute('data-theme','light');b.textContent='☾ DARK';localStorage.setItem('pq-theme','light');}
-  else{h.setAttribute('data-theme','dark');b.textContent='☀ LIGHT';localStorage.setItem('pq-theme','dark');}
+  if(h.getAttribute('data-theme')==='dark'){h.setAttribute('data-theme','light');b.textContent='\u263e DARK';localStorage.setItem('pq-theme','light');}
+  else{h.setAttribute('data-theme','dark');b.textContent='\u2600 LIGHT';localStorage.setItem('pq-theme','dark');}
 }
-const s=localStorage.getItem('pq-theme');
-document.documentElement.setAttribute('data-theme',s);document.getElementById('themeBtn').textContent=s==='light'?'☾ DARK':'☀ LIGHT';
+const s=localStorage.getItem('pq-theme')||'light';
+document.documentElement.setAttribute('data-theme',s);document.getElementById('themeBtn').textContent=s==='light'?'\u263e DARK':'\u2600 LIGHT';
 </script>
 </body>
 </html>
